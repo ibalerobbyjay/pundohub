@@ -1,0 +1,117 @@
+body {
+    background: url("../images/background.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+.custom-navbar {
+    background-color: rgba(
+        255,
+        255,
+        255,
+        0.15
+    ); /* light transparent background */
+    backdrop-filter: blur(12px); /* blur effect */
+    -webkit-backdrop-filter: blur(12px); /* Safari support */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.custom-navbar .nav-link,
+.custom-navbar .navbar-brand {
+    color: #fff !important; /* white text */
+    font-weight: 500;
+}
+
+.custom-navbar .nav-link:hover {
+    color: #f1f1f1 !important; /* lighter on hover */
+}
+
+/* Apply glassmorphism globally */
+input,
+textarea {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff !important;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Placeholder text */
+input::placeholder,
+textarea::placeholder {
+    color: black;
+}
+
+/* Focus effect */
+input:focus,
+textarea:focus {
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    outline: none;
+}
+/* Style dropdowns (select box itself) */
+select {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff !important;
+}
+
+/* Style dropdown options (the opened list) */
+select option {
+    background-color: rgba(0, 0, 0, 0.7); /* solid dark background */
+    color: #fff; /* white text */
+}
+
+/* For Windows/Edge special case (sometimes default is gray/white) */
+select option:checked,
+select option:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #222;
+}
+
+/* Background only on login page */
+body.login {
+    background: url("/images/login-bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Make the login form glassmorphic */
+body.login .sm\:max-w-md {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Glass effect on dashboard cards */
+body.dashboard .card,
+body.dashboard .bg-white {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    color: #fff;
+}
+
+/* Dashboard text tweaks */
+body.dashboard h1,
+body.dashboard h2,
+body.dashboard p {
+    color: #fff;
+}
+.dropdown-menu {
+    background: rgba(30, 30, 30, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    color: #fff;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
