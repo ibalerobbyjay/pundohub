@@ -38,7 +38,7 @@
                 <option value="">None</option>
                 @foreach ($cases as $case)
                    <option value="{{ $case->id }}">
-    {{ $case->title }} ({{ $case->member->name ?? 'Unknown Member' }})
+    {{ $case->title }} ({{ $case->user->name ?? 'Unknown Member' }})
 </option>
                 @endforeach
             </select>

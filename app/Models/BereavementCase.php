@@ -10,20 +10,21 @@ class BereavementCase extends Model
     use HasFactory;
 
     protected $fillable = [
-        'member_id',
+        'user_id',
         'title',
         'date_of_death',
-        'description', // updated to match your form
+        'description',
+        'remarks',
     ];
 
-    // Cast date_of_death to a Carbon instance
     protected $casts = [
         'date_of_death' => 'date',
     ];
 
-    // Relationship to Member
-    public function member()
-    {
-        return $this->belongsTo(Member::class);
-    }
+    // Relationship to User (Member)
+   public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
 }

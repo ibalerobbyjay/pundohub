@@ -32,7 +32,7 @@ public function toMail($notifiable)
         ->subject('New Bereavement Case Added')
         ->greeting('Hello ' . $notifiable->name . ',')
         ->line('A new bereavement case has been added.')
-        ->line('Member: ' . $this->case->member->name)
+        ->line('Member: ' . ($this->case->user->name ?? 'N/A'))
         ->line('Title: ' . $this->case->title)
         ->line('Date of Death: ' . $this->case->date_of_death->format('F j, Y'))
         ->line('Description: ' . $this->case->description)
@@ -43,8 +43,8 @@ public function toMail($notifiable)
 public function toArray($notifiable)
 {
     return [
-         'message'       => 'A new bereavement case was created for ' . $this->case->member->name,
-        'member_name'   => $this->case->member->name,
+        'message'       => 'A new bereavement case was created for ' . ($this->case->user->name ?? 'N/A'),
+        'user_name'   => $this->case->user->name,
         'title'         => $this->case->title,
         'date_of_death' => $this->case->date_of_death->format('Y-m-d'),
         'description'   => $this->case->description,

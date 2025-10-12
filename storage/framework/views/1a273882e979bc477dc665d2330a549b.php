@@ -1,98 +1,52 @@
-
-
 <?php $__env->startSection('content'); ?>
-<h2>Add New Bereavement Case</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Add New Bereavement Case</h2>
 
-<!-- Display Validation Errors -->
-<?php if($errors->any()): ?>
-    <div style="color:red;">
-        <ul>
-            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <li><?php echo e($error); ?></li>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </ul>
-    </div>
-<?php endif; ?>
+    <?php if($errors->any()): ?>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 
-<form action="<?php echo e(route('bereavement-cases.store')); ?>" method="POST">
-    <?php echo csrf_field(); ?>
+    <form action="<?php echo e(route('bereavement-cases.store')); ?>" method="POST">
+        <?php echo csrf_field(); ?>
 
-    <!-- Title -->
-    <div class="mb-3">
-        <label for="title">Title <span style="color:red;">*</span></label>
-        <input type="text" name="title" id="title" class="form-control"
-               value="<?php echo e(old('title')); ?>" required>
-        <?php $__errorArgs = ['title'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <small style="color:red;"><?php echo e($message); ?></small>
-        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-    </div>
+        <div class="mb-3">
+            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" name="title" id="title" class="form-control" value="<?php echo e(old('title')); ?>" required>
+        </div>
 
-    <!-- Member -->
-    <div class="mb-3">
-        <label for="member_id">Member <span style="color:red;">*</span></label>
-        <select name="member_id" id="member_id" class="form-control" required>
-            <option value="">-- Select Member --</option>
-            <?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <option value="<?php echo e($member->id); ?>" <?php echo e(old('member_id') == $member->id ? 'selected' : ''); ?>>
-                    <?php echo e($member->name); ?>
+        <div class="mb-3">
+            <label for="user_id" class="form-label">Member <span class="text-danger">*</span></label>
+            <select name="user_id" id="user_id" class="form-select" required>
+                <option value="">-- Select Member --</option>
+                <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($user->id); ?>" <?php echo e(old('user_id') == $user->id ? 'selected' : ''); ?>>
+                        <?php echo e($user->name); ?>
 
-                </option>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </select>
-        <?php $__errorArgs = ['member_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <small style="color:red;"><?php echo e($message); ?></small>
-        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-    </div>
+                    </option>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+        </div>
 
-    <!-- Date of Death -->
-    <div class="mb-3">
-        <label for="date_of_death">Date of Death <span style="color:red;">*</span></label>
-        <input type="date" name="date_of_death" id="date_of_death" class="form-control"
-               value="<?php echo e(old('date_of_death')); ?>" required>
-        <?php $__errorArgs = ['date_of_death'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <small style="color:red;"><?php echo e($message); ?></small>
-        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-    </div>
+        <div class="mb-3">
+            <label for="date_of_death" class="form-label">Date of Death <span class="text-danger">*</span></label>
+            <input type="date" name="date_of_death" id="date_of_death" class="form-control" value="<?php echo e(old('date_of_death')); ?>" required>
+        </div>
 
-    <!-- Description -->
-    <div class="mb-3">
-        <label for="description">Description</label>
-        <textarea name="description" id="description" class="form-control"><?php echo e(old('description')); ?></textarea>
-        <?php $__errorArgs = ['description'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <small style="color:red;"><?php echo e($message); ?></small>
-        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-    </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="4"><?php echo e(old('description')); ?></textarea>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Add Bereavement Case</button>
-</form>
+        <button type="submit" class="btn btn-success">Add Case</button>
+        <a href="<?php echo e(route('bereavement-cases.index')); ?>" class="btn btn-secondary ms-2">Back to Cases</a>
+    </form>
+</div>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/bereavement-cases/create.blade.php ENDPATH**/ ?>

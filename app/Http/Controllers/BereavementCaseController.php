@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller; // ✅ Make sure this is imported
 use App\Models\BereavementCase;
-use App\Models\Member;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Notifications\NewBereavementCaseNotification;
@@ -12,18 +10,14 @@ use Illuminate\Support\Facades\Notification;
 
 class BereavementCaseController extends Controller
 {
-      
-      //Display all bereavement cases
-     
+    // Display all bereavement cases
     public function index()
     {
         $cases = BereavementCase::latest()->get();
         return view('bereavement-cases.index', compact('cases'));
     }
 
-
-     //Show a specific bereavement case
-  
+    // Show a specific bereavement case
     public function show(Request $request, $id)
     {
         if ($request->has('notification_id')) {
@@ -37,64 +31,50 @@ class BereavementCaseController extends Controller
         return view('bereavement-cases.show', compact('case'));
     }
 
-    
-      //Show form to create a new case (admin only)
-     
+    // Show form to create a new case
     public function create()
     {
-        $members = Member::all();
-        return view('bereavement-cases.create', compact('members'));
+        $users = User::where('role', 'member')->get(); // Only members
+        return view('bereavement-cases.create', compact('users'));
     }
 
-    
-     // Store new bereavement case (admin only)
-  
+    // Store new bereavement case
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'member_id'     => 'required|exists:members,id',
+            'user_id'       => 'required|exists:users,id',
             'title'         => 'required|string|max:255',
             'date_of_death' => 'required|date',
             'description'   => 'nullable|string',
         ]);
 
-        try {
-            $case = BereavementCase::create($validated);
+        $case = BereavementCase::create($validated);
 
-            // Notify all members
-            $members = User::where('role', 'member')->get();
-            Notification::send($members, new NewBereavementCaseNotification($case));
+        // Notify all members
+        $members = User::where('role', 'member')->get();
+        Notification::send($members, new NewBereavementCaseNotification($case));
 
-            return redirect()->route('bereavement-cases.create')
-                             ->with('success', 'Bereavement case added successfully! All members have been notified.');
-        } catch (\Exception $e) {
-            return redirect()->back()->withInput()
-                             ->with('error', 'Failed to add bereavement case: ' . $e->getMessage());
-        }
+        return redirect()->route('bereavement-cases.index')
+                         ->with('success', 'Bereavement case added successfully! All members have been notified.');
     }
 
-   
-     //Show form to edit a case (admin only)
-
+    // Show form to edit a case
     public function edit($id)
     {
         $case = BereavementCase::findOrFail($id);
-        $members = Member::all();
-
-        return view('bereavement-cases.edit', compact('case', 'members'));
+        $users = User::where('role', 'member')->get();
+        return view('bereavement-cases.edit', compact('case', 'users'));
     }
 
-    
-     //Update an existing case (admin only)
-    
+    // Update an existing case
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'member_id'     => 'required|exists:members,id',
+            'user_id'       => 'required|exists:users,id',
             'title'         => 'required|string|max:255',
             'date_of_death' => 'required|date',
             'description'   => 'nullable|string',
-              'remarks'       => 'nullable|string', 
+            'remarks'       => 'nullable|string',
         ]);
 
         $case = BereavementCase::findOrFail($id);
@@ -104,9 +84,7 @@ class BereavementCaseController extends Controller
                          ->with('success', 'Bereavement case updated successfully!');
     }
 
-    /**
-     * Delete a case (admin only)
-     */
+    // Delete a case
     public function destroy($id)
     {
         $case = BereavementCase::findOrFail($id);
@@ -115,18 +93,18 @@ class BereavementCaseController extends Controller
         return redirect()->route('bereavement-cases.index')
                          ->with('success', 'Bereavement case deleted successfully!');
     }
+
+    // Update remarks
     public function updateRemarks(Request $request, $id)
-{
-    $request->validate([
-        'remarks' => 'nullable|string',
-    ]);
+    {
+        $request->validate([
+            'remarks' => 'nullable|string',
+        ]);
 
-    $case = BereavementCase::findOrFail($id);
-    $case->remarks = $request->remarks;
-    $case->save();
+        $case = BereavementCase::findOrFail($id);
+        $case->remarks = $request->remarks;
+        $case->save();
 
-    return redirect()->back()->with('success', 'Remarks updated successfully!');
-}
-
-    
+        return redirect()->back()->with('success', 'Remarks updated successfully!');
+    }
 }

@@ -10,27 +10,26 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-   public function index()
-{
-    $user = Auth::user();
+    public function index()
+    {
+        $user = Auth::user();
 
-    // Latest 5 notifications for all users
-    $notifications = Notification::latest()->take(5)->get();
+        // Latest 5 notifications for all users
+        $notifications = Notification::latest()->take(5)->get();
 
-    if ($user->role === 'admin') {
-        $totalDonations = Donation::count();
-        $totalCases = BereavementCase::count();
+        if ($user->role === 'admin') {
+            $totalDonations = Donation::count();
+            $totalCases = BereavementCase::count();
 
-        // 👇 Fetch the latest 5 bereavement cases with their member
-        $recentCases = BereavementCase::with('member')
-            ->latest()
-            ->take(5)
-            ->get();
+            // Fetch the latest 5 bereavement cases with their user (member)
+            $recentCases = BereavementCase::with('user')
+                ->latest()
+                ->take(5)
+                ->get();
 
-        return view('dashboard', compact('notifications', 'totalDonations', 'totalCases', 'recentCases'));
+            return view('dashboard', compact('notifications', 'totalDonations', 'totalCases', 'recentCases'));
+        }
+
+        return view('dashboard', compact('notifications'));
     }
-
-    return view('dashboard', compact('notifications'));
-}
-
 }

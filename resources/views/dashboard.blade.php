@@ -17,7 +17,7 @@
     <ul class="list-group mb-3">
         @forelse(auth()->user()->notifications as $notification)
             <li class="list-group-item {{ $notification->read_at ? '' : 'bg-light' }}">
-                <strong>{{ $notification->data['member_name'] ?? 'N/A' }}</strong> 
+                <strong>{{ $notification->data['user_name'] ?? 'N/A' }}</strong> 
                 - {{ $notification->data['title'] ?? 'No title' }} <br>
                 Date of Death: {{ $notification->data['date_of_death'] ?? 'N/A' }} <br>
                 Description: {{ $notification->data['description'] ?? 'N/A' }}
@@ -54,7 +54,7 @@
             @foreach($recentCases as $case)
                 <li class="list-group-item">
                     <strong>{{ $case->title ?? 'No title' }}</strong><br>
-                    Member: {{ $case->member->name ?? 'N/A' }} <br>
+                    Member: {{ $case->user->name ?? 'N/A' }} <br>
                     Date of Death: {{ $case->date_of_death?->format('F j, Y') ?? 'N/A' }} <br>
                     Description: {{ $case->description ?? 'N/A' }}
                     <a href="{{ route('bereavement-cases.edit', $case->id) }}" class="btn btn-sm btn-outline-primary float-end">

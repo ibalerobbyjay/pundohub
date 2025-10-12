@@ -1,32 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>Bereavement Case Details</h2>
+<div class="container mt-4">
+    <h2 class="text-primary mb-3">Bereavement Case Details</h2>
 
-@if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-
-<ul class="list-group mb-3">
-    <li class="list-group-item"><strong>Member:</strong> {{ $case->member->name }}</li>
-    <li class="list-group-item"><strong>Date of Death:</strong> {{ $case->date_of_death }}</li>
-    <li class="list-group-item"><strong>Description:</strong> {{ $case->description }}</li>
-</ul>
-
-<!-- Editable Remarks -->
-<form action="{{ route('bereavement-cases.updateRemarks', $case->id) }}" method="POST">
-    @csrf
-    @method('PUT')
-
-    <div class="form-group">
-        <label for="remarks"><strong>Remarks:</strong></label>
-        <textarea name="remarks" id="remarks" class="form-control" rows="4">{{ old('remarks', $case->remarks) }}</textarea>
-        @error('remarks')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
+    <div class="card mb-3">
+        <div class="card-body">
+            <p><strong>Member:</strong> {{ $case->user->name }}</p>
+            <p><strong>Date of Death:</strong> {{ $case->date_of_death->format('F d, Y') }}</p>
+            <p><strong>Description:</strong> {{ $case->description ?? 'N/A' }}</p>
+        </div>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Update Remarks</button>
-    <a href="{{ route('dashboard') }}" class="btn btn-secondary mt-3">Back</a>
-</form>
+    <form action="{{ route('bereavement-cases.updateRemarks', $case->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="mb-3">
+            <label for="remarks" class="form-label"><strong>Remarks</strong></label>
+            <textarea name="remarks" id="remarks" class="form-control" rows="4">{{ old('remarks', $case->remarks) }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update Remarks</button>
+        <a href="{{ route('dashboard') }}" class="btn btn-secondary ms-2">Back to Dashboard</a>
+    </form>
+</div>
 @endsection

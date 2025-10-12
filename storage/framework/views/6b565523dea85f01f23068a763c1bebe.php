@@ -15,7 +15,7 @@
     <ul class="list-group mb-3">
         <?php $__empty_1 = true; $__currentLoopData = auth()->user()->notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <li class="list-group-item <?php echo e($notification->read_at ? '' : 'bg-light'); ?>">
-                <strong><?php echo e($notification->data['member_name'] ?? 'N/A'); ?></strong> 
+                <strong><?php echo e($notification->data['user_name'] ?? 'N/A'); ?></strong> 
                 - <?php echo e($notification->data['title'] ?? 'No title'); ?> <br>
                 Date of Death: <?php echo e($notification->data['date_of_death'] ?? 'N/A'); ?> <br>
                 Description: <?php echo e($notification->data['description'] ?? 'N/A'); ?>
@@ -53,7 +53,7 @@
             <?php $__currentLoopData = $recentCases; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $case): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <li class="list-group-item">
                     <strong><?php echo e($case->title ?? 'No title'); ?></strong><br>
-                    Member: <?php echo e($case->member->name ?? 'N/A'); ?> <br>
+                    Member: <?php echo e($case->user->name ?? 'N/A'); ?> <br>
                     Date of Death: <?php echo e($case->date_of_death?->format('F j, Y') ?? 'N/A'); ?> <br>
                     Description: <?php echo e($case->description ?? 'N/A'); ?>
 

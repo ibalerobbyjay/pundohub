@@ -36,7 +36,7 @@
                 <option value="">None</option>
                 <?php $__currentLoopData = $cases; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $case): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                    <option value="<?php echo e($case->id); ?>">
-    <?php echo e($case->title); ?> (<?php echo e($case->member->name ?? 'Unknown Member'); ?>)
+    <?php echo e($case->title); ?> (<?php echo e($case->user->name ?? 'Unknown Member'); ?>)
 </option>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
