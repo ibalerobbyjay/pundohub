@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class MemberController extends Controller
 {
-    // Show all members
+    // List all members (users with role 'member')
     public function index()
     {
-        $members = Member::all();
+        $members = User::where('role', 'member')->get();
         return view('members.index', compact('members'));
     }
 
@@ -20,45 +21,58 @@ class MemberController extends Controller
         return view('members.create');
     }
 
-    // Store new member
+    // Store new member (as user)
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'contact' => 'nullable|string',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'household'=> 'nullable|string',
+            'contact'  => 'nullable|string',
         ]);
 
-        Member::create($request->all());
+        User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'household'=> $request->household,
+            'contact'  => $request->contact,
+            'role'     => 'member', // identify as member
+        ]);
 
-        return redirect()->route('members.index')->with('success', 'Member added successfully.');
+        return redirect()->route('members.index')
+                         ->with('success', 'Member created successfully and can now log in.');
     }
 
-    // Show member details
-    public function show(Member $member)
+    // Show a single member
+    public function show(User $member)
     {
         return view('members.show', compact('member'));
     }
 
-    // Show edit form
-    public function edit(Member $member)
+    // Edit member
+    public function edit(User $member)
     {
         return view('members.edit', compact('member'));
     }
 
-    // Update member
-    public function update(Request $request, Member $member)
+    // Update member info
+    public function update(Request $request, User $member)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
+            'household' => 'nullable|string',
+            'contact' => 'nullable|string',
         ]);
 
-        $member->update($request->all());
+        $member->update($request->only(['name', 'household', 'contact']));
 
         return redirect()->route('members.index')->with('success', 'Member updated successfully.');
     }
 
     // Delete member
-    public function destroy(Member $member)
+    public function destroy(User $member)
     {
         $member->delete();
         return redirect()->route('members.index')->with('success', 'Member deleted successfully.');

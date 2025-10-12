@@ -1,6 +1,6 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -13,12 +13,12 @@
                 </div>
 
                 <div class="card-body p-4">
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
+                    <?php if(session('success')): ?>
+                        <div class="alert alert-success"><?php echo e(session('success')); ?></div>
+                    <?php endif; ?>
 
-                    <form action="{{ route('members.store') }}" method="POST">
-                        @csrf
+                    <form action="<?php echo e(route('members.store')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Full Name</label>
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end mt-4">
-                            <a href="{{ route('members.index') }}" class="btn btn-outline-secondary me-2">
+                            <a href="<?php echo e(route('members.index')); ?>" class="btn btn-outline-secondary me-2">
                                 <i class="bi bi-arrow-left-circle me-1"></i> Back
                             </a>
                             <button type="submit" class="btn btn-primary">
@@ -67,4 +67,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/members/create.blade.php ENDPATH**/ ?>

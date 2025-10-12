@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable; // ✅ correct import
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Member extends Authenticatable
+class Member extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'household',
-        'contact',
-        'is_verified',
-    ];
+   protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'household',
+    'contact',
+    'role',
+];
 
-    // A Member may belong to a User account
+
     public function user()
     {
         return $this->belongsTo(User::class);
