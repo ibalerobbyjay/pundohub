@@ -13,26 +13,27 @@
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php $__currentLoopData = $donations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $donation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <tr class="text-center">
-                        <td><?php echo e($donation->member->name ?? 'N/A'); ?></td>
-                        <td><?php echo e($donation->bereavementCase->title ?? 'N/A'); ?></td>
-                        <td><?php echo e(number_format($donation->amount, 2)); ?></td>
-                        <td><?php echo e($donation->type); ?></td>
-                        <td>
-                            <a href="<?php echo e(route('donations.edit', $donation->id)); ?>" class="btn btn-sm btn-warning me-1">Edit</a>
-                            <form action="<?php echo e(route('donations.destroy', $donation->id)); ?>" method="POST" class="d-inline">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('DELETE'); ?>
-                                <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this donation?')">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </tbody>
+         <tbody>
+<?php $__currentLoopData = $donations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $donation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+<tr class="text-center">
+    <td><?php echo e($donation->user->name ?? 'N/A'); ?></td>
+    <td><?php echo e($donation->bereavementCase->title ?? 'N/A'); ?></td>
+    <td><?php echo e(number_format($donation->amount, 2)); ?></td>
+    <td><?php echo e($donation->type); ?></td>
+    <td>
+        <a href="<?php echo e(route('donations.edit', $donation->id)); ?>" class="btn btn-sm btn-warning me-1">Edit</a>
+        <form action="<?php echo e(route('donations.destroy', $donation->id)); ?>" method="POST" class="d-inline">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('DELETE'); ?>
+            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this donation?')">Delete</button>
+        </form>
+    </td>
+</tr>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+</tbody>
+
         </table>
-        <a href="<?php echo e(route('donations.create')); ?>" class="btn btn-secondary ms-2">Back to Donations</a>
+        
     </form>
     </div>
 </div>

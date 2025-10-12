@@ -52,7 +52,7 @@ class DonationController extends Controller
             ));
         }
 
-        return redirect()->route('donations.index')
+        return redirect()->route('donations.create')
                          ->with('success', 'Donation recorded successfully!');
     }
 

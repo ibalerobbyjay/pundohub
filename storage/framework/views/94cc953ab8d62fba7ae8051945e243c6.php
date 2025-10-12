@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 <div class="container mt-4">
     <h2 class="mb-4">Add Donation</h2>
@@ -15,10 +13,15 @@
         </div>
 
         <!-- Type -->
-        <div class="mb-3">
-            <label for="type" class="form-label">Donation Type</label>
-            <input type="text" name="type" id="type" class="form-control" required>
-        </div>
+        <!-- Type -->
+<div class="mb-3">
+    <label for="type" class="form-label">Donation Type</label>
+    <select name="type" id="type" class="form-select" required>
+        <option value="">Select type</option>
+        <option value="Firewood">Firewood</option>
+        <option value="Rice">Rice</option>
+    </select>
+</div>
 
         <!-- Amount -->
         <div class="mb-3">
@@ -32,10 +35,9 @@
             <select name="bereavement_case_id" id="bereavement_case_id" class="form-select">
                 <option value="">None</option>
                 <?php $__currentLoopData = $cases; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $case): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <option value="<?php echo e($case->id); ?>">
+                   <option value="<?php echo e($case->id); ?>">
     <?php echo e($case->title); ?> (<?php echo e($case->member->name ?? 'Unknown Member'); ?>)
 </option>
-
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
         </div>
@@ -43,6 +45,5 @@
         <button type="submit" class="btn btn-primary">Save Donation</button>
     </form>
 </div>
-<?php $__env->stopSection(); ?>
-
+<?php $__env->stopSection(); ?> 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/donations/create.blade.php ENDPATH**/ ?>
