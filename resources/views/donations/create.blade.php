@@ -9,9 +9,13 @@
 
         <!-- Donor (auto-filled) -->
         <div class="mb-3">
-            <label class="form-label">Donor</label>
-            <input type="text" class="form-control" 
-                   value="{{ Auth::user()->name }}" readonly>
+            <label for="member_id" class="form-label">Donor Name</label>
+            <select name="member_id" id="member_id" class="form-control" required>
+                <option value="">Select a member</option>
+                @foreach($members as $member)
+                    <option value="{{ $member->id }}">{{ $member->name }}</option>
+                @endforeach
+            </select>
         </div>
 
         <!-- Type -->
