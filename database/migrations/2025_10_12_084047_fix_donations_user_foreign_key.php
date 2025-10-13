@@ -1,36 +1,51 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
-    public function up()
+    public function up(): void
     {
         Schema::table('donations', function (Blueprint $table) {
-            // If the old column name is member_id, rename it to user_id
-            if (Schema::hasColumn('donations', 'user_id')) {
+            // Rename column only if old column exists
+            if (Schema::hasColumn('donations', 'member_id')) {
                 $table->renameColumn('member_id', 'user_id');
             }
-
-            // Drop any old foreign keys just in case
-            try {
-                $table->dropForeign(['member_id']);
-            } catch (\Exception $e) {
-                // ignore if doesn't exist
-            }
-
-            // Add the correct foreign key to users table
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
         });
+
+        // Add foreign key safely
+        $foreignKeyExists = DB::selectOne("
+            SELECT CONSTRAINT_NAME
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = 'donations'
+              AND COLUMN_NAME = 'user_id'
+              AND REFERENCED_TABLE_NAME = 'users'
+        ");
+
+        if (!$foreignKeyExists) {
+            Schema::table('donations', function (Blueprint $table) {
+                $table->foreign('user_id')
+                      ->references('id')
+                      ->on('users')
+                      ->onDelete('cascade');
+            });
+        }
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::table('donations', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if (Schema::hasColumn('donations', 'user_id')) {
+                try {
+                    $table->dropForeign(['user_id']);
+                } catch (\Exception $e) {
+                    // ignore if doesn't exist
+                }
+                $table->renameColumn('user_id', 'member_id');
+            }
         });
     }
 };
