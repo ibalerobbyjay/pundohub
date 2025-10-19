@@ -1,21 +1,22 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="container mt-4">
     <h2 class="mb-4 text-white">Report a Death</h2>
 
     <!-- Success Message -->
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
+            <?php echo e(session('success')); ?>
+
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="card bg-dark text-white border-secondary">
         <div class="card-body">
-            <form action="{{ route('report.death.store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('report.death.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
 
                 <!-- Name of Deceased -->
                 <div class="mb-3">
@@ -51,4 +52,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/death_reports/create.blade.php ENDPATH**/ ?>

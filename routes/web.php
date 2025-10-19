@@ -8,6 +8,9 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DeathReportController;
+use App\Http\Controllers\Admin\DeathReportController as AdminDeathReportController;
+
 
 // Redirect root to dashboard
 Route::get('/', fn() => redirect()->route('dashboard'));
@@ -72,13 +75,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Admin can view all death reports
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/death-reports', [AdminDeathReportController::class, 'index'])->name('admin.death-reports');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/death-reports', [App\Http\Controllers\Admin\DeathReportController::class, 'index'])->name('death-reports.index');
-    Route::post('/death-reports/approve/{id}', [App\Http\Controllers\Admin\DeathReportController::class, 'approve'])->name('death-reports.approve');
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/admin/death-reports', [App\Http\Controllers\Admin\DeathReportController::class, 'index'])->name('death-reports.index');
+    Route::post('/admin/death-reports/approve/{id}', [App\Http\Controllers\Admin\DeathReportController::class, 'approve'])->name('death-reports.approve');
 });
 
 
