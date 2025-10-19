@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PundoHub</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- ✅ Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
@@ -67,7 +65,6 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
         }
 
-        /* Logo circle */
         .logo-img {
             width: 60px;
             height: 60px;
@@ -75,7 +72,6 @@
             object-fit: cover;
         }
 
-        /* Sidebar responsive */
         @media (max-width: 992px) {
             #sidebar {
                 transform: translateX(-100%);
@@ -88,17 +84,58 @@
             }
         }
 
-        /* Toggle button */
         #sidebarToggle {
             position: fixed;
             top: 15px;
             left: 15px;
             z-index: 1100;
         }
+
+        /* ✅ Spinner overlay */
+        #loadingSpinner {
+            display: none;
+            opacity: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* prevents blocking when invisible */
+        }
+
+        #loadingSpinner.active {
+            display: flex;
+            opacity: 1;
+            pointer-events: all; /* only blocks when visible */
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Prevent scroll jump when modal opens */
+        body.modal-open {
+            overflow: hidden !important;
+            padding-right: 0 !important;
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+
+    <!-- ✅ Global Loading Spinner -->
+    <div id="loadingSpinner" class="d-flex">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- ✅ Sidebar -->
     <nav id="sidebar" class="bg-dark">
         <div class="text-center py-4 border-bottom border-secondary">
             <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Logo" class="logo-img mb-2">
@@ -209,7 +246,7 @@
         </ul>
     </nav>
 
-    <!-- Sidebar toggle button (visible only on small screens) -->
+    <!-- Sidebar toggle button -->
     <button id="sidebarToggle" class="btn btn-dark d-lg-none">
         <i class="bi bi-list"></i>
     </button>
@@ -219,12 +256,38 @@
         <?php echo $__env->yieldContent('content'); ?>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- ✅ Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        const spinner = document.getElementById('loadingSpinner');
+
+        function showSpinner() {
+            spinner.classList.add('active');
+        }
+
+        function hideSpinner() {
+            spinner.classList.remove('active');
+        }
+
+        // Sidebar toggle
         document.getElementById('sidebarToggle').addEventListener('click', function () {
             document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // ✅ Spinner on navigation
+        const navLinks = document.querySelectorAll('#sidebar a.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (this.getAttribute('href') === '#' || this.classList.contains('active')) return;
+                showSpinner();
+            });
+        });
+
+        // ✅ Hide spinner after full load (with safety timeout)
+        window.addEventListener('load', () => {
+            hideSpinner();
+            setTimeout(hideSpinner, 3000);
         });
     </script>
 </body>

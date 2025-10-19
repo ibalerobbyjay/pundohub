@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>Edit Profile</h2>
+    <h2 class="mb-4 text-white">Edit Profile</h2>
 
     <!-- Success Message -->
     <div id="successMessage" class="alert alert-success d-none"></div>
@@ -12,26 +12,38 @@
         @method('PATCH')
 
         <div class="mb-3">
-            <label>Name</label>
-            <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+            <label class="form-label text-light">Name</label>
+            <input type="text" name="name" class="form-control bg-dark text-light border-secondary" 
+                   value="{{ $user->name }}" required>
         </div>
 
         <div class="mb-3">
-            <label>Email</label>
-            <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+            <label class="form-label text-light">Email</label>
+            <input type="email" name="email" class="form-control bg-dark text-light border-secondary" 
+                   value="{{ $user->email }}" required>
         </div>
 
         <div class="mb-3">
-            <label>Password (leave blank to keep current)</label>
-            <input type="password" name="password" class="form-control">
+            <label class="form-label text-light">Password (leave blank to keep current)</label>
+            <input type="password" name="password" class="form-control bg-dark text-light border-secondary">
         </div>
 
         <div class="mb-3">
-            <label>Confirm Password</label>
-            <input type="password" name="password_confirmation" class="form-control">
+            <label class="form-label text-light">Confirm Password</label>
+            <input type="password" name="password_confirmation" class="form-control bg-dark text-light border-secondary">
         </div>
 
-        <button class="btn btn-primary">Save</button>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <!-- Cancel Button -->
+            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i> Cancel
+            </a>
+
+            <!-- Save Button -->
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save2 me-1"></i> Save Changes
+            </button>
+        </div>
     </form>
 </div>
 
@@ -50,15 +62,10 @@ document.getElementById('profileForm').addEventListener('submit', async function
         });
 
         if (response.ok) {
-            // Clear form fields
-            form.reset();
-
-            // Show success message
             let msgBox = document.getElementById('successMessage');
             msgBox.textContent = "Profile updated successfully!";
             msgBox.classList.remove("d-none");
 
-            // Hide after 3 seconds
             setTimeout(() => msgBox.classList.add("d-none"), 3000);
         } else {
             alert("Error updating profile.");

@@ -1,38 +1,37 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\DeathReport; // Make sure you have a DeathReport model
+use App\Models\DeathReport;
 use Illuminate\Http\Request;
 
 class DeathReportController extends Controller
 {
-    // Show all death reports to admin
+    // 🕊️ Show all death reports to admin
     public function index()
     {
         $reports = DeathReport::latest()->get();
         return view('admin.death-reports.index', compact('reports'));
     }
 
-    // Optional: approve and convert to bereavement case
+    // ✅ Approve (mark as verified)
     public function approve($id)
     {
         $report = DeathReport::findOrFail($id);
+        $report->is_verified = true;
+        $report->save();
 
-        // Example: convert to BereavementCase
-        \App\Models\BereavementCase::create([
-            'name_of_deceased' => $report->name_of_deceased,
-            'date_of_death' => $report->date_of_death,
-            'notes' => $report->notes,
-        ]);
+        return redirect()->back()->with('success', 'Death report verified successfully.');
+    }
 
-        // Delete or mark report as approved
-        $report->delete();
+    // ❌ Unverify (mark as unverified)
+    public function unverify($id)
+    {
+        $report = DeathReport::findOrFail($id);
+        $report->is_verified = false;
+        $report->save();
 
-        return redirect()->back()->with('success', 'Report approved and added as a bereavement case.');
+        return redirect()->back()->with('success', 'Death report unverified.');
     }
 }
-
