@@ -66,5 +66,21 @@ Route::post('/notifications/mark-all-read', [NotificationController::class, 'mar
          ->name('bereavement-cases.updateRemarks');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/report-death', [DeathReportController::class, 'create'])->name('report.death');
+    Route::post('/report-death', [DeathReportController::class, 'store'])->name('report.death.store');
+});
+
+// Admin can view all death reports
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/death-reports', [AdminDeathReportController::class, 'index'])->name('admin.death-reports');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/death-reports', [App\Http\Controllers\Admin\DeathReportController::class, 'index'])->name('death-reports.index');
+    Route::post('/death-reports/approve/{id}', [App\Http\Controllers\Admin\DeathReportController::class, 'approve'])->name('death-reports.approve');
+});
+
+
 
 });

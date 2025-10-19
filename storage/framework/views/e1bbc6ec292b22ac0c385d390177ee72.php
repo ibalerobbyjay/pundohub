@@ -39,40 +39,33 @@
             background: #495057;
             color: #fff;
         }
+
         /* Main content */
-#content {
-    flex-grow: 1;
-    margin-left: 250px; /* same as sidebar width */
-    padding: 20px;
-    min-height: 100vh;
-    background: url("<?php echo e(asset('images/background.jpg')); ?>") no-repeat center center fixed;
-    background-size: cover;
-    color: #fff; /* ensure text is readable */
-    transition: margin-left 0.3s ease-in-out;
-}
-.card {
-    background-color: #d8d7d7;   /* white */
-    color: #333;                 /* text color */
-    border: none;                /* no border */
-    border-radius: 12px;         /* rounded corners */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* shadow */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    padding: 1rem;               /* inner spacing */
-}
+        #content {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+            background: url("<?php echo e(asset('images/background.jpg')); ?>") no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            transition: margin-left 0.3s ease-in-out;
+        }
 
-.card:hover {
-    transform: translateY(-4px); /* hover lift */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-}
+        .card {
+            background-color: #d8d7d7;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 1rem;
+        }
 
-
-/* When sidebar is hidden on mobile */
-@media (max-width: 992px) {
-    #content {
-        margin-left: 0;
-    }
-}
-
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
 
         /* Logo circle */
         .logo-img {
@@ -82,13 +75,7 @@
             object-fit: cover;
         }
 
-        /* Push content when sidebar is open on desktop */
-        #content {
-            margin-left: 250px;
-            transition: margin-left 0.3s ease-in-out;
-        }
-
-        /* On small screens, hide sidebar by default */
+        /* Sidebar responsive */
         @media (max-width: 992px) {
             #sidebar {
                 transform: translateX(-100%);
@@ -135,6 +122,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link <?php echo e(request()->routeIs('admin.death-reports.*') ? 'active' : ''); ?>"
+                           href="<?php echo e(route('admin.death-reports.index')); ?>">
+                           <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link <?php echo e(request()->routeIs('donations.*') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('donations.index')); ?>">
                            <i class="bi bi-cash-coin me-2"></i> Donations
@@ -160,6 +153,12 @@
                         <a class="nav-link <?php echo e(request()->routeIs('donations.create') ? 'active' : ''); ?>" 
                            href="<?php echo e(route('donations.create')); ?>">
                            <i class="bi bi-heart-fill me-2"></i> Donate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo e(request()->routeIs('report.death') ? 'active' : ''); ?>" 
+                           href="<?php echo e(route('report.death')); ?>">
+                           <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
                         </a>
                     </li>
                     <li class="nav-item">
