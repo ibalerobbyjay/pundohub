@@ -6,6 +6,7 @@
 
     <div class="card mb-3">
         <div class="card-body">
+            <p><strong>Bereavement:</strong> <?php echo e($case->title); ?></p>
             <p><strong>Member:</strong> <?php echo e($case->user->name); ?></p>
             <p><strong>Date of Death:</strong> <?php echo e($case->date_of_death->format('F d, Y')); ?></p>
             <p><strong>Description:</strong> <?php echo e($case->description ?? 'N/A'); ?></p>

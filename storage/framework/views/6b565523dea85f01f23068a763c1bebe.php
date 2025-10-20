@@ -2,6 +2,16 @@
 <h2>Dashboard</h2>
 
 <?php if(auth()->user()->role !== 'admin'): ?>
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Total Donations (You)</h5>
+                <p>₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
+            </div>
+        </div>
+    </div>
+
     <h4>Recent Notifications</h4>
 
     
@@ -28,13 +38,18 @@
     </ul>
 <?php endif; ?>
 
-
 <?php if(auth()->user()->role === 'admin'): ?>
 <div class="row mt-4">
     <div class="col-md-4">
         <div class="card p-3">
-            <h5>Total Donations</h5>
-            <p><?php echo e($totalDonations); ?></p>
+            <h5>Total Donations (All Members)</h5>
+            <p>₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Total Number of Donations</h5>
+            <p><?php echo e($totalDonationCount); ?></p>
         </div>
     </div>
     <div class="col-md-4">

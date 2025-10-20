@@ -9,54 +9,32 @@
     <?php endif; ?>
 
     <?php if($notifications->isEmpty()): ?>
-        <div class="card">
-            <div class="card-body text-center text-muted">
-                No notifications found.
-            </div>
+        <div class="text-center text-muted py-5">
+            No notifications found.
         </div>
     <?php else: ?>
-        <div class="row">
+        <ul class="list-group">
             <?php $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="col-md-6 mb-4">
-                    <div class="card <?php if(is_null($notification->read_at)): ?> border-primary <?php endif; ?>">
-                        <div class="card-body d-flex justify-content-between align-items-start">
-                            
-                            <div>
-                                <p class="mb-1 <?php echo e(is_null($notification->read_at) ? 'fw-bold' : ''); ?>">
-                                    <?php echo e($notification->data['message'] ?? 'No message'); ?>
-
-                                </p>
-                                <small class="text-muted">
-                                    <?php echo e($notification->created_at->diffForHumans()); ?>
-
-                                </small>
-                            </div>
-
-                            <div class="ms-3 text-nowrap">
-                                
-                                <?php if(is_null($notification->read_at)): ?>
-                                    <form action="<?php echo e(route('notifications.read', $notification->id)); ?>" method="POST" class="d-inline">
-                                        <?php echo csrf_field(); ?>
-                                        <button type="submit" class="btn btn-sm btn-outline-success mb-1">
-                                            ✓
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
-
-                                
-                                <form action="<?php echo e(route('notifications.destroy', $notification->id)); ?>" method="POST" class="d-inline">
-                                    <?php echo csrf_field(); ?>
-                                    <?php echo method_field('DELETE'); ?>
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                <li class="list-group-item d-flex justify-content-between align-items-start 
+                           <?php echo e(is_null($notification->read_at) ? 'list-group-item-primary fw-bold' : ''); ?>">
+                    
+                    <div>
+                        <?php echo e($notification->data['message'] ?? 'No message'); ?><br>
+                        <small class="text-muted"><?php echo e($notification->created_at->diffForHumans()); ?></small>
                     </div>
-                </div>
+
+                    <div class="ms-3 text-nowrap">
+                        
+                        <?php if(is_null($notification->read_at)): ?>
+                            <form action="<?php echo e(route('notifications.read', $notification->id)); ?>" method="POST" class="d-inline">
+                                <?php echo csrf_field(); ?>
+                                <button type="submit" class="btn btn-sm btn-success mb-1">✓</button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                </li>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </div>
+        </ul>
     <?php endif; ?>
 </div>
 <?php $__env->stopSection(); ?>

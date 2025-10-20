@@ -4,6 +4,16 @@
 <h2>Dashboard</h2>
 
 @if(auth()->user()->role !== 'admin')
+    {{-- User total donations --}}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Total Donations (You)</h5>
+                <p>₱ {{ number_format($totalDonations, 2) }}</p>
+            </div>
+        </div>
+    </div>
+
     <h4>Recent Notifications</h4>
 
     {{-- Mark all as read button --}}
@@ -29,13 +39,18 @@
     </ul>
 @endif
 
-
 @if(auth()->user()->role === 'admin')
 <div class="row mt-4">
     <div class="col-md-4">
         <div class="card p-3">
-            <h5>Total Donations</h5>
-            <p>{{ $totalDonations }}</p>
+            <h5>Total Donations (All Members)</h5>
+            <p>₱ {{ number_format($totalDonations, 2) }}</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Total Number of Donations</h5>
+            <p>{{ $totalDonationCount }}</p>
         </div>
     </div>
     <div class="col-md-4">
@@ -46,7 +61,7 @@
     </div>
 </div>
 
-{{-- ✅ Recent Bereavement Cases --}}
+{{-- Recent Bereavement Cases --}}
 <div class="mt-4">
     <h4>Recent Bereavement Cases</h4>
     @if(isset($recentCases) && $recentCases->count() > 0)

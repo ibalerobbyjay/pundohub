@@ -5,11 +5,9 @@
     <h2 class="mb-4 text-white">Add New Member</h2>
 
     <!-- Success Message -->
-    @if(session('success'))
-        <div id="successMessage" class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    <div id="successMessage" class="alert alert-success d-none">
+        Member added successfully!
+    </div>
 
     <form id="memberForm" action="{{ route('members.store') }}" method="POST">
         @csrf
@@ -41,14 +39,18 @@
 
         <div class="mb-3">
             <label class="form-label text-light">Household</label>
-            <input type="text" name="household" class="form-control bg-dark text-light border-secondary" 
-                   placeholder="Enter household (optional)">
+            <select name="household" class="form-select bg-dark text-light border-secondary">
+                <option value="" selected disabled>Select Purok</option>
+                @for ($i = 1; $i <= 7; $i++)
+                    <option value="Purok {{ $i }}">Purok {{ $i }}</option>
+                @endfor
+            </select>
         </div>
 
         <div class="mb-3">
             <label class="form-label text-light">Contact Number</label>
-            <input type="text" name="contact" class="form-control bg-dark text-light border-secondary" 
-                   placeholder="Enter contact number">
+            <input type="text" name="contact" id="contact" class="form-control bg-dark text-light border-secondary" 
+                   placeholder="9XXXXXXXXX" maxlength="11" pattern="9\d{9}" title="Enter 11-digit Philippine number starting with 9">
         </div>
 
         <div class="d-flex justify-content-end gap-2 mt-4">
@@ -70,6 +72,12 @@ document.getElementById('memberForm').addEventListener('submit', async function(
     let form = this;
     let formData = new FormData(form);
 
+    // Automatically prepend +63 to the contact number
+    let contactInput = document.getElementById('contact');
+    if (contactInput.value) {
+        formData.set('contact', '+63' + contactInput.value);
+    }
+
     try {
         let response = await fetch(form.action, {
             method: "POST",
@@ -78,11 +86,14 @@ document.getElementById('memberForm').addEventListener('submit', async function(
         });
 
         if (response.ok) {
+            // Show success message
             let msgBox = document.getElementById('successMessage');
-            msgBox.textContent = "Member added successfully!";
-            msgBox.classList.remove("d-none");
+            msgBox.classList.remove('d-none');
 
-            setTimeout(() => msgBox.classList.add("d-none"), 3000);
+            // Hide after 3 seconds
+            setTimeout(() => msgBox.classList.add('d-none'), 3000);
+
+            // Clear the form
             form.reset();
         } else {
             alert("Error adding member.");

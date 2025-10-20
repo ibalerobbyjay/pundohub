@@ -10,120 +10,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
-        body {
-            overflow-x: hidden;
-        }
-
-        /* Sidebar styling */
-        #sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: #343a40;
-            color: white;
-            transition: transform 0.3s ease-in-out;
-            z-index: 1050;
-        }
-
-        #sidebar .nav-link {
-            color: #adb5bd;
-            font-weight: 500;
-        }
-
-        #sidebar .nav-link:hover,
-        #sidebar .nav-link.active {
-            background: #495057;
-            color: #fff;
-        }
-
-        /* Main content */
-        #content {
-            flex-grow: 1;
-            margin-left: 250px;
-            padding: 20px;
-            min-height: 100vh;
-            background: url("{{ asset('images/background.jpg') }}") no-repeat center center fixed;
-            background-size: cover;
-            color: #fff;
-            transition: margin-left 0.3s ease-in-out;
-        }
-
-        .card {
-            background-color: #d8d7d7;
-            color: #333;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            padding: 1rem;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .logo-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        @media (max-width: 992px) {
-            #sidebar {
-                transform: translateX(-100%);
-            }
-            #sidebar.show {
-                transform: translateX(0);
-            }
-            #content {
-                margin-left: 0;
-            }
-        }
-
-        #sidebarToggle {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1100;
-        }
-
-        /* ✅ Spinner overlay */
-        #loadingSpinner {
-            display: none;
-            opacity: 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.3s ease;
-            pointer-events: none; /* prevents blocking when invisible */
-        }
-
-        #loadingSpinner.active {
-            display: flex;
-            opacity: 1;
-            pointer-events: all; /* only blocks when visible */
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-
-        /* Prevent scroll jump when modal opens */
-        body.modal-open {
-            overflow: hidden !important;
-            padding-right: 0 !important;
-        }
+        body { overflow-x: hidden; }
+        #sidebar { width: 250px; height: 100vh; position: fixed; top: 0; left: 0; background: #343a40; color: white; transition: transform 0.3s ease-in-out; z-index: 1050; }
+        #sidebar .nav-link { color: #adb5bd; font-weight: 500; }
+        #sidebar .nav-link:hover, #sidebar .nav-link.active { background: #495057; color: #fff; }
+        #content { flex-grow: 1; margin-left: 250px; padding: 20px; min-height: 100vh; background: url("{{ asset('images/background.jpg') }}") no-repeat center center fixed; background-size: cover; color: #fff; transition: margin-left 0.3s ease-in-out; }
+        .card { background-color: #d8d7d7; color: #333; border: none; border-radius: 12px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); transition: transform 0.2s ease, box-shadow 0.2s ease; padding: 1rem; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); }
+        .logo-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        @media (max-width: 992px) { #sidebar { transform: translateX(-100%); } #sidebar.show { transform: translateX(0); } #content { margin-left: 0; } }
+        #sidebarToggle { position: fixed; top: 15px; left: 15px; z-index: 1100; }
+        #loadingSpinner { display: none; opacity: 0; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 2000; justify-content: center; align-items: center; transition: opacity 0.3s ease; pointer-events: none; }
+        #loadingSpinner.active { display: flex; opacity: 1; pointer-events: all; }
+        .spinner-border { width: 3rem; height: 3rem; }
+        body.modal-open { overflow: hidden !important; padding-right: 0 !important; }
     </style>
 </head>
 <body>
@@ -145,66 +45,57 @@
         <ul class="nav flex-column mt-3 px-2">
             @auth
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                       href="{{ route('dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                         <i class="bi bi-speedometer2 me-2"></i> Dashboard
                     </a>
                 </li>
 
                 @if(auth()->user()->role === 'admin')
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}" 
-                           href="{{ route('bereavement-cases.index') }}">
-                           <i class="bi bi-people me-2"></i> Bereavement Cases
+                        <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}" href="{{ route('bereavement-cases.index') }}">
+                            <i class="bi bi-people me-2"></i> Bereavement Cases
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.death-reports.*') ? 'active' : '' }}"
-                           href="{{ route('admin.death-reports.index') }}">
-                           <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
+                        <a class="nav-link {{ request()->routeIs('admin.death-reports.*') ? 'active' : '' }}" href="{{ route('admin.death-reports.index') }}">
+                            <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('donations.*') ? 'active' : '' }}" 
-                           href="{{ route('donations.index') }}">
-                           <i class="bi bi-cash-coin me-2"></i> Donations
+                        <a class="nav-link {{ request()->routeIs('donations.*') ? 'active' : '' }}" href="{{ route('donations.index') }}">
+                            <i class="bi bi-cash-coin me-2"></i> Donations
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" 
-                           href="{{ route('notifications.index') }}">
-                           <i class="bi bi-bell me-2"></i> Notifications
-                           @if(Auth::user()->unreadNotifications->count() > 0)
-                               <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
-                           @endif
+                        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
+                            <i class="bi bi-bell me-2"></i> Notifications
+                            @if(Auth::user()->unreadNotifications->count() > 0)
+                                <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+                            @endif
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}" 
-                           href="{{ route('members.index') }}">
-                           <i class="bi bi-person-lines-fill me-2"></i> Members
+                        <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}" href="{{ route('members.index') }}">
+                            <i class="bi bi-person-lines-fill me-2"></i> Members
                         </a>
                     </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}" 
-                           href="{{ route('donations.create') }}">
-                           <i class="bi bi-heart-fill me-2"></i> Donate
+                        <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}" href="{{ route('donations.create') }}">
+                            <i class="bi bi-heart-fill me-2"></i> Donate
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}" 
-                           href="{{ route('report.death') }}">
-                           <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
+                        <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}" href="{{ route('report.death') }}">
+                            <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" 
-                           href="{{ route('notifications.index') }}">
-                           <i class="bi bi-bell me-2"></i> My Notifications
-                           @if(Auth::user()->unreadNotifications->count() > 0)
-                               <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
-                           @endif
+                        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
+                            <i class="bi bi-bell me-2"></i> My Notifications
+                            @if(Auth::user()->unreadNotifications->count() > 0)
+                                <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+                            @endif
                         </a>
                     </li>
                 @endif
@@ -216,9 +107,8 @@
         <ul class="nav flex-column px-2 mb-3">
             @auth
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
-                       href="{{ route('profile.edit') }}">
-                       <i class="bi bi-person-circle me-2"></i> Edit Profile
+                    <a class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}" href="{{ route('profile.edit') }}">
+                        <i class="bi bi-person-circle me-2"></i> Edit Profile
                     </a>
                 </li>
                 <li class="nav-item">
@@ -227,7 +117,8 @@
                     </span>
                 </li>
                 <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="POST">
+                    <!-- Logout button triggers confirmation modal -->
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-link nav-link text-start">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout
@@ -236,9 +127,8 @@
                 </li>
             @else
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" 
-                       href="{{ route('login') }}">
-                       <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
                     </a>
                 </li>
             @endauth
@@ -255,26 +145,38 @@
         @yield('content')
     </div>
 
+    <!-- ✅ Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Are you sure you want to log out?</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button id="confirmLogoutBtn" type="button" class="btn btn-danger">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ✅ Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         const spinner = document.getElementById('loadingSpinner');
 
-        function showSpinner() {
-            spinner.classList.add('active');
-        }
-
-        function hideSpinner() {
-            spinner.classList.remove('active');
-        }
+        function showSpinner() { spinner.classList.add('active'); }
+        function hideSpinner() { spinner.classList.remove('active'); }
 
         // Sidebar toggle
         document.getElementById('sidebarToggle').addEventListener('click', function () {
             document.getElementById('sidebar').classList.toggle('show');
         });
 
-        // ✅ Spinner on navigation
+        // Spinner on navigation
         const navLinks = document.querySelectorAll('#sidebar a.nav-link');
         navLinks.forEach(link => {
             link.addEventListener('click', function (e) {
@@ -283,11 +185,32 @@
             });
         });
 
-        // ✅ Hide spinner after full load (with safety timeout)
+        // Hide spinner after full load
         window.addEventListener('load', () => {
             hideSpinner();
             setTimeout(hideSpinner, 3000);
         });
+
+        // ✅ Logout Confirmation
+        const logoutForm = document.getElementById('logoutForm');
+        const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+
+        if (logoutForm && confirmLogoutBtn) {
+            logoutForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // prevent immediate logout
+                const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
+                logoutModal.show();
+
+                confirmLogoutBtn.addEventListener('click', function() {
+                    logoutForm.submit();
+                }, { once: true });
+            });
+        }
+
+        // ✅ Optional: Show "Login Successful" alert
+        @if(session('success') && request()->routeIs('dashboard'))
+            alert("{{ session('success') }}");
+        @endif
     </script>
 </body>
 </html>

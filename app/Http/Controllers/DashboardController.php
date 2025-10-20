@@ -14,22 +14,40 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Latest 5 notifications for all users
-        $notifications = Notification::latest()->take(5)->get();
-
         if ($user->role === 'admin') {
-            $totalDonations = Donation::count();
+            // Admin notifications: latest 5
+            $notifications = Notification::latest()->take(5)->get();
+
+            // Total donated amount
+            $totalDonations = Donation::sum('amount');
+
+            // Total number of donation records
+            $totalDonationCount = Donation::count();
+
+            // Total bereavement cases
             $totalCases = BereavementCase::count();
 
-            // Fetch the latest 5 bereavement cases with their user (member)
+            // Latest 5 bereavement cases
             $recentCases = BereavementCase::with('user')
                 ->latest()
                 ->take(5)
                 ->get();
 
-            return view('dashboard', compact('notifications', 'totalDonations', 'totalCases', 'recentCases'));
-        }
+            return view('dashboard', compact(
+                'notifications',
+                'totalDonations',
+                'totalDonationCount',
+                'totalCases',
+                'recentCases'
+            ));
+        } else {
+            // Regular user: their own notifications
+            $notifications = $user->notifications()->latest()->take(5)->get();
 
-        return view('dashboard', compact('notifications'));
+            // Total donations by this user
+            $totalDonations = Donation::where('user_id', $user->id)->sum('amount');
+
+            return view('dashboard', compact('notifications', 'totalDonations'));
+        }
     }
 }

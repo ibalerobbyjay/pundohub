@@ -6,6 +6,7 @@
 
     <div class="card mb-3">
         <div class="card-body">
+            <p><strong>Bereavement:</strong> {{ $case->title }}</p>
             <p><strong>Member:</strong> {{ $case->user->name }}</p>
             <p><strong>Date of Death:</strong> {{ $case->date_of_death->format('F d, Y') }}</p>
             <p><strong>Description:</strong> {{ $case->description ?? 'N/A' }}</p>
