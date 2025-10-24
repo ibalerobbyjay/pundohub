@@ -105,35 +105,42 @@
         <hr class="bg-secondary">
 
         <ul class="nav flex-column px-2 mb-3">
-            <?php if(auth()->guard()->check()): ?>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('profile.edit') ? 'active' : ''); ?>" href="<?php echo e(route('profile.edit')); ?>">
-                        <i class="bi bi-person-circle me-2"></i> Edit Profile
+    <?php if(auth()->guard()->check()): ?>
+        <li class="nav-item dropdown text-center">
+            <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" 
+               href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-2"></i>
+                <?php echo e(auth()->user()->name); ?>
+
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2" 
+                aria-labelledby="userDropdown">
+                <li>
+                    <a class="dropdown-item <?php echo e(request()->routeIs('profile.edit') ? 'active' : ''); ?>" 
+                       href="<?php echo e(route('profile.edit')); ?>">
+                        <i class="bi bi-pencil-square me-2"></i> Edit Profile
                     </a>
                 </li>
-                <li class="nav-item">
-                    <span class="nav-link text-light">
-                        <i class="bi bi-person-badge me-2"></i> Hello, <?php echo e(auth()->user()->name); ?>
-
-                    </span>
-                </li>
-                <li class="nav-item">
-                    <!-- Logout button triggers confirmation modal -->
+                <li><hr class="dropdown-divider"></li>
+                <li>
                     <form id="logoutForm" action="<?php echo e(route('logout')); ?>" method="POST">
                         <?php echo csrf_field(); ?>
-                        <button type="submit" class="btn btn-link nav-link text-start">
+                        <button type="submit" class="dropdown-item text-danger">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout
                         </button>
                     </form>
                 </li>
-            <?php else: ?>
-                <li class="nav-item">
-                    <a class="nav-link <?php echo e(request()->routeIs('login') ? 'active' : ''); ?>" href="<?php echo e(route('login')); ?>">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                    </a>
-                </li>
-            <?php endif; ?>
-        </ul>
+            </ul>
+        </li>
+    <?php else: ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('login') ? 'active' : ''); ?>" href="<?php echo e(route('login')); ?>">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+            </a>
+        </li>
+    <?php endif; ?>
+</ul>
+
     </nav>
 
     <!-- Sidebar toggle button -->

@@ -105,34 +105,41 @@
         <hr class="bg-secondary">
 
         <ul class="nav flex-column px-2 mb-3">
-            @auth
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('profile.edit') ? 'active' : '' }}" href="{{ route('profile.edit') }}">
-                        <i class="bi bi-person-circle me-2"></i> Edit Profile
+    @auth
+        <li class="nav-item dropdown text-center">
+            <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" 
+               href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-2"></i>
+                {{ auth()->user()->name }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2" 
+                aria-labelledby="userDropdown">
+                <li>
+                    <a class="dropdown-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
+                       href="{{ route('profile.edit') }}">
+                        <i class="bi bi-pencil-square me-2"></i> Edit Profile
                     </a>
                 </li>
-                <li class="nav-item">
-                    <span class="nav-link text-light">
-                        <i class="bi bi-person-badge me-2"></i> Hello, {{ auth()->user()->name }}
-                    </span>
-                </li>
-                <li class="nav-item">
-                    <!-- Logout button triggers confirmation modal -->
+                <li><hr class="dropdown-divider"></li>
+                <li>
                     <form id="logoutForm" action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-link nav-link text-start">
+                        <button type="submit" class="dropdown-item text-danger">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout
                         </button>
                     </form>
                 </li>
-            @else
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                    </a>
-                </li>
-            @endauth
-        </ul>
+            </ul>
+        </li>
+    @else
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+            </a>
+        </li>
+    @endauth
+</ul>
+
     </nav>
 
     <!-- Sidebar toggle button -->

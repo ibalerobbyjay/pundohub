@@ -10,6 +10,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeathReportController;
 use App\Http\Controllers\Admin\DeathReportController as AdminDeathReportController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 
 // Redirect root to dashboard
 Route::get('/', fn() => redirect()->route('dashboard'));
@@ -83,5 +85,25 @@ Route::middleware('auth')->group(function () {
         Route::post('/death-reports/approve/{id}', [AdminDeathReportController::class, 'approve'])->name('death-reports.approve');
         Route::post('/death-reports/unverify/{id}', [AdminDeathReportController::class, 'unverify'])->name('death-reports.unverify');
     });
+
+    // =============================
+// 🔑 Password Reset Routes
+// =============================
+
+// Show "Forgot Password" form
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('password.request');
+
+// Send password reset link
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
+
+// Show "Reset Password" form (from email link)
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
+
+// Handle new password submission
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
 
 });
