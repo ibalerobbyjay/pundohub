@@ -14,6 +14,7 @@ class Donation extends Model
         'bereavement_case_id',
         'amount',
         'type',
+        'proof',
     ];
 
     public function user()

@@ -105,41 +105,40 @@
         <hr class="bg-secondary">
 
         <ul class="nav flex-column px-2 mb-3">
-    @auth
-        <li class="nav-item dropdown text-center">
-            <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" 
-               href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle me-2"></i>
-                {{ auth()->user()->name }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2" 
-                aria-labelledby="userDropdown">
-                <li>
-                    <a class="dropdown-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
-                       href="{{ route('profile.edit') }}">
-                        <i class="bi bi-pencil-square me-2"></i> Edit Profile
+            @auth
+                <li class="nav-item dropdown text-center">
+                    <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" 
+                       href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-2"></i>
+                        {{ auth()->user()->name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2" 
+                        aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
+                               href="{{ route('profile.edit') }}">
+                                <i class="bi bi-pencil-square me-2"></i> Edit Profile
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form id="logoutForm" action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
                     </a>
                 </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <form id="logoutForm" action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="dropdown-item text-danger">
-                            <i class="bi bi-box-arrow-right me-2"></i> Logout
-                        </button>
-                    </form>
-                </li>
-            </ul>
-        </li>
-    @else
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
-                <i class="bi bi-box-arrow-in-right me-2"></i> Login
-            </a>
-        </li>
-    @endauth
-</ul>
-
+            @endauth
+        </ul>
     </nav>
 
     <!-- Sidebar toggle button -->
@@ -192,11 +191,7 @@
             });
         });
 
-        // Hide spinner after full load
-        window.addEventListener('load', () => {
-            hideSpinner();
-            setTimeout(hideSpinner, 3000);
-        });
+        window.addEventListener('load', () => hideSpinner());
 
         // ✅ Logout Confirmation
         const logoutForm = document.getElementById('logoutForm');
@@ -204,17 +199,27 @@
 
         if (logoutForm && confirmLogoutBtn) {
             logoutForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // prevent immediate logout
+                e.preventDefault();
                 const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
                 logoutModal.show();
 
                 confirmLogoutBtn.addEventListener('click', function() {
-                    logoutForm.submit();
+                    // Show loading state
+                    confirmLogoutBtn.disabled = true;
+                    confirmLogoutBtn.innerHTML = `
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Logging out...
+                    `;
+                    showSpinner();
+
+                    // Delay for smooth UX then submit
+                    setTimeout(() => {
+                        logoutForm.submit();
+                    }, 1000);
                 }, { once: true });
             });
         }
 
-        // ✅ Optional: Show "Login Successful" alert
         @if(session('success') && request()->routeIs('dashboard'))
             alert("{{ session('success') }}");
         @endif

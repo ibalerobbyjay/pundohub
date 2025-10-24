@@ -5,7 +5,7 @@
     <div class="card p-4 shadow-lg rounded-4">
         <h2 class="mb-4 text-gray-800">Death Reports</h2>
 
-        <!-- Success Alert -->
+        <!-- ✅ Success Alert -->
         <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?php echo e(session('success')); ?>
@@ -32,55 +32,29 @@
                             <td><?php echo e($report->name_of_deceased); ?></td>
                             <td><?php echo e(\Carbon\Carbon::parse($report->date_of_death)->format('M d, Y')); ?></td>
                             <td><?php echo e($report->notes ?? '-'); ?></td>
-                            <td>
+                            <td class="text-center">
                                 <?php if($report->death_certificate): ?>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#certificateModal<?php echo e($report->id); ?>">
-                                        View
-                                    </button>
+                                    <?php
+                                        $fileExt = strtolower(pathinfo($report->death_certificate, PATHINFO_EXTENSION));
+                                        $fileUrl = asset('storage/' . $report->death_certificate);
+                                    ?>
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="certificateModal<?php echo e($report->id); ?>" tabindex="-1" aria-labelledby="certificateModalLabel<?php echo e($report->id); ?>" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-xl">
-
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="certificateModalLabel<?php echo e($report->id); ?>">Death Certificate</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                               <div class="modal-body text-center">
-    <?php
-        $fileExt = pathinfo($report->death_certificate, PATHINFO_EXTENSION);
-    ?>
-
-    <?php if(in_array(strtolower($fileExt), ['jpg','jpeg','png'])): ?>
-        <!-- Spinner while image loads -->
-        <div class="d-flex justify-content-center align-items-center" id="loadingSpinner<?php echo e($report->id); ?>">
-            <div class="spinner-border text-secondary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <!-- Image (hidden until loaded) -->
-        <img src="<?php echo e(asset('storage/' . $report->death_certificate)); ?>"
-             alt="Certificate"
-             class="img-fluid rounded"
-             style="display:none;"
-             onload="this.style.display='block'; document.getElementById('loadingSpinner<?php echo e($report->id); ?>').style.display='none';">
-
-    <?php elseif(strtolower($fileExt) === 'pdf'): ?>
-        <iframe src="<?php echo e(asset('storage/' . $report->death_certificate)); ?>" width="100%" height="600px"></iframe>
-    <?php else: ?>
-        <p class="text-muted">Unsupported file format.</p>
-    <?php endif; ?>
-</div>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <?php if(in_array($fileExt, ['jpg', 'jpeg', 'png'])): ?>
+                                        <a href="<?php echo e($fileUrl); ?>" target="_blank">
+                                            <img src="<?php echo e($fileUrl); ?>" alt="Certificate" class="img-thumbnail" width="70">
+                                        </a>
+                                    <?php elseif($fileExt === 'pdf'): ?>
+                                        <a href="<?php echo e($fileUrl); ?>" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            View PDF
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted">Unsupported File</span>
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     <span class="text-muted">No File</span>
                                 <?php endif; ?>
                             </td>
+
                             <td>
                                 <?php if($report->is_verified): ?>
                                     <span class="badge bg-success">Verified</span>
@@ -88,15 +62,15 @@
                                     <span class="badge bg-secondary">Pending</span>
                                 <?php endif; ?>
                             </td>
+
                             <td class="text-center">
                                 <?php if(!$report->is_verified): ?>
-                                   <form action="<?php echo e(route('admin.death-reports.approve', $report->id)); ?>" method="POST" class="d-inline">
-    <?php echo csrf_field(); ?>
-    <button type="submit" class="btn btn-success btn-sm">
-        <i class="bi bi-check-circle me-1"></i> Verify
-    </button>
-</form>
-
+                                    <form action="<?php echo e(route('admin.death-reports.approve', $report->id)); ?>" method="POST" class="d-inline">
+                                        <?php echo csrf_field(); ?>
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-check-circle me-1"></i> Verify
+                                        </button>
+                                    </form>
                                 <?php else: ?>
                                     <form action="<?php echo e(route('admin.death-reports.unverify', $report->id)); ?>" method="POST" class="d-inline">
                                         <?php echo csrf_field(); ?>

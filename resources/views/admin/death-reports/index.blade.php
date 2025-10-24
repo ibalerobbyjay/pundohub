@@ -5,7 +5,7 @@
     <div class="card p-4 shadow-lg rounded-4">
         <h2 class="mb-4 text-gray-800">Death Reports</h2>
 
-        <!-- Success Alert -->
+        <!-- ✅ Success Alert -->
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -31,55 +31,29 @@
                             <td>{{ $report->name_of_deceased }}</td>
                             <td>{{ \Carbon\Carbon::parse($report->date_of_death)->format('M d, Y') }}</td>
                             <td>{{ $report->notes ?? '-' }}</td>
-                            <td>
+                            <td class="text-center">
                                 @if ($report->death_certificate)
-                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#certificateModal{{ $report->id }}">
-                                        View
-                                    </button>
+                                    @php
+                                        $fileExt = strtolower(pathinfo($report->death_certificate, PATHINFO_EXTENSION));
+                                        $fileUrl = asset('storage/' . $report->death_certificate);
+                                    @endphp
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="certificateModal{{ $report->id }}" tabindex="-1" aria-labelledby="certificateModalLabel{{ $report->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-xl">
-
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="certificateModalLabel{{ $report->id }}">Death Certificate</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                               <div class="modal-body text-center">
-    @php
-        $fileExt = pathinfo($report->death_certificate, PATHINFO_EXTENSION);
-    @endphp
-
-    @if (in_array(strtolower($fileExt), ['jpg','jpeg','png']))
-        <!-- Spinner while image loads -->
-        <div class="d-flex justify-content-center align-items-center" id="loadingSpinner{{ $report->id }}">
-            <div class="spinner-border text-secondary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <!-- Image (hidden until loaded) -->
-        <img src="{{ asset('storage/' . $report->death_certificate) }}"
-             alt="Certificate"
-             class="img-fluid rounded"
-             style="display:none;"
-             onload="this.style.display='block'; document.getElementById('loadingSpinner{{ $report->id }}').style.display='none';">
-
-    @elseif (strtolower($fileExt) === 'pdf')
-        <iframe src="{{ asset('storage/' . $report->death_certificate) }}" width="100%" height="600px"></iframe>
-    @else
-        <p class="text-muted">Unsupported file format.</p>
-    @endif
-</div>
-
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @if (in_array($fileExt, ['jpg', 'jpeg', 'png']))
+                                        <a href="{{ $fileUrl }}" target="_blank">
+                                            <img src="{{ $fileUrl }}" alt="Certificate" class="img-thumbnail" width="70">
+                                        </a>
+                                    @elseif ($fileExt === 'pdf')
+                                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                            View PDF
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Unsupported File</span>
+                                    @endif
                                 @else
                                     <span class="text-muted">No File</span>
                                 @endif
                             </td>
+
                             <td>
                                 @if ($report->is_verified)
                                     <span class="badge bg-success">Verified</span>
@@ -87,15 +61,15 @@
                                     <span class="badge bg-secondary">Pending</span>
                                 @endif
                             </td>
+
                             <td class="text-center">
                                 @if (!$report->is_verified)
-                                   <form action="{{ route('admin.death-reports.approve', $report->id) }}" method="POST" class="d-inline">
-    @csrf
-    <button type="submit" class="btn btn-success btn-sm">
-        <i class="bi bi-check-circle me-1"></i> Verify
-    </button>
-</form>
-
+                                    <form action="{{ route('admin.death-reports.approve', $report->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-check-circle me-1"></i> Verify
+                                        </button>
+                                    </form>
                                 @else
                                     <form action="{{ route('admin.death-reports.unverify', $report->id) }}" method="POST" class="d-inline">
                                         @csrf

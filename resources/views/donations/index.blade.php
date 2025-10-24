@@ -12,31 +12,46 @@
                     <th scope="col">Bereavement Case</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Type</th>
+                    <th scope="col">Proof</th> {{-- ✅ new column --}}
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
-         <tbody>
-@foreach($donations as $donation)
-<tr class="text-center">
-    <td>{{ $donation->user->name ?? 'N/A' }}</td>
-    <td>{{ $donation->bereavementCase->title ?? 'N/A' }}</td>
-    <td>{{ number_format($donation->amount, 2) }}</td>
-    <td>{{ $donation->type }}</td>
-    <td>
-        <a href="{{ route('donations.edit', $donation->id) }}" class="btn btn-sm btn-warning me-1">Edit</a>
-        <form action="{{ route('donations.destroy', $donation->id) }}" method="POST" class="d-inline">
-            @csrf
-            @method('DELETE')
-            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this donation?')">Delete</button>
-        </form>
-    </td>
-</tr>
-@endforeach
-</tbody>
+            <tbody>
+                @foreach($donations as $donation)
+                <tr class="text-center">
+                    <td>{{ $donation->user->name ?? 'N/A' }}</td>
+                    <td>{{ $donation->bereavementCase->title ?? 'N/A' }}</td>
+                    <td>{{ $donation->type === 'Money' ? number_format($donation->amount, 2) : '—' }}</td>
+                    <td>{{ $donation->type }}</td>
 
+                    {{-- ✅ Proof column --}}
+                    <td>
+                        @if($donation->proof)
+                            <a href="{{ asset('storage/' . $donation->proof) }}" target="_blank">
+                                <img src="{{ asset('storage/' . $donation->proof) }}" 
+                                     alt="Proof" 
+                                     class="img-thumbnail" 
+                                     style="width: 60px; height: 60px; object-fit: cover;">
+                            </a>
+                        @else
+                            <span class="text-muted">No proof</span>
+                        @endif
+                    </td>
+
+                    {{-- ✅ Delete button only --}}
+                    <td>
+                        <form action="{{ route('donations.destroy', $donation->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this donation?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
         </table>
-        
-    </form>
     </div>
 </div>
 @endsection

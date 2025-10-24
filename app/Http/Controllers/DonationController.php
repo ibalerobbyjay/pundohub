@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\BereavementCase;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Notifications\DonationReceived;
 
 class DonationController extends Controller
@@ -25,25 +26,31 @@ class DonationController extends Controller
         return view('donations.create', compact('cases'));
     }
 
-    // Store new donation and notify admins
+    // ✅ Store new donation with proof upload and admin notification
     public function store(Request $request)
     {
         $request->validate([
             'type' => 'required|in:Firewood,Rice,Money',
             'amount' => 'required_if:type,Money|numeric|min:100',
             'bereavement_case_id' => 'nullable|exists:bereavement_cases,id',
+            'proof' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', // ✅ proof validation
         ]);
 
         $user = Auth::user();
 
+        // ✅ Upload proof to storage/app/public/proofs
+        $proofPath = $request->file('proof')->store('proofs', 'public');
+
+        // ✅ Create donation record
         $donation = Donation::create([
             'user_id' => $user->id,
             'bereavement_case_id' => $request->bereavement_case_id,
             'type' => $request->type,
             'amount' => $request->type === 'Money' ? $request->amount : null,
+            'proof' => $proofPath,
         ]);
 
-        // Notify all admins
+        // ✅ Notify all admins
         $admins = User::where('role', 'admin')->get();
         foreach ($admins as $admin) {
             $admin->notify(new DonationReceived(
@@ -56,29 +63,45 @@ class DonationController extends Controller
                          ->with('success', 'Donation recorded successfully!');
     }
 
-    // Update existing donation
+    // ✅ Update donation (with optional proof reupload)
     public function update(Request $request, Donation $donation)
     {
         $request->validate([
             'type' => 'required|in:Firewood,Rice,Money',
             'amount' => 'required_if:type,Money|numeric|min:100',
             'bereavement_case_id' => 'nullable|exists:bereavement_cases,id',
+            'proof' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        $donation->update([
+        $data = [
             'type' => $request->type,
             'amount' => $request->type === 'Money' ? $request->amount : null,
             'bereavement_case_id' => $request->bereavement_case_id,
-        ]);
+        ];
+
+        // ✅ If new proof uploaded, replace old one
+        if ($request->hasFile('proof')) {
+            if ($donation->proof && Storage::disk('public')->exists($donation->proof)) {
+                Storage::disk('public')->delete($donation->proof);
+            }
+            $data['proof'] = $request->file('proof')->store('proofs', 'public');
+        }
+
+        $donation->update($data);
 
         return redirect()->route('donations.index')
                          ->with('success', 'Donation updated successfully!');
     }
 
-    // Delete donation
+    // ✅ Delete donation (and remove proof image)
     public function destroy(Donation $donation)
     {
+        if ($donation->proof && Storage::disk('public')->exists($donation->proof)) {
+            Storage::disk('public')->delete($donation->proof);
+        }
+
         $donation->delete();
+
         return redirect()->route('donations.index')->with('success', 'Donation deleted successfully!');
     }
 }
