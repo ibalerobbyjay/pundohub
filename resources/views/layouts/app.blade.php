@@ -1,228 +1,408 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PundoHub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PundoHub</title>
 
-    <!-- ✅ Bootstrap & Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- ✅ Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
-    <style>
-        body { overflow-x: hidden; }
-        #sidebar { width: 250px; height: 100vh; position: fixed; top: 0; left: 0; background: #343a40; color: white; transition: transform 0.3s ease-in-out; z-index: 1050; }
-        #sidebar .nav-link { color: #adb5bd; font-weight: 500; }
-        #sidebar .nav-link:hover, #sidebar .nav-link.active { background: #495057; color: #fff; }
-        #content { flex-grow: 1; margin-left: 250px; padding: 20px; min-height: 100vh; background: url("{{ asset('images/background.jpg') }}") no-repeat center center fixed; background-size: cover; color: #fff; transition: margin-left 0.3s ease-in-out; }
-        .card { background-color: #d8d7d7; color: #333; border: none; border-radius: 12px; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); transition: transform 0.2s ease, box-shadow 0.2s ease; padding: 1rem; }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); }
-        .logo-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
-        @media (max-width: 992px) { #sidebar { transform: translateX(-100%); } #sidebar.show { transform: translateX(0); } #content { margin-left: 0; } }
-        #sidebarToggle { position: fixed; top: 15px; left: 15px; z-index: 1100; }
-        #loadingSpinner { display: none; opacity: 0; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 2000; justify-content: center; align-items: center; transition: opacity 0.3s ease; pointer-events: none; }
-        #loadingSpinner.active { display: flex; opacity: 1; pointer-events: all; }
-        .spinner-border { width: 3rem; height: 3rem; }
-        body.modal-open { overflow: hidden !important; padding-right: 0 !important; }
-    </style>
+  <style>
+    body {
+      overflow-x: hidden;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #sidebar {
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #1f1f1f;
+      color: white;
+      transition: transform 0.3s ease-in-out;
+      z-index: 1050;
+    }
+
+    #sidebar .nav-link {
+      color: #adb5bd;
+      font-weight: 500;
+      border-radius: 8px;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar .nav-link:hover,
+    #sidebar .nav-link.active {
+      background: #a1a0a0;
+      color: #000;
+    }
+
+    #content {
+      flex-grow: 1;
+      margin-left: 250px;
+      padding: 20px;
+      min-height: 100vh;
+      background: url("{{ asset('images/background.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      transition: margin-left 0.3s ease-in-out;
+    }
+
+    .card {
+      background-color: #d8d7d7;
+      color: #333;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      padding: 1rem;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    @media (max-width: 992px) {
+      #sidebar {
+        transform: translateX(-100%);
+      }
+      #sidebar.show {
+        transform: translateX(0);
+      }
+      #content {
+        margin-left: 0;
+      }
+    }
+
+    #sidebarToggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1100;
+    }
+
+    #loadingSpinner {
+      display: none;
+      opacity: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    #loadingSpinner.active {
+      display: flex;
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .spinner-border {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    /* ✅ Styled Logout Modal */
+    .modal-content {
+      background: rgba(20, 20, 20, 0.85);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 30px rgba(245, 244, 243, 0.3);
+      animation: popIn 0.25s ease-out;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .modal-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-danger {
+      background-color: white;
+      border: none;
+      color: black;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+      background-color: white;
+      transform: scale(1.05);
+      color: black;
+    }
+
+    .btn-secondary {
+      background-color: #3a3a3a;
+      border: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #555;
+      transform: scale(1.05);
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    body.modal-open {
+      overflow: hidden !important;
+      padding-right: 0 !important;
+    }
+  </style>
 </head>
+
 <body>
+  <!-- ✅ Global Loading Spinner -->
+  <div id="loadingSpinner" class="d-flex">
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 
-    <!-- ✅ Global Loading Spinner -->
-    <div id="loadingSpinner" class="d-flex">
-        <div class="spinner-border text-light" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
+  <!-- ✅ Sidebar -->
+  <nav id="sidebar" class="bg-dark">
+    <div class="text-center py-4 border-bottom border-secondary">
+      <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img mb-2" />
+      <h5 class="text-white">
+        Pundo<span style="background-color: white; color: black; padding: 2px 6px; border-radius: 4px;">Hub</span>
+      </h5>
     </div>
 
-    <!-- ✅ Sidebar -->
-    <nav id="sidebar" class="bg-dark">
-        <div class="text-center py-4 border-bottom border-secondary">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img mb-2">
-            <h5 class="text-white">PundoHub</h5>
+    <ul class="nav flex-column mt-3 px-2">
+      @auth
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+        </a>
+      </li>
+
+      @if(auth()->user()->role === 'admin')
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}"
+          href="{{ route('bereavement-cases.index') }}">
+          <i class="bi bi-people me-2"></i> Bereavement Cases
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.death-reports.*') ? 'active' : '' }}"
+          href="{{ route('admin.death-reports.index') }}">
+          <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('donations.*') ? 'active' : '' }}"
+          href="{{ route('donations.index') }}">
+          <i class="bi bi-cash-coin me-2"></i> Donations
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
+          href="{{ route('notifications.index') }}">
+          <i class="bi bi-bell me-2"></i> Notifications
+          @if(Auth::user()->unreadNotifications->count() > 0)
+          <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+          @endif
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"
+          href="{{ route('members.index') }}">
+          <i class="bi bi-person-lines-fill me-2"></i> Members
+        </a>
+      </li>
+      @else
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}"
+          href="{{ route('donations.create') }}">
+          <i class="bi bi-heart-fill me-2"></i> Donate
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}"
+          href="{{ route('report.death') }}">
+          <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
+          href="{{ route('notifications.index') }}">
+          <i class="bi bi-bell me-2"></i> My Notifications
+          @if(Auth::user()->unreadNotifications->count() > 0)
+          <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+          @endif
+        </a>
+      </li>
+      @endif
+      @endauth
+    </ul>
+
+    <hr class="bg-secondary" />
+
+    <ul class="nav flex-column px-2 mb-3">
+      @auth
+      <li class="nav-item dropdown text-center">
+        <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" href="#"
+          id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle me-2"></i>
+          {{ auth()->user()->name }}
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2"
+          aria-labelledby="userDropdown">
+          <li>
+            <a class="dropdown-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}"
+              href="{{ route('profile.edit') }}">
+              <i class="bi bi-pencil-square me-2"></i> Edit Profile
+            </a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <form id="logoutForm" action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </li>
+      @else
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Login
+        </a>
+      </li>
+      @endauth
+    </ul>
+  </nav>
+
+  <!-- Sidebar toggle -->
+  <button id="sidebarToggle" class="btn btn-dark d-lg-none">
+    <i class="bi bi-list"></i>
+  </button>
+
+  <!-- Main Content -->
+  <div id="content" class="p-4">@yield('content')</div>
+
+  <!-- ✅ Logout Confirmation Modal -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">
+            <i class="bi bi-box-arrow-right text-warning me-2"></i> Confirm Logout
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
-        <ul class="nav flex-column mt-3 px-2">
-            @auth
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                    </a>
-                </li>
-
-                @if(auth()->user()->role === 'admin')
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}" href="{{ route('bereavement-cases.index') }}">
-                            <i class="bi bi-people me-2"></i> Bereavement Cases
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.death-reports.*') ? 'active' : '' }}" href="{{ route('admin.death-reports.index') }}">
-                            <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('donations.*') ? 'active' : '' }}" href="{{ route('donations.index') }}">
-                            <i class="bi bi-cash-coin me-2"></i> Donations
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
-                            <i class="bi bi-bell me-2"></i> Notifications
-                            @if(Auth::user()->unreadNotifications->count() > 0)
-                                <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}" href="{{ route('members.index') }}">
-                            <i class="bi bi-person-lines-fill me-2"></i> Members
-                        </a>
-                    </li>
-                @else
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}" href="{{ route('donations.create') }}">
-                            <i class="bi bi-heart-fill me-2"></i> Donate
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}" href="{{ route('report.death') }}">
-                            <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}" href="{{ route('notifications.index') }}">
-                            <i class="bi bi-bell me-2"></i> My Notifications
-                            @if(Auth::user()->unreadNotifications->count() > 0)
-                                <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                @endif
-            @endauth
-        </ul>
-
-        <hr class="bg-secondary">
-
-        <ul class="nav flex-column px-2 mb-3">
-            @auth
-                <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" 
-                       href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle me-2"></i>
-                        {{ auth()->user()->name }}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2" 
-                        aria-labelledby="userDropdown">
-                        <li>
-                            <a class="dropdown-item {{ request()->routeIs('profile.edit') ? 'active' : '' }}" 
-                               href="{{ route('profile.edit') }}">
-                                <i class="bi bi-pencil-square me-2"></i> Edit Profile
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <form id="logoutForm" action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="dropdown-item text-danger">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            @else
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                    </a>
-                </li>
-            @endauth
-        </ul>
-    </nav>
-
-    <!-- Sidebar toggle button -->
-    <button id="sidebarToggle" class="btn btn-dark d-lg-none">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <!-- Main Content -->
-    <div id="content" class="p-4">
-        @yield('content')
-    </div>
-
-    <!-- ✅ Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">Are you sure you want to log out?</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button id="confirmLogoutBtn" type="button" class="btn btn-danger">Logout</button>
-          </div>
+        <div class="modal-body">
+          Are you sure you want to <strong class="text-warning">log out</strong> of PundoHub?
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+          <button id="confirmLogoutBtn" type="button" class="btn btn-danger px-4">Logout</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- ✅ Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- ✅ Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        const spinner = document.getElementById('loadingSpinner');
+  <script>
+    const spinner = document.getElementById("loadingSpinner");
 
-        function showSpinner() { spinner.classList.add('active'); }
-        function hideSpinner() { spinner.classList.remove('active'); }
+    function showSpinner() {
+      spinner.classList.add("active");
+    }
+    function hideSpinner() {
+      spinner.classList.remove("active");
+    }
 
-        // Sidebar toggle
-        document.getElementById('sidebarToggle').addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('show');
-        });
+    // Sidebar toggle
+    document
+      .getElementById("sidebarToggle")
+      .addEventListener("click", function () {
+        document.getElementById("sidebar").classList.toggle("show");
+      });
 
-        // Spinner on navigation
-        const navLinks = document.querySelectorAll('#sidebar a.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                if (this.getAttribute('href') === '#' || this.classList.contains('active')) return;
-                showSpinner();
-            });
-        });
+    // Spinner on navigation
+    const navLinks = document.querySelectorAll("#sidebar a.nav-link");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", function () {
+        if (this.getAttribute("href") === "#" || this.classList.contains("active")) return;
+        showSpinner();
+      });
+    });
 
-        window.addEventListener('load', () => hideSpinner());
+    window.addEventListener("load", () => hideSpinner());
 
-        // ✅ Logout Confirmation
-        const logoutForm = document.getElementById('logoutForm');
-        const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+    // ✅ Logout Confirmation
+    const logoutForm = document.getElementById("logoutForm");
+    const confirmLogoutBtn = document.getElementById("confirmLogoutBtn");
 
-        if (logoutForm && confirmLogoutBtn) {
-            logoutForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const logoutModal = new bootstrap.Modal(document.getElementById('logoutModal'));
-                logoutModal.show();
+    if (logoutForm && confirmLogoutBtn) {
+      logoutForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
+        logoutModal.show();
 
-                confirmLogoutBtn.addEventListener('click', function() {
-                    // Show loading state
-                    confirmLogoutBtn.disabled = true;
-                    confirmLogoutBtn.innerHTML = `
-                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        Logging out...
-                    `;
-                    showSpinner();
+        confirmLogoutBtn.addEventListener(
+          "click",
+          function () {
+            confirmLogoutBtn.disabled = true;
+            confirmLogoutBtn.innerHTML = `
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Logging out...
+            `;
+            showSpinner();
 
-                    // Delay for smooth UX then submit
-                    setTimeout(() => {
-                        logoutForm.submit();
-                    }, 1000);
-                }, { once: true });
-            });
-        }
+            setTimeout(() => {
+              logoutForm.submit();
+            }, 1000);
+          },
+          { once: true }
+        );
+      });
+    }
 
-        @if(session('success') && request()->routeIs('dashboard'))
-            alert("{{ session('success') }}");
-        @endif
-    </script>
+    @if(session('success') && request()->routeIs('dashboard'))
+      alert("{{ session('success') }}");
+    @endif
+  </script>
 </body>
 </html>
