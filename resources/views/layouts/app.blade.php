@@ -246,6 +246,12 @@
           <i class="bi bi-person-lines-fill me-2"></i> Members
         </a>
       </li>
+      <li class="nav-item">
+  <a class="nav-link {{ request()->routeIs('admin.penalties') ? 'active' : '' }}"
+     href="{{ route('admin.penalties') }}">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> Penalties
+  </a>
+</li>
       @else
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}"
@@ -344,65 +350,74 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    const spinner = document.getElementById("loadingSpinner");
+  const spinner = document.getElementById("loadingSpinner");
 
-    function showSpinner() {
-      spinner.classList.add("active");
-    }
-    function hideSpinner() {
-      spinner.classList.remove("active");
-    }
+  function showSpinner() {
+    spinner.classList.add("active");
+  }
 
-    // Sidebar toggle
-    document
-      .getElementById("sidebarToggle")
-      .addEventListener("click", function () {
-        document.getElementById("sidebar").classList.toggle("show");
-      });
+  function hideSpinner() {
+    spinner.classList.remove("active");
+  }
 
-    // Spinner on navigation
-    const navLinks = document.querySelectorAll("#sidebar a.nav-link");
-    navLinks.forEach((link) => {
-      link.addEventListener("click", function () {
-        if (this.getAttribute("href") === "#" || this.classList.contains("active")) return;
-        showSpinner();
-      });
+  // Sidebar toggle
+  document
+    .getElementById("sidebarToggle")
+    .addEventListener("click", function () {
+      document.getElementById("sidebar").classList.toggle("show");
     });
 
-    window.addEventListener("load", () => hideSpinner());
+  // Spinner on navigation
+  const navLinks = document.querySelectorAll("#sidebar a.nav-link");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", function () {
+      if (this.getAttribute("href") === "#" || this.classList.contains("active")) return;
+      showSpinner();
+    });
+  });
 
-    // ✅ Logout Confirmation
-    const logoutForm = document.getElementById("logoutForm");
-    const confirmLogoutBtn = document.getElementById("confirmLogoutBtn");
+  window.addEventListener("load", () => hideSpinner());
 
-    if (logoutForm && confirmLogoutBtn) {
-      logoutForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const logoutModal = new bootstrap.Modal(document.getElementById("logoutModal"));
-        logoutModal.show();
+  // ✅ Logout Confirmation (with fade-out + fullscreen spinner)
+  const logoutForm = document.getElementById("logoutForm");
+  const confirmLogoutBtn = document.getElementById("confirmLogoutBtn");
+  const logoutModalEl = document.getElementById("logoutModal");
+  const logoutModal = new bootstrap.Modal(logoutModalEl);
 
-        confirmLogoutBtn.addEventListener(
-          "click",
-          function () {
-            confirmLogoutBtn.disabled = true;
-            confirmLogoutBtn.innerHTML = `
-              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              Logging out...
-            `;
-            showSpinner();
+  if (logoutForm && confirmLogoutBtn) {
+    logoutForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      logoutModal.show();
 
-            setTimeout(() => {
-              logoutForm.submit();
-            }, 1000);
-          },
-          { once: true }
-        );
-      });
-    }
+      confirmLogoutBtn.addEventListener(
+        "click",
+        function () {
+          // Disable the button briefly to avoid double-clicks
+          confirmLogoutBtn.disabled = true;
+          confirmLogoutBtn.innerHTML = `
+            <i class="bi bi-box-arrow-right me-2"></i> Logging out...
+          `;
 
-    @if(session('success') && request()->routeIs('dashboard'))
-      alert("{{ session('success') }}");
-    @endif
-  </script>
+          // Smooth fade-out animation for modal
+          const modalContent = logoutModalEl.querySelector(".modal-content");
+          modalContent.style.transition = "opacity 0.4s ease";
+          modalContent.style.opacity = "0";
+
+          setTimeout(() => {
+            logoutModal.hide(); // hide modal
+            showSpinner(); // show fullscreen spinner
+            logoutForm.submit(); // submit logout
+          }, 400);
+        },
+        { once: true }
+      );
+    });
+  }
+
+  @if(session('success') && request()->routeIs('dashboard'))
+    alert("{{ session('success') }}");
+  @endif
+</script>
+
 </body>
 </html>

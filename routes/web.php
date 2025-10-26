@@ -12,6 +12,7 @@ use App\Http\Controllers\DeathReportController;
 use App\Http\Controllers\Admin\DeathReportController as AdminDeathReportController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\Admin\PenaltyController;
 
 // Redirect root to dashboard
 Route::get('/', fn() => redirect()->route('dashboard'));
@@ -105,5 +106,9 @@ Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showRese
 // Handle new password submission
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
+    
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/penalties', [PenaltyController::class, 'index'])->name('admin.penalties');
+});
 
 });

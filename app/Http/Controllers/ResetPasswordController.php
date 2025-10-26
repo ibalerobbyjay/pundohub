@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
-    public function showResetForm($token)
+    public function showResetForm(Request $request, $token = null)
     {
-        return view('auth.reset-password', ['token' => $token]);
+        // ✅ Pass both token and email to the Blade
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email,
+        ]);
     }
 
     public function reset(Request $request)

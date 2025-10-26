@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
     })
+    ->withSchedule(function ($schedule) {
+        // 🕐 Run your penalty job daily at 12:05 AM
+        $schedule->command('penalties:apply')->dailyAt('00:05');
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();

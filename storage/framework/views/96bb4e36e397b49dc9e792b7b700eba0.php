@@ -121,27 +121,41 @@
         </div>
 
         <!-- ✅ Reset Password Form -->
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
-            <input type="hidden" name="token" value="{{ $token }}">
+        <form method="POST" action="<?php echo e(route('password.update')); ?>">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="token" value="<?php echo e($token); ?>">
 
             <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
                 <input id="email" type="email" name="email" class="form-control"
-                       value="{{ old('email', $email ?? '') }}" required autofocus autocomplete="username">
-                @error('email')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
+                       value="<?php echo e(old('email', $email ?? '')); ?>" required autofocus autocomplete="username">
+                <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <!-- New Password -->
             <div class="mb-3">
                 <label for="password" class="form-label">New Password</label>
                 <input id="password" type="password" name="password" class="form-control" required autocomplete="new-password">
-                @error('password')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
+                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <!-- Confirm Password -->
@@ -149,9 +163,16 @@
                 <label for="password_confirmation" class="form-label">Confirm Password</label>
                 <input id="password_confirmation" type="password" name="password_confirmation"
                        class="form-control" required autocomplete="new-password">
-                @error('password_confirmation')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
+                <?php $__errorArgs = ['password_confirmation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
             </div>
 
             <button type="submit" class="btn btn-reset w-100">
@@ -160,9 +181,10 @@
         </form>
 
         <p class="text-center text-muted mt-4 mb-0">
-            Remembered your password? <a href="{{ route('login') }}">Back to Login</a>
+            Remembered your password? <a href="<?php echo e(route('login')); ?>">Back to Login</a>
         </p>
     </div>
 
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\pundohub\resources\views/auth/reset-password.blade.php ENDPATH**/ ?>

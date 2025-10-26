@@ -29,4 +29,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Member::class);
     }
+    public function penalties()
+{
+    return $this->hasMany(\App\Models\Penalty::class);
+}
+
 }
