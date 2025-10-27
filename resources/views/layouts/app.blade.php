@@ -41,16 +41,26 @@
       color: #000;
     }
 
-    #content {
-      flex-grow: 1;
-      margin-left: 250px;
-      padding: 20px;
-      min-height: 100vh;
-      background: url("{{ asset('images/background.jpg') }}") no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      transition: margin-left 0.3s ease-in-out;
-    }
+   body {
+  overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
+  background: url("{{ asset('images/background.jpg') }}") no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#content {
+  flex-grow: 1;
+  margin-left: 250px;
+  padding: 20px;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* optional overlay to improve text visibility */
+  color: #fff;
+  transition: margin-left 0.3s ease-in-out;
+}
+
 
     .card {
       background-color: #d8d7d7;
