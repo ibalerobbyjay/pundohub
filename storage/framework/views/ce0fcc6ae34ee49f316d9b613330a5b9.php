@@ -167,6 +167,10 @@
         color: #fff;
         border-radius: 10px;
     }
+    a{
+        color: #fff;
+        cursor: pointer;
+    }
 
     .form-control:focus {
         background: rgba(255, 255, 255, 0.15);
