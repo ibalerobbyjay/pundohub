@@ -18,7 +18,7 @@ class DashboardController extends Controller
             // Admin notifications: latest 5
             $notifications = Notification::latest()->take(5)->get();
 
-            // Total donated amount
+            // Total donated amount (all users)
             $totalDonations = Donation::sum('amount');
 
             // Total number of donation records
@@ -45,9 +45,16 @@ class DashboardController extends Controller
             $notifications = $user->notifications()->latest()->take(5)->get();
 
             // Total donations by this user
-            $totalDonations = Donation::where('user_id', $user->id)->sum('amount');
+            $userTotalDonations = Donation::where('user_id', $user->id)->sum('amount');
 
-            return view('dashboard', compact('notifications', 'totalDonations'));
+            // Total donations from all members (for comparison)
+            $totalDonations = Donation::sum('amount');
+
+            return view('dashboard', compact(
+                'notifications',
+                'userTotalDonations',
+                'totalDonations'
+            ));
         }
     }
 }

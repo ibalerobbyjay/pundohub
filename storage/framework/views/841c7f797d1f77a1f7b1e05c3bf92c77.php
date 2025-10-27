@@ -22,6 +22,7 @@
                                         <th>Amount (₱)</th>
                                         <th>Reason</th>
                                         <th>Date Applied</th>
+                                        <th>Status</th> <!-- New column for Paid button -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -31,6 +32,17 @@
                                             <td>₱<?php echo e(number_format($penalty->amount, 2)); ?></td>
                                             <td><?php echo e($penalty->reason); ?></td>
                                             <td><?php echo e(\Carbon\Carbon::parse($penalty->applied_at)->format('F d, Y g:i A')); ?></td>
+                                            <td>
+                                                <?php if($penalty->paid): ?>
+                                                    <span class="badge bg-success">Paid</span>
+                                                <?php else: ?>
+                                                    <form action="<?php echo e(route('penalties.markPaid', $penalty->id)); ?>" method="POST">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('PATCH'); ?>
+                                                        <button type="submit" class="btn btn-sm btn-primary">Mark as Paid</button>
+                                                    </form>
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>

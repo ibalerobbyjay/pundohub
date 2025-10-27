@@ -1,18 +1,24 @@
 <?php $__env->startSection('content'); ?>
-<h2>Dashboard</h2>
+<h2 class="mb-4 text-white">Dashboard</h2>
 
 <?php if(auth()->user()->role !== 'admin'): ?>
     
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card p-3">
-                <h5>Total Donations (You)</h5>
-                <p>₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
+            <div class="card p-3 bg-dark text-light shadow">
+                <h5 class="text-info">Your Total Donations</h5>
+                <p class="fs-5 fw-bold">₱ <?php echo e(number_format($userTotalDonations, 2)); ?></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 bg-dark text-light shadow">
+                <h5 class="text-info">Total Donations (All Members)</h5>
+                <p class="fs-5 fw-bold">₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
             </div>
         </div>
     </div>
 
-    <h4>Recent Notifications</h4>
+    <h4 class="text-white">Recent Notifications</h4>
 
     
     <?php if(auth()->user()->unreadNotifications->count() > 0): ?>
@@ -41,28 +47,28 @@
 <?php if(auth()->user()->role === 'admin'): ?>
 <div class="row mt-4">
     <div class="col-md-4">
-        <div class="card p-3">
-            <h5>Total Donations (All Members)</h5>
-            <p>₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
+        <div class="card p-3 bg-dark text-light shadow">
+            <h5 class="text-info">Total Donations (All Members)</h5>
+            <p class="fs-5 fw-bold">₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card p-3">
-            <h5>Total Number of Donations</h5>
-            <p><?php echo e($totalDonationCount); ?></p>
+        <div class="card p-3 bg-dark text-light shadow">
+            <h5 class="text-info">Total Number of Donations</h5>
+            <p class="fs-5 fw-bold"><?php echo e($totalDonationCount); ?></p>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card p-3">
-            <h5>Total Bereavement Cases</h5>
-            <p><?php echo e($totalCases); ?></p>
+        <div class="card p-3 bg-dark text-light shadow">
+            <h5 class="text-info">Total Bereavement Cases</h5>
+            <p class="fs-5 fw-bold"><?php echo e($totalCases); ?></p>
         </div>
     </div>
 </div>
 
 
 <div class="mt-4">
-    <h4>Recent Bereavement Cases</h4>
+    <h4 class="text-white">Recent Bereavement Cases</h4>
     <?php if(isset($recentCases) && $recentCases->count() > 0): ?>
         <ul class="list-group">
             <?php $__currentLoopData = $recentCases; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $case): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -79,7 +85,7 @@
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </ul>
     <?php else: ?>
-        <p>No recent bereavement cases.</p>
+        <p class="text-muted">No recent bereavement cases.</p>
     <?php endif; ?>
 </div>
 <?php endif; ?>

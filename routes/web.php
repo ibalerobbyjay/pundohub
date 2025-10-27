@@ -9,7 +9,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeathReportController;
-use App\Http\Controllers\Admin\DeathReportController as AdminDeathReportController;
+use App\Http\Controllers\Admin\AdminDeathReportController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\Admin\PenaltyController;
@@ -75,18 +75,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/report-death', [DeathReportController::class, 'create'])->name('report.death');
     Route::post('/report-death', [DeathReportController::class, 'store'])->name('report.death.store');
 
-    // ==============================
-    // 🛡️ Admin - Manage Death Reports
-    // ==============================
-    Route::middleware(['auth'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-        Route::get('/death-reports', [AdminDeathReportController::class, 'index'])->name('death-reports.index');
-        Route::post('/death-reports/approve/{id}', [AdminDeathReportController::class, 'approve'])->name('death-reports.approve');
-        Route::post('/death-reports/unverify/{id}', [AdminDeathReportController::class, 'unverify'])->name('death-reports.unverify');
-    });
-
+// Admin Death Reports Routes (manual role check)
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/death-reports', [AdminDeathReportController::class, 'index'])->name('death-reports.index');
+    Route::post('/death-reports/approve/{id}', [AdminDeathReportController::class, 'approve'])->name('death-reports.approve');
+    Route::post('/death-reports/unverify/{id}', [AdminDeathReportController::class, 'unverify'])->name('death-reports.unverify');
+});
     // =============================
 // 🔑 Password Reset Routes
 // =============================
@@ -107,8 +101,8 @@ Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showRese
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
     
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/penalties', [PenaltyController::class, 'index'])->name('admin.penalties');
-});
+// Admin Penalties Routes (manual role check)
+Route::get('/admin/penalties', [PenaltyController::class, 'index'])->name('admin.penalties');
+Route::patch('/penalties/{penalty}/mark-paid', [PenaltyController::class, 'markPaid'])->name('penalties.markPaid');
 
 });

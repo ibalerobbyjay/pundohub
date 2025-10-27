@@ -22,6 +22,7 @@
                                         <th>Amount (₱)</th>
                                         <th>Reason</th>
                                         <th>Date Applied</th>
+                                        <th>Status</th> <!-- New column for Paid button -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -31,6 +32,17 @@
                                             <td>₱{{ number_format($penalty->amount, 2) }}</td>
                                             <td>{{ $penalty->reason }}</td>
                                             <td>{{ \Carbon\Carbon::parse($penalty->applied_at)->format('F d, Y g:i A') }}</td>
+                                            <td>
+                                                @if($penalty->paid)
+                                                    <span class="badge bg-success">Paid</span>
+                                                @else
+                                                    <form action="{{ route('penalties.markPaid', $penalty->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-sm btn-primary">Mark as Paid</button>
+                                                    </form>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

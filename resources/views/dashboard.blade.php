@@ -1,22 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<h2>Dashboard</h2>
+<h2 class="mb-4 text-white">Dashboard</h2>
 
 @if(auth()->user()->role !== 'admin')
-    {{-- User total donations --}}
+    {{-- User & Overall Donations --}}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card p-3">
-                <h5>Total Donations (You)</h5>
-                <p>₱ {{ number_format($totalDonations, 2) }}</p>
+            <div class="card p-3 bg-dark text-light shadow">
+                <h5 class="text-info">Your Total Donations</h5>
+                <p class="fs-5 fw-bold">₱ {{ number_format($userTotalDonations, 2) }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 bg-dark text-light shadow">
+                <h5 class="text-info">Total Donations (All Members)</h5>
+                <p class="fs-5 fw-bold">₱ {{ number_format($totalDonations, 2) }}</p>
             </div>
         </div>
     </div>
 
-    <h4>Recent Notifications</h4>
+    <h4 class="text-white">Recent Notifications</h4>
 
-    {{-- Mark all as read button --}}
+    {{-- Mark all as read --}}
     @if(auth()->user()->unreadNotifications->count() > 0)
     <form method="POST" action="{{ route('notifications.markAllRead') }}" class="mb-2">
         @csrf
@@ -42,28 +48,28 @@
 @if(auth()->user()->role === 'admin')
 <div class="row mt-4">
     <div class="col-md-4">
-        <div class="card p-3">
-            <h5>Total Donations (All Members)</h5>
-            <p>₱ {{ number_format($totalDonations, 2) }}</p>
+        <div class="card p-3 bg-dark text-light shadow">
+            <h5 class="text-info">Total Donations (All Members)</h5>
+            <p class="fs-5 fw-bold">₱ {{ number_format($totalDonations, 2) }}</p>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card p-3">
-            <h5>Total Number of Donations</h5>
-            <p>{{ $totalDonationCount }}</p>
+        <div class="card p-3 bg-dark text-light shadow">
+            <h5 class="text-info">Total Number of Donations</h5>
+            <p class="fs-5 fw-bold">{{ $totalDonationCount }}</p>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card p-3">
-            <h5>Total Bereavement Cases</h5>
-            <p>{{ $totalCases }}</p>
+        <div class="card p-3 bg-dark text-light shadow">
+            <h5 class="text-info">Total Bereavement Cases</h5>
+            <p class="fs-5 fw-bold">{{ $totalCases }}</p>
         </div>
     </div>
 </div>
 
 {{-- Recent Bereavement Cases --}}
 <div class="mt-4">
-    <h4>Recent Bereavement Cases</h4>
+    <h4 class="text-white">Recent Bereavement Cases</h4>
     @if(isset($recentCases) && $recentCases->count() > 0)
         <ul class="list-group">
             @foreach($recentCases as $case)
@@ -79,7 +85,7 @@
             @endforeach
         </ul>
     @else
-        <p>No recent bereavement cases.</p>
+        <p class="text-muted">No recent bereavement cases.</p>
     @endif
 </div>
 @endif
