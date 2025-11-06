@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 <div class="container mt-5">
     <h2 class="mb-4 text-white">Add New Member</h2>
@@ -49,8 +47,15 @@
 
         <div class="mb-3">
             <label class="form-label text-light">Contact Number</label>
-            <input type="text" name="contact" id="contact" class="form-control bg-dark text-light border-secondary" 
-                   placeholder="9XXXXXXXXX" maxlength="11" pattern="9\d{9}" title="Enter 11-digit Philippine number starting with 9">
+            <input type="text" 
+                   name="contact" 
+                   id="contact" 
+                   class="form-control bg-dark text-light border-secondary" 
+                   placeholder="09XXXXXXXXX" 
+                   maxlength="11" 
+                   pattern="09\d{9}" 
+                   title="Enter an 11-digit Philippine mobile number starting with 09" 
+                   required>
         </div>
 
         <div class="d-flex justify-content-end gap-2 mt-4">
@@ -66,17 +71,40 @@
 </div>
 
 <script>
+// ✅ Restrict contact number input
+const contactInput = document.getElementById('contact');
+
+contactInput.addEventListener('input', function () {
+    // Remove non-digit characters
+    this.value = this.value.replace(/\D/g, '');
+
+    // Force start with 09
+    if (!this.value.startsWith('09')) {
+        this.value = '09';
+    }
+
+    // Limit to 11 digits
+    if (this.value.length > 11) {
+        this.value = this.value.slice(0, 11);
+    }
+});
+
+// ✅ Handle form submission with +63 conversion
 document.getElementById('memberForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     let form = this;
     let formData = new FormData(form);
+    let contactValue = document.getElementById('contact').value;
 
-    // Automatically prepend +63 to the contact number
-    let contactInput = document.getElementById('contact');
-    if (contactInput.value) {
-        formData.set('contact', '+63' + contactInput.value);
+    // Validate final format
+    if (!/^09\d{9}$/.test(contactValue)) {
+        alert("Please enter a valid 11-digit number starting with 09.");
+        return;
     }
+
+    // Convert to +63 format
+    formData.set('contact', '+63' + contactValue.substring(1));
 
     try {
         let response = await fetch(form.action, {
