@@ -1,18 +1,18 @@
-
-
 <?php $__env->startSection('content'); ?>
 <div class="container mt-5">
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">
-            <i class="bi bi-people-fill me-2"></i>Members
+        <h2 class="fw-bold text-info">
+            <i class="bi bi-people-fill me-2 text-warning"></i>Members
         </h2>
-        <a href="<?php echo e(route('members.create')); ?>" class="btn btn-success shadow-sm">
+        <a href="<?php echo e(route('members.create')); ?>" class="btn btn-success shadow-sm rounded-pill px-4">
             <i class="bi bi-person-plus-fill me-1"></i> Add Member
         </a>
     </div>
 
+    
     <?php if(session('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
             <i class="bi bi-check-circle-fill me-1"></i>
             <?php echo e(session('success')); ?>
 
@@ -20,11 +20,14 @@
         </div>
     <?php endif; ?>
 
-    <div class="card shadow-sm rounded-4">
-        <div class="card-body p-0">
+    
+    <div class="card shadow-lg rounded-4 border-0"
+         style="background: rgba(25,25,25,0.9); backdrop-filter: blur(12px);">
+        <div class="card-body p-4">
+
             <div class="table-responsive">
-                <table class="table table-striped table-hover table-bordered align-middle mb-0">
-                    <thead class="table-dark text-center">
+                <table class="table table-hover table-dark align-middle mb-0 text-center text-light">
+                    <thead style="background-color: #1a1a1a; color: #f8f9fa;" class="text-uppercase small">
                         <tr>
                             <th>Name</th>
                             <th>Household</th>
@@ -33,42 +36,50 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="text-center">
+                    <tbody>
                         <?php $__empty_1 = true; $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
-                                <td><?php echo e($member->name); ?></td>
+                                <td class="fw-semibold"><?php echo e($member->name); ?></td>
                                 <td><?php echo e($member->household ?? '—'); ?></td>
                                 <td><?php echo e($member->contact ?? '—'); ?></td>
                                 <td><?php echo e($member->email); ?></td>
                                 <td>
                                     <a href="<?php echo e(route('members.edit', $member->id)); ?>" 
-                                       class="btn btn-warning btn-sm me-1">
-                                        <i class="bi bi-pencil-square"></i> Edit
+                                       class="btn btn-warning btn-sm me-1 rounded-pill shadow-sm px-3">
+                                        <i class="bi bi-pencil-square me-1"></i> Edit
                                     </a>
                                     <form action="<?php echo e(route('members.destroy', $member->id)); ?>" 
                                           method="POST" class="d-inline">
                                         <?php echo csrf_field(); ?>
                                         <?php echo method_field('DELETE'); ?>
-                                        <button class="btn btn-danger btn-sm"
+                                        <button class="btn btn-danger btn-sm rounded-pill shadow-sm px-3"
                                                 onclick="return confirm('Are you sure you want to delete this member?')">
-                                            <i class="bi bi-trash"></i> Delete
+                                            <i class="bi bi-trash me-1"></i> Delete
                                         </button>
                                     </form>
                                 </td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
-                                <td colspan="5" class="text-muted py-4">
-                                    <i class="bi bi-people"></i> No members found.
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="bi bi-people fs-3 d-block mb-2"></i>
+                                    No members found.
                                 </td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </div>
 <?php $__env->stopSection(); ?>
-
+<style>
+.table-hover tbody tr:hover {
+    transform: translateY(-2px);
+    transition: transform 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+</style>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/members/index.blade.php ENDPATH**/ ?>

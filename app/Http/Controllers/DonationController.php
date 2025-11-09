@@ -104,4 +104,18 @@ class DonationController extends Controller
 
         return redirect()->route('donations.index')->with('success', 'Donation deleted successfully!');
     }
+    public function history()
+{
+    $user = auth()->user();
+
+    // Get all donations made by the logged-in user
+    $donations = \App\Models\Donation::where('user_id', $user->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    $total = $donations->sum('amount');
+
+    return view('donations.history', compact('donations', 'total'));
+}
+
 }

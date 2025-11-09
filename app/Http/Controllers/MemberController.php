@@ -34,7 +34,7 @@ class MemberController extends Controller
 
         User::create([
             'name'     => $request->name,
-            'email'    => $request->email,
+             'email' => 'required|email|unique:users,email',
             'password' => Hash::make($request->password),
             'household'=> $request->household,
             'contact'  => $request->contact,

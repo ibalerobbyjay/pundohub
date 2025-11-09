@@ -15,7 +15,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\Admin\PenaltyController;
 
 // Redirect root to dashboard
-Route::get('/', fn() => redirect()->route('dashboard'));
+Route::get('/', fn() => redirect()->route('login'));
 
 // =============================
 // 🔐 Authentication Routes
@@ -104,5 +104,10 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
 // Admin Penalties Routes (manual role check)
 Route::get('/admin/penalties', [PenaltyController::class, 'index'])->name('admin.penalties');
 Route::patch('/penalties/{penalty}/mark-paid', [PenaltyController::class, 'markPaid'])->name('penalties.markPaid');
+
+// ✅ Donation history for logged-in user
+Route::get('/donations/history', [App\Http\Controllers\DonationController::class, 'history'])
+    ->name('donations.history')
+    ->middleware('auth');
 
 });

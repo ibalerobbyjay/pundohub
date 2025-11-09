@@ -1,77 +1,97 @@
 <?php $__env->startSection('content'); ?>
-<div class="container mt-4">
-    <h2 class="mb-4 text-white">Edit Profile</h2>
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-4 bg-dark text-light"
+         style="background: rgba(25,25,25,0.9); backdrop-filter: blur(12px);">
+        <div class="card-body p-4">
+            <h2 class="mb-4 fw-bold text-info text-center">
+                <i class="bi bi-person-circle me-2 text-warning"></i> Edit Profile
+            </h2>
 
-    <!-- Success Message -->
-    <div id="successMessage" class="alert alert-success d-none"></div>
+            <!-- Success Message -->
+            <?php if(session('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm">
+                    <i class="bi bi-check-circle-fill me-1"></i> <?php echo e(session('success')); ?>
 
-    <form id="profileForm" method="POST" action="<?php echo e(route('profile.update')); ?>">
-        <?php echo csrf_field(); ?>
-        <?php echo method_field('PATCH'); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
 
-        <div class="mb-3">
-            <label class="form-label text-light">Name</label>
-            <input type="text" name="name" class="form-control bg-dark text-light border-secondary" 
-                   value="<?php echo e($user->name); ?>" required>
+            <form id="profileForm" method="POST" action="<?php echo e(route('profile.update')); ?>">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PATCH'); ?>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">Name</label>
+                    <input type="text" name="name" class="form-control bg-dark text-light border-secondary"
+                           value="<?php echo e(old('name', $user->name)); ?>" required>
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <small class="text-danger"><?php echo e($message); ?></small>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">Email</label>
+                    <input type="email" name="email" class="form-control bg-dark text-light border-secondary"
+                           value="<?php echo e(old('email', $user->email)); ?>" required>
+                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <small class="text-danger"><?php echo e($message); ?></small>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">Password (leave blank to keep current)</label>
+                    <input type="password" name="password" class="form-control bg-dark text-light border-secondary">
+                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <small class="text-danger"><?php echo e($message); ?></small>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-light">Confirm Password</label>
+                    <input type="password" name="password_confirmation" class="form-control bg-dark text-light border-secondary">
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="<?php echo e(route('dashboard')); ?>" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        <i class="bi bi-save2 me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label text-light">Email</label>
-            <input type="email" name="email" class="form-control bg-dark text-light border-secondary" 
-                   value="<?php echo e($user->email); ?>" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label text-light">Password (leave blank to keep current)</label>
-            <input type="password" name="password" class="form-control bg-dark text-light border-secondary">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label text-light">Confirm Password</label>
-            <input type="password" name="password_confirmation" class="form-control bg-dark text-light border-secondary">
-        </div>
-
-        <div class="d-flex justify-content-end gap-2 mt-4">
-            <!-- Cancel Button -->
-            <a href="<?php echo e(route('dashboard')); ?>" class="btn btn-outline-secondary">
-                <i class="bi bi-x-circle me-1"></i> Cancel
-            </a>
-
-            <!-- Save Button -->
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save2 me-1"></i> Save Changes
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
 <script>
 document.getElementById('profileForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+    const form = this;
+    const formData = new FormData(form);
 
-    let form = this;
-    let formData = new FormData(form);
-
-    try {
-        let response = await fetch(form.action, {
-            method: "POST", // Laravel will handle _method=PATCH
-            headers: { "X-CSRF-TOKEN": formData.get("_token") },
-            body: formData
-        });
-
-        if (response.ok) {
-            let msgBox = document.getElementById('successMessage');
-            msgBox.textContent = "Profile updated successfully!";
-            msgBox.classList.remove("d-none");
-
-            setTimeout(() => msgBox.classList.add("d-none"), 3000);
-        } else {
-            alert("Error updating profile.");
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Something went wrong.");
-    }
+    // Optional: you can add Ajax submission if desired
 });
 </script>
 <?php $__env->stopSection(); ?>

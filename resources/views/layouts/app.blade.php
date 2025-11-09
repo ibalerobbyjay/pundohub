@@ -225,7 +225,7 @@
       @if(auth()->user()->role === 'admin')
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}"
-          href="{{ route('bereavement-cases.index') }}">
+          href="{{ route('bereavement-cases.create') }}">
           <i class="bi bi-people me-2"></i> Bereavement Cases
         </a>
       </li>

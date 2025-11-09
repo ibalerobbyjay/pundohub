@@ -225,7 +225,7 @@
       <?php if(auth()->user()->role === 'admin'): ?>
       <li class="nav-item">
         <a class="nav-link <?php echo e(request()->routeIs('bereavement-cases.*') ? 'active' : ''); ?>"
-          href="<?php echo e(route('bereavement-cases.index')); ?>">
+          href="<?php echo e(route('bereavement-cases.create')); ?>">
           <i class="bi bi-people me-2"></i> Bereavement Cases
         </a>
       </li>

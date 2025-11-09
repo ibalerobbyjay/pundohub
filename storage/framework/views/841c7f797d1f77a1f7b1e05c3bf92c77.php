@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -9,8 +7,11 @@
                  style="background: rgba(20,20,20,0.85); backdrop-filter: blur(10px);">
                  
                 <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 text-white fw-bold">Penalties Dashboard</h4>
-                </div>
+    <h2 class="mb-0 fw-bold text-info">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>Penalties Dashboard
+    </h2>
+</div>
+
 
                 <div class="card-body">
                     <?php if($penalties->count() > 0): ?>
@@ -63,5 +64,11 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
-
+<style>
+.table-hover tbody tr:hover {
+    transform: translateY(-2px);
+    transition: transform 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+</style>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/admin/penalties.blade.php ENDPATH**/ ?>
