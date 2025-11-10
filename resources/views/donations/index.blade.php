@@ -41,18 +41,18 @@
                         {{ $donation->type }}
                     </span>
                 </td>
-                <td>
-                    @if($donation->proof)
-                        <a href="{{ asset('storage/' . $donation->proof) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $donation->proof) }}" 
-                                 alt="Proof" 
-                                 class="img-thumbnail shadow-sm"
-                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                        </a>
-                    @else
-                        <span class="text-muted fst-italic">No proof</span>
-                    @endif
-                </td>
+            <td>
+    @if($donation->proof)
+        <a href="{{ asset('storage/' . $donation->proof) }}" target="_blank" 
+           class="btn btn-sm btn-outline-info fw-semibold">
+            View Proof
+        </a>
+    @else
+        <span class="text-light fst-italic">No proof</span>
+    @endif
+</td>
+
+
                 <td>
                      @if(auth()->user()->role === 'admin')
                     <form action="{{ route('donations.destroy', $donation->id) }}" method="POST" class="d-inline">

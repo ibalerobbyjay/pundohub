@@ -12,6 +12,7 @@ use App\Http\Controllers\DeathReportController;
 use App\Http\Controllers\Admin\AdminDeathReportController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\MonthlyFundController;
 use App\Http\Controllers\Admin\PenaltyController;
 
 // Redirect root to dashboard
@@ -109,5 +110,10 @@ Route::patch('/penalties/{penalty}/mark-paid', [PenaltyController::class, 'markP
 Route::get('/donations/history', [App\Http\Controllers\DonationController::class, 'history'])
     ->name('donations.history')
     ->middleware('auth');
+
+    Route::middleware('auth')->group(function () {
+    Route::get('/monthly-funds', [MonthlyFundController::class, 'index'])->name('monthlyfunds.index');
+    Route::post('/monthly-funds/pay', [MonthlyFundController::class, 'pay'])->name('monthlyfunds.pay');
+});
 
 });

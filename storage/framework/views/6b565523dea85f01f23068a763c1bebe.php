@@ -24,6 +24,30 @@
                     </div>
                 </a>
             </div>
+
+            
+            <div class="col-md-4 mb-3">
+                <a href="<?php echo e(route('monthlyfunds.index')); ?>" class="text-decoration-none">
+                    <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card position-relative">
+                        <h5 class="text-info">Monthly Funds</h5>
+                        <p class="fs-5 fw-bold">₱ 50 / month</p>
+
+                        
+                        <?php
+                            $hasPaidThisMonth = auth()->user()
+                                ->monthlyFunds()
+                                ->where('month_year', now()->startOfMonth())
+                                ->exists();
+                        ?>
+
+                        <?php if($hasPaidThisMonth): ?>
+                            <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2">Paid</span>
+                        <?php else: ?>
+                            <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2">Unpaid</span>
+                        <?php endif; ?>
+                    </div>
+                </a>
+            </div>
         </div>
 
         <h4 class="text-white mt-4">Recent Notifications</h4>
@@ -63,31 +87,44 @@
     <?php if(auth()->user()->role === 'admin'): ?>
         <div class="row mt-4">
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <a href="<?php echo e(route('donations.index')); ?>" class="text-decoration-none">
                     <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                        <h5 class="text-info">Total Donations (All Members)</h5>
+                        <h5 class="text-info">Total Donations</h5>
                         <p class="fs-5 fw-bold">₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
                     </div>
                 </a>
             </div>
 
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <a href="<?php echo e(route('donations.index')); ?>" class="text-decoration-none">
                     <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                        <h5 class="text-info">Total Number of Donations</h5>
+                        <h5 class="text-info">Number of Donations</h5>
                         <p class="fs-5 fw-bold"><?php echo e($totalDonationCount); ?></p>
                     </div>
                 </a>
             </div>
 
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <a href="<?php echo e(route('bereavement-cases.index')); ?>" class="text-decoration-none">
                     <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                        <h5 class="text-info">Total Bereavement Cases</h5>
+                        <h5 class="text-info">Bereavement Cases</h5>
                         <p class="fs-5 fw-bold"><?php echo e($totalCases); ?></p>
+                    </div>
+                </a>
+            </div>
+
+            
+            <div class="col-md-3 mb-3">
+                <a href="<?php echo e(route('monthlyfunds.index')); ?>" class="text-decoration-none">
+                    <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
+                        <h5 class="text-info">Monthly Fund (All Members)</h5>
+                        <p class="fs-5 fw-bold">
+                            ₱ <?php echo e(number_format(\App\Models\MonthlyFund::where('month_year', now()->startOfMonth())->sum('amount'), 2)); ?>
+
+                        </p>
                     </div>
                 </a>
             </div>
@@ -131,7 +168,6 @@
     transform: translateY(-5px);
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
-
 .hover-notification {
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;

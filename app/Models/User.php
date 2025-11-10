@@ -33,5 +33,10 @@ class User extends Authenticatable
 {
     return $this->hasMany(\App\Models\Penalty::class);
 }
+public function monthlyFunds()
+{
+    return $this->hasMany(MonthlyFund::class);
+}
+
 
 }

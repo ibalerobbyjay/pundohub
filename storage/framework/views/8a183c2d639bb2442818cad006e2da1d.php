@@ -40,18 +40,18 @@
 
                     </span>
                 </td>
-                <td>
-                    <?php if($donation->proof): ?>
-                        <a href="<?php echo e(asset('storage/' . $donation->proof)); ?>" target="_blank">
-                            <img src="<?php echo e(asset('storage/' . $donation->proof)); ?>" 
-                                 alt="Proof" 
-                                 class="img-thumbnail shadow-sm"
-                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                        </a>
-                    <?php else: ?>
-                        <span class="text-muted fst-italic">No proof</span>
-                    <?php endif; ?>
-                </td>
+            <td>
+    <?php if($donation->proof): ?>
+        <a href="<?php echo e(asset('storage/' . $donation->proof)); ?>" target="_blank" 
+           class="btn btn-sm btn-outline-info fw-semibold">
+            View Proof
+        </a>
+    <?php else: ?>
+        <span class="text-light fst-italic">No proof</span>
+    <?php endif; ?>
+</td>
+
+
                 <td>
                      <?php if(auth()->user()->role === 'admin'): ?>
                     <form action="<?php echo e(route('donations.destroy', $donation->id)); ?>" method="POST" class="d-inline">

@@ -18,15 +18,15 @@
             @endif
 
             <div class="table-responsive mt-4">
-                <table class="table table-dark table-hover align-middle rounded-3 overflow-hidden">
+                <table class="table table-dark table-hover align-middle rounded-3 overflow-hidden text-center text-light">
                     <thead>
-                        <tr class="bg-info text-dark">
+                        <tr class="bg-info text-dark text-uppercase small">
                             <th>Name</th>
                             <th>Date of Death</th>
                             <th>Notes</th>
                             <th>Certificate</th>
                             <th>Status</th>
-                            <th class="text-center">Action</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,32 +35,23 @@
                                 <td>{{ $report->name_of_deceased }}</td>
                                 <td>{{ \Carbon\Carbon::parse($report->date_of_death)->format('M d, Y') }}</td>
                                 <td>{{ $report->notes ?? '—' }}</td>
-                                <td class="text-center">
+                                <td>
                                     @if ($report->death_certificate)
                                         @php
                                             $fileExt = strtolower(pathinfo($report->death_certificate, PATHINFO_EXTENSION));
                                             $fileUrl = asset('storage/' . $report->death_certificate);
                                         @endphp
-
-                                        @if (in_array($fileExt, ['jpg', 'jpeg', 'png']))
-                                            <a href="{{ $fileUrl }}" target="_blank">
-                                                <img src="{{ $fileUrl }}" alt="Certificate"
-                                                     class="img-thumbnail rounded-3 border border-secondary"
-                                                     width="70">
-                                            </a>
-                                        @elseif ($fileExt === 'pdf')
-                                            <a href="{{ $fileUrl }}" target="_blank"
-                                               class="btn btn-outline-info btn-sm rounded-3">
-                                                <i class="bi bi-file-earmark-pdf"></i> View PDF
-                                            </a>
-                                        @else
-                                            <span class="text-muted">Unsupported File</span>
-                                        @endif
+                                        <a href="{{ $fileUrl }}" target="_blank"
+                                           class="btn btn-sm btn-outline-info fw-semibold">
+                                            @if (in_array($fileExt, ['jpg','jpeg','png'])) View Image
+                                            @elseif ($fileExt === 'pdf') <i class="bi bi-file-earmark-pdf me-1"></i> View PDF
+                                            @else View File
+                                            @endif
+                                        </a>
                                     @else
-                                        <span class="text-muted">No File</span>
+                                        <span class="text-light fst-italic">No File</span>
                                     @endif
                                 </td>
-
                                 <td>
                                     @if ($report->is_verified)
                                         <span class="badge bg-success px-3 py-2">Verified</span>
@@ -68,8 +59,7 @@
                                         <span class="badge bg-secondary px-3 py-2">Pending</span>
                                     @endif
                                 </td>
-
-                                <td class="text-center">
+                                <td>
                                     @if (!$report->is_verified)
                                         <form action="{{ route('admin.death-reports.approve', $report->id) }}"
                                               method="POST" class="d-inline">
@@ -93,7 +83,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
+                                <td colspan="6" class="text-center text-light fst-italic py-4">
                                     No death reports yet.
                                 </td>
                             </tr>
@@ -107,9 +97,14 @@
 
 {{-- ✨ Custom Styles --}}
 <style>
-.table tbody tr:hover {
-    background-color: rgba(0, 255, 255, 0.05);
-    transition: background-color 0.2s ease-in-out;
+.table-hover tbody tr:hover {
+    transform: translateY(-2px);
+    transition: transform 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+}
+
+.text-light.fst-italic {
+    font-style: italic;
 }
 
 .badge {
@@ -136,12 +131,5 @@
     color: #a6ffcb;
     border: 1px solid rgba(25, 135, 84, 0.4);
 }
-
-.table-hover tbody tr:hover {
-    transform: translateY(-2px);
-    transition: transform 0.15s ease;
-    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
-}
-
 </style>
 @endsection
