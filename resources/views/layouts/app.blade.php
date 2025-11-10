@@ -215,78 +215,100 @@
     </div>
 
     <ul class="nav flex-column mt-3 px-2">
-      @auth
-      <li class="nav-item">
+    @auth
+    <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
-      </li>
+    </li>
 
-      @if(auth()->user()->role === 'admin')
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}"
-          href="{{ route('bereavement-cases.create') }}">
-          <i class="bi bi-people me-2"></i> Bereavement Cases
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('admin.death-reports.*') ? 'active' : '' }}"
-          href="{{ route('admin.death-reports.index') }}">
-          <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('donations.*') ? 'active' : '' }}"
-          href="{{ route('donations.index') }}">
-          <i class="bi bi-cash-coin me-2"></i> Donations
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
-          href="{{ route('notifications.index') }}">
-          <i class="bi bi-bell me-2"></i> Notifications
-          @if(Auth::user()->unreadNotifications->count() > 0)
-          <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
-          @endif
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"
-          href="{{ route('members.index') }}">
-          <i class="bi bi-person-lines-fill me-2"></i> Members
-        </a>
-      </li>
-      <li class="nav-item">
-  <a class="nav-link {{ request()->routeIs('admin.penalties') ? 'active' : '' }}"
-     href="{{ route('admin.penalties') }}">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i> Penalties
-  </a>
-</li>
-      @else
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}"
-          href="{{ route('donations.create') }}">
-          <i class="bi bi-heart-fill me-2"></i> Donate
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}"
-          href="{{ route('report.death') }}">
-          <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
-          href="{{ route('notifications.index') }}">
-          <i class="bi bi-bell me-2"></i> My Notifications
-          @if(Auth::user()->unreadNotifications->count() > 0)
-          <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
-          @endif
-        </a>
-      </li>
-      @endif
-      @endauth
-    </ul>
+    {{-- Admin Links --}}
+    @if(auth()->user()->role === 'admin')
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('bereavement-cases.*') ? 'active' : '' }}"
+               href="{{ route('bereavement-cases.create') }}">
+                <i class="bi bi-people me-2"></i> Bereavement Cases
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.death-reports.*') ? 'active' : '' }}"
+               href="{{ route('admin.death-reports.index') }}">
+                <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('donations.*') ? 'active' : '' }}"
+               href="{{ route('donations.index') }}">
+                <i class="bi bi-cash-coin me-2"></i> Donations
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
+               href="{{ route('notifications.index') }}">
+                <i class="bi bi-bell me-2"></i> Notifications
+                @if(Auth::user()->unreadNotifications->count() > 0)
+                    <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+                @endif
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"
+               href="{{ route('members.index') }}">
+                <i class="bi bi-person-lines-fill me-2"></i> Members
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.penalties') ? 'active' : '' }}"
+               href="{{ route('admin.penalties') }}">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> Penalties
+            </a>
+        </li>
+
+    {{-- Staff Links --}}
+    @elseif(auth()->user()->role === 'staff')
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}"
+               href="{{ route('report.death') }}">
+                <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
+               href="{{ route('notifications.index') }}">
+                <i class="bi bi-bell me-2"></i> My Notifications
+                @if(Auth::user()->unreadNotifications->count() > 0)
+                    <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+                @endif
+            </a>
+        </li>
+
+    {{-- Regular Member Links --}}
+    @elseif(auth()->user()->role === 'member')
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('donations.create') ? 'active' : '' }}"
+               href="{{ route('donations.create') }}">
+                <i class="bi bi-heart-fill me-2"></i> Donate
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('report.death') ? 'active' : '' }}"
+               href="{{ route('report.death') }}">
+                <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('notifications.index') ? 'active' : '' }}"
+               href="{{ route('notifications.index') }}">
+                <i class="bi bi-bell me-2"></i> My Notifications
+                @if(Auth::user()->unreadNotifications->count() > 0)
+                    <span class="badge bg-danger">{{ Auth::user()->unreadNotifications->count() }}</span>
+                @endif
+            </a>
+        </li>
+    @endif
+    @endauth
+</ul>
+
 
     <hr class="bg-secondary" />
 

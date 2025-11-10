@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\DeathReport;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Notifications\DeathReportedNotification;
+use Illuminate\Support\Facades\Notification;
 
 class DeathReportController extends Controller
 {
@@ -17,6 +20,7 @@ class DeathReportController extends Controller
     // Handle the form submission
     public function store(Request $request)
     {
+        // Validate input
         $request->validate([
             'name_of_deceased' => 'required|string|max:255',
             'date_of_death' => 'required|date',
@@ -24,12 +28,12 @@ class DeathReportController extends Controller
             'death_certificate' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        // Store file
+        // Store uploaded file
         $path = $request->file('death_certificate')->store('death_certificates', 'public');
 
-        // Save to database
-        DeathReport::create([
-            'user_id' => Auth::id(), // ✅ Add this line
+        // Save death report
+        $report = DeathReport::create([
+            'user_id' => Auth::id(),
             'name_of_deceased' => $request->name_of_deceased,
             'date_of_death' => $request->date_of_death,
             'notes' => $request->notes,
@@ -37,6 +41,11 @@ class DeathReportController extends Controller
             'is_verified' => false,
         ]);
 
-        return redirect()->back()->with('success', 'Death report submitted successfully. Awaiting admin verification.');
+        // Notify all admins (in-app notification)
+        $admins = User::where('role', 'admin')->get();
+        Notification::send($admins, new DeathReportedNotification($report));
+
+        return redirect()->back()
+            ->with('success', 'Death report submitted successfully. Waiting for admin approval.');
     }
 }

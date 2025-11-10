@@ -10,10 +10,12 @@ class MemberController extends Controller
 {
     // List all members (users with role 'member')
     public function index()
-    {
-        $members = User::where('role', 'member')->get();
-        return view('members.index', compact('members'));
-    }
+{
+    // Fetch all users, not just members
+    $members = User::all(); // or you can order by name: User::orderBy('name')->get();
+    return view('members.index', compact('members'));
+}
+
 
     // Show create form
     public function create()
@@ -24,22 +26,28 @@ class MemberController extends Controller
     // Store new member (as user)
     public function store(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'household'=> 'nullable|string',
-            'contact'  => 'nullable|string',
-        ]);
+       
+       $request->validate([
+    'name'      => 'required|string|max:255',
+    'email'     => 'required|email|unique:users,email',
+    'password'  => 'required|string|min:6|confirmed',
+    'household' => 'nullable|string',
+    'contact'   => 'nullable|string',
+    'role'      => 'required|in:member,staff,admin',
+    'job_type'  => 'nullable|string',
+]);
 
-        User::create([
-            'name'     => $request->name,
-             'email' => 'required|email|unique:users,email',
-            'password' => Hash::make($request->password),
-            'household'=> $request->household,
-            'contact'  => $request->contact,
-            'role'     => 'member', // identify as member
-        ]);
+
+       User::create([
+    'name'     => $request->name,
+    'email'    => $request->email,
+    'password' => Hash::make($request->password),
+    'household'=> $request->household,
+    'contact'  => $request->contact,
+    'role'     => $request->role, // dynamic
+    'job_type' => $request->role === 'staff' ? $request->job_type : null,
+]);
+
 
         return redirect()->route('members.index')
                          ->with('success', 'Member created successfully and can now log in.');
@@ -60,13 +68,21 @@ class MemberController extends Controller
     // Update member info
     public function update(Request $request, User $member)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'household' => 'nullable|string',
-            'contact' => 'nullable|string',
-        ]);
+       $request->validate([
+    'name'      => 'required|string|max:255',
+    'household' => 'nullable|string',
+    'contact'   => 'nullable|string',
+    'role'      => 'required|in:member,staff,admin',
+    'job_type'  => 'nullable|string',
+]);
 
-        $member->update($request->only(['name', 'household', 'contact']));
+        $member->update([
+    'name'      => $request->name,
+    'household' => $request->household,
+    'contact'   => $request->contact,
+    'role'      => $request->role,
+    'job_type'  => $request->role === 'staff' ? $request->job_type : null,
+]);
 
         return redirect()->route('members.index')->with('success', 'Member updated successfully.');
     }

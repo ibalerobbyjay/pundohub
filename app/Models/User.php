@@ -16,6 +16,7 @@ class User extends Authenticatable
     'role',
     'household',
     'contact',
+       'job_type',
 ];
 
 

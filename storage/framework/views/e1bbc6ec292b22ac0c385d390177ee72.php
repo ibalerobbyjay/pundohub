@@ -215,78 +215,100 @@
     </div>
 
     <ul class="nav flex-column mt-3 px-2">
-      <?php if(auth()->guard()->check()): ?>
-      <li class="nav-item">
+    <?php if(auth()->guard()->check()): ?>
+    <li class="nav-item">
         <a class="nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" href="<?php echo e(route('dashboard')); ?>">
-          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
-      </li>
+    </li>
 
-      <?php if(auth()->user()->role === 'admin'): ?>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('bereavement-cases.*') ? 'active' : ''); ?>"
-          href="<?php echo e(route('bereavement-cases.create')); ?>">
-          <i class="bi bi-people me-2"></i> Bereavement Cases
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('admin.death-reports.*') ? 'active' : ''); ?>"
-          href="<?php echo e(route('admin.death-reports.index')); ?>">
-          <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('donations.*') ? 'active' : ''); ?>"
-          href="<?php echo e(route('donations.index')); ?>">
-          <i class="bi bi-cash-coin me-2"></i> Donations
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('notifications.index') ? 'active' : ''); ?>"
-          href="<?php echo e(route('notifications.index')); ?>">
-          <i class="bi bi-bell me-2"></i> Notifications
-          <?php if(Auth::user()->unreadNotifications->count() > 0): ?>
-          <span class="badge bg-danger"><?php echo e(Auth::user()->unreadNotifications->count()); ?></span>
-          <?php endif; ?>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('members.*') ? 'active' : ''); ?>"
-          href="<?php echo e(route('members.index')); ?>">
-          <i class="bi bi-person-lines-fill me-2"></i> Members
-        </a>
-      </li>
-      <li class="nav-item">
-  <a class="nav-link <?php echo e(request()->routeIs('admin.penalties') ? 'active' : ''); ?>"
-     href="<?php echo e(route('admin.penalties')); ?>">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i> Penalties
-  </a>
-</li>
-      <?php else: ?>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('donations.create') ? 'active' : ''); ?>"
-          href="<?php echo e(route('donations.create')); ?>">
-          <i class="bi bi-heart-fill me-2"></i> Donate
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('report.death') ? 'active' : ''); ?>"
-          href="<?php echo e(route('report.death')); ?>">
-          <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('notifications.index') ? 'active' : ''); ?>"
-          href="<?php echo e(route('notifications.index')); ?>">
-          <i class="bi bi-bell me-2"></i> My Notifications
-          <?php if(Auth::user()->unreadNotifications->count() > 0): ?>
-          <span class="badge bg-danger"><?php echo e(Auth::user()->unreadNotifications->count()); ?></span>
-          <?php endif; ?>
-        </a>
-      </li>
-      <?php endif; ?>
-      <?php endif; ?>
-    </ul>
+    
+    <?php if(auth()->user()->role === 'admin'): ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('bereavement-cases.*') ? 'active' : ''); ?>"
+               href="<?php echo e(route('bereavement-cases.create')); ?>">
+                <i class="bi bi-people me-2"></i> Bereavement Cases
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('admin.death-reports.*') ? 'active' : ''); ?>"
+               href="<?php echo e(route('admin.death-reports.index')); ?>">
+                <i class="bi bi-file-earmark-medical-fill me-2"></i> Death Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('donations.*') ? 'active' : ''); ?>"
+               href="<?php echo e(route('donations.index')); ?>">
+                <i class="bi bi-cash-coin me-2"></i> Donations
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('notifications.index') ? 'active' : ''); ?>"
+               href="<?php echo e(route('notifications.index')); ?>">
+                <i class="bi bi-bell me-2"></i> Notifications
+                <?php if(Auth::user()->unreadNotifications->count() > 0): ?>
+                    <span class="badge bg-danger"><?php echo e(Auth::user()->unreadNotifications->count()); ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('members.*') ? 'active' : ''); ?>"
+               href="<?php echo e(route('members.index')); ?>">
+                <i class="bi bi-person-lines-fill me-2"></i> Members
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('admin.penalties') ? 'active' : ''); ?>"
+               href="<?php echo e(route('admin.penalties')); ?>">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> Penalties
+            </a>
+        </li>
+
+    
+    <?php elseif(auth()->user()->role === 'staff'): ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('report.death') ? 'active' : ''); ?>"
+               href="<?php echo e(route('report.death')); ?>">
+                <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('notifications.index') ? 'active' : ''); ?>"
+               href="<?php echo e(route('notifications.index')); ?>">
+                <i class="bi bi-bell me-2"></i> My Notifications
+                <?php if(Auth::user()->unreadNotifications->count() > 0): ?>
+                    <span class="badge bg-danger"><?php echo e(Auth::user()->unreadNotifications->count()); ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+
+    
+    <?php elseif(auth()->user()->role === 'member'): ?>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('donations.create') ? 'active' : ''); ?>"
+               href="<?php echo e(route('donations.create')); ?>">
+                <i class="bi bi-heart-fill me-2"></i> Donate
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('report.death') ? 'active' : ''); ?>"
+               href="<?php echo e(route('report.death')); ?>">
+                <i class="bi bi-file-earmark-medical-fill me-2"></i> Report a Death
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link <?php echo e(request()->routeIs('notifications.index') ? 'active' : ''); ?>"
+               href="<?php echo e(route('notifications.index')); ?>">
+                <i class="bi bi-bell me-2"></i> My Notifications
+                <?php if(Auth::user()->unreadNotifications->count() > 0): ?>
+                    <span class="badge bg-danger"><?php echo e(Auth::user()->unreadNotifications->count()); ?></span>
+                <?php endif; ?>
+            </a>
+        </li>
+    <?php endif; ?>
+    <?php endif; ?>
+</ul>
+
 
     <hr class="bg-secondary" />
 

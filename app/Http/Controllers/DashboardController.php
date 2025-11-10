@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -41,8 +40,15 @@ class DashboardController extends Controller
                 'recentCases'
             ));
         } else {
-            // Regular user: their own notifications
+            // Regular user or staff
             $notifications = $user->notifications()->latest()->take(5)->get();
+
+            // If user is staff, filter notifications by job_type
+            if ($user->role === 'staff') {
+                $notifications = $notifications->filter(function ($notification) use ($user) {
+                    return isset($notification->data['job_type']) && $notification->data['job_type'] === $user->job_type;
+                });
+            }
 
             // Total donations by this user
             $userTotalDonations = Donation::where('user_id', $user->id)->sum('amount');

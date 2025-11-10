@@ -38,20 +38,21 @@
                                    placeholder="Enter case title">
                         </div>
 
-                        <div class="mb-4">
-                            <label for="user_id" class="form-label fw-semibold text-light">
-                                Member <span class="text-danger">*</span>
-                            </label>
-                            <select name="user_id" id="user_id" 
-                                    class="form-select bg-dark text-light border-secondary rounded-3" required>
-                                <option value="">-- Select Member --</option>
-                                @foreach($users as $user)
-                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+           <div class="mb-4">
+    <label for="user_id" class="form-label fw-semibold text-light">
+        Select Member <span class="text-danger">*</span>
+    </label>
+    <select name="user_id" id="user_id" 
+            class="form-select bg-dark text-light border-secondary rounded-3" required>
+        <option value="">-- Select Member --</option>
+        @foreach($assignableUsers as $user)
+            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                {{ $user->name }} ({{ ucfirst($user->role) }})
+            </option>
+        @endforeach
+    </select>
+</div>
+
 
                         <div class="mb-4">
                             <label for="date_of_death" class="form-label fw-semibold text-light">

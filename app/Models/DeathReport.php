@@ -18,4 +18,8 @@ class DeathReport extends Model
         'is_verified',
         'verified_at',
     ];
+     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

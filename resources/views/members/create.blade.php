@@ -92,6 +92,34 @@
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
+                {{-- Role & Job Type --}}
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label text-light">Role <span class="text-danger">*</span></label>
+        <select name="role" id="role" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
+            <option value="" selected disabled>Select Role</option>
+            <option value="member" {{ old('role') == 'member' ? 'selected' : '' }}>Member</option>
+            <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
+            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+        </select>
+        @error('role')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
+
+    <div class="col-md-6 mb-3" id="jobTypeDiv" style="display: none;">
+        <label class="form-label text-light">Staff Job Type</label>
+        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm">
+            <option value="" selected disabled>Select Job Type</option>
+            <option value="cook" {{ old('job_type') == 'cook' ? 'selected' : '' }}>Cook</option>
+            <option value="dishwasher" {{ old('job_type') == 'dishwasher' ? 'selected' : '' }}>Dishwasher</option>
+           
+        </select>
+        @error('job_type')
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
+    </div>
+</div>
 
                 {{-- Buttons --}}
                 <div class="d-flex justify-content-end gap-2 mt-4">
@@ -126,6 +154,18 @@
             return;
         }
         contactInput.value = '+63' + contactValue.substring(1);
+    });
+</script>
+<script>
+    const roleSelect = document.getElementById('role');
+    const jobTypeDiv = document.getElementById('jobTypeDiv');
+
+    roleSelect.addEventListener('change', function() {
+        if(this.value === 'staff'){
+            jobTypeDiv.style.display = 'block';
+        } else {
+            jobTypeDiv.style.display = 'none';
+        }
     });
 </script>
 @endsection

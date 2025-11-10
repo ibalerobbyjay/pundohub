@@ -5,10 +5,10 @@
     {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-info">
-            <i class="bi bi-people-fill me-2 text-warning"></i>Members
+            <i class="bi bi-people-fill me-2 text-warning"></i>Users
         </h2>
         <a href="{{ route('members.create') }}" class="btn btn-success shadow-sm rounded-pill px-4">
-            <i class="bi bi-person-plus-fill me-1"></i> Add Member
+            <i class="bi bi-person-plus-fill me-1"></i> Add User
         </a>
     </div>
 
@@ -21,7 +21,7 @@
         </div>
     @endif
 
-    {{-- Members card --}}
+    {{-- Users card --}}
     <div class="card shadow-lg rounded-4 border-0"
          style="background: rgba(25,25,25,0.9); backdrop-filter: blur(12px);">
         <div class="card-body p-4">
@@ -31,6 +31,8 @@
                     <thead style="background-color: #1a1a1a; color: #f8f9fa;" class="text-uppercase small">
                         <tr>
                             <th>Name</th>
+                            <th>Role</th>
+                            <th>Job Type</th>
                             <th>Household</th>
                             <th>Contact</th>
                             <th>Email</th>
@@ -41,6 +43,8 @@
                         @forelse ($members as $member)
                             <tr>
                                 <td class="fw-semibold">{{ $member->name }}</td>
+                                <td class="text-capitalize">{{ $member->role }}</td>
+                                <td class="text-capitalize">{{ $member->role === 'staff' ? $member->job_type ?? '—' : '—' }}</td>
                                 <td>{{ $member->household ?? '—' }}</td>
                                 <td>{{ $member->contact ?? '—' }}</td>
                                 <td>{{ $member->email }}</td>
@@ -54,7 +58,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-danger btn-sm rounded-pill shadow-sm px-3"
-                                                onclick="return confirm('Are you sure you want to delete this member?')">
+                                                onclick="return confirm('Are you sure you want to delete this user?')">
                                             <i class="bi bi-trash me-1"></i> Delete
                                         </button>
                                     </form>
@@ -62,9 +66,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="7" class="text-center text-muted py-4">
                                     <i class="bi bi-people fs-3 d-block mb-2"></i>
-                                    No members found.
+                                    No users found.
                                 </td>
                             </tr>
                         @endforelse
@@ -76,6 +80,7 @@
     </div>
 </div>
 @endsection
+
 <style>
 .table-hover tbody tr:hover {
     transform: translateY(-2px);

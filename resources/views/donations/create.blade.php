@@ -2,7 +2,9 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2 class="mb-4 text-primary fw-bold">Add Donation</h2>
+    <h2 class="mb-4 text-info fw-bold text-center">
+        <i class="bi bi-gift-fill me-2 text-warning"></i> Add Donation
+    </h2>
 
     {{-- Success message --}}
     @if(session('success'))
@@ -18,64 +20,67 @@
         $latestCases = $cases->sortByDesc('created_at')->take(5);
     @endphp
 
-    <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data" class="card p-4 shadow-lg bg-light rounded">
+    <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <!-- Donor -->
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Donor</label>
-            <input type="text" class="form-control" value="{{ Auth::user()->name }}" readonly>
-        </div>
+        <div class="card p-4 shadow-lg rounded-4 bg-dark text-light" 
+             style="background: rgba(25,25,25,0.85); backdrop-filter: blur(12px);">
 
-        <!-- Donation Type -->
-        <div class="mb-3">
-            <label for="type" class="form-label fw-semibold">Donation Type</label>
-            <select name="type" id="type" class="form-select" {{ $userHasRecentCase ? 'disabled' : '' }} required>
-                <option value="" disabled selected>Select donation type</option>
-                <option value="Firewood">Firewood</option>
-                <option value="Rice">Rice</option>
-                <option value="Money">Money</option>
-            </select>
-        </div>
-
-        <!-- Amount (only required for Money) -->
-        <div class="mb-3">
-            <label for="amount" class="form-label fw-semibold">Amount (₱)</label>
-            <input type="number" name="amount" id="amount" class="form-control" step="0.01" min="100" 
-                   {{ $userHasRecentCase ? 'disabled' : '' }} placeholder="Enter amount (only for Money)">
-        </div>
-
-        <!-- Bereavement Case -->
-        <div class="mb-3">
-            <label for="bereavement_case_id" class="form-label fw-semibold text-danger">Bereavement Case *</label>
-            <select name="bereavement_case_id" id="bereavement_case_id" class="form-select" 
-                    {{ $userHasRecentCase ? 'disabled' : '' }} required>
-                <option value="" disabled selected>Select a bereavement case</option>
-                @foreach ($latestCases as $case)
-                    <option value="{{ $case->id }}">
-                        {{ $case->title }} ({{ $case->user->name ?? 'Unknown Member' }})
-                    </option>
-                @endforeach
-            </select>
-            <small class="text-muted">Showing the 5 latest bereavement cases.</small>
-        </div>
-
-        <!-- Proof of Donation -->
-        <div class="mb-3">
-            <label for="proof" class="form-label fw-semibold">Proof of Donation (Photo or Receipt)</label>
-            <input type="file" name="proof" id="proof" class="form-control" accept="image/*" required>
-            <small class="text-muted">Upload a clear photo (JPG, PNG, max 2MB).</small>
-
-            <div class="mt-3 text-center">
-                <img id="proofPreview" src="#" alt="Preview" 
-                     class="img-thumbnail d-none" 
-                     style="max-width: 200px; height: auto;">
+            <!-- Donor -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Donor</label>
+                <input type="text" class="form-control bg-dark text-light border-secondary" value="{{ Auth::user()->name }}" readonly>
             </div>
-        </div>
 
-        <button type="submit" class="btn btn-primary w-100 fw-bold" {{ $userHasRecentCase ? 'disabled' : '' }}>
-            Save Donation
-        </button>
+            <!-- Donation Type -->
+            <div class="mb-3">
+                <label for="type" class="form-label fw-semibold">Donation Type</label>
+                <select name="type" id="type" class="form-select bg-dark text-light border-secondary" {{ $userHasRecentCase ? 'disabled' : '' }} required>
+                    <option value="" disabled selected>Select donation type</option>
+                    <option value="Firewood">Firewood</option>
+                    <option value="Rice">Rice</option>
+                    <option value="Money">Money</option>
+                </select>
+            </div>
+
+            <!-- Amount (only for Money) -->
+            <div class="mb-3">
+                <label for="amount" class="form-label fw-semibold">Amount (₱)</label>
+                <input type="number" name="amount" id="amount" class="form-control bg-dark text-light border-secondary" step="0.01" min="100" 
+                       {{ $userHasRecentCase ? 'disabled' : '' }} placeholder="Enter amount (only for Money)">
+            </div>
+
+            <!-- Bereavement Case -->
+            <div class="mb-3">
+                <label for="bereavement_case_id" class="form-label fw-semibold text-danger">Bereavement Case *</label>
+                <select name="bereavement_case_id" id="bereavement_case_id" class="form-select bg-dark text-light border-secondary" 
+                        {{ $userHasRecentCase ? 'disabled' : '' }} required>
+                    <option value="" disabled selected>Select a bereavement case</option>
+                    @foreach ($latestCases as $case)
+                        <option value="{{ $case->id }}">
+                            {{ $case->title }} ({{ $case->user->name ?? 'Unknown Member' }})
+                        </option>
+                    @endforeach
+                </select>
+                <small class="text-muted">Showing the 5 latest bereavement cases.</small>
+            </div>
+
+            <!-- Proof of Donation -->
+            <div class="mb-3">
+                <label for="proof" class="form-label fw-semibold">Proof of Donation (Photo or Receipt)</label>
+                <input type="file" name="proof" id="proof" class="form-control bg-dark text-light border-secondary" accept="image/*" required>
+                <small class="text-muted">Upload a clear photo (JPG, PNG, max 2MB).</small>
+                <div class="mt-3 text-center">
+                    <img id="proofPreview" src="#" alt="Preview" 
+                         class="img-thumbnail d-none" 
+                         style="max-width: 200px; height: auto;">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-info w-100 fw-bold mt-3" {{ $userHasRecentCase ? 'disabled' : '' }}>
+                <i class="bi bi-check-circle me-1"></i> Save Donation
+            </button>
+        </div>
     </form>
 </div>
 
@@ -88,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
     const caseSelect = document.getElementById('bereavement_case_id');
 
-    // Toggle amount field
+    // Toggle amount field for Money type
     function toggleAmount() {
         if (typeSelect.value === 'Money') {
             amountInput.removeAttribute('disabled');

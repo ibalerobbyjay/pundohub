@@ -6,6 +6,14 @@
         <i class="bi bi-file-earmark-text-fill me-2 text-warning"></i> Bereavement Case Details
     </h2>
 
+    <?php if(session('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-1"></i> <?php echo e(session('success')); ?>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <div class="card shadow-lg rounded-4 mb-4 bg-dark text-light" 
          style="background: rgba(25,25,25,0.9); backdrop-filter: blur(12px);">
         <div class="card-body">

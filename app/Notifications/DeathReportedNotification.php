@@ -20,7 +20,7 @@ class DeathReportedNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['mail', 'database']; // can also use SMS or others
+        return ['database']; // can also use SMS or others
     }
 
     public function toMail($notifiable)
@@ -33,13 +33,16 @@ class DeathReportedNotification extends Notification
                     ->line('Please review and add a bereavement case.');
     }
 
-    public function toDatabase($notifiable)
-    {
-        return [
-            'report_id' => $this->report->id,
-            'reporter_name' => $this->report->user->name,
-            'deceased_name' => $this->report->name_of_deceased,
-        ];
-    }
+   public function toDatabase($notifiable)
+{
+    return [
+        'report_id' => $this->report->id,
+        'reporter_name' => $this->report->user ? $this->report->user->name : 'Unknown',
+        'deceased_name' => $this->report->name_of_deceased,
+        'message' => "A new death has been reported by " . ($this->report->user ? $this->report->user->name : 'Unknown') .
+                     " for {$this->report->name_of_deceased}.",
+    ];
+}
+
 }
 

@@ -36,21 +36,21 @@
                                    placeholder="Enter case title">
                         </div>
 
-                        <div class="mb-4">
-                            <label for="user_id" class="form-label fw-semibold text-light">
-                                Member <span class="text-danger">*</span>
-                            </label>
-                            <select name="user_id" id="user_id" 
-                                    class="form-select bg-dark text-light border-secondary rounded-3" required>
-                                <option value="">-- Select Member --</option>
-                                <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($user->id); ?>" <?php echo e(old('user_id') == $user->id ? 'selected' : ''); ?>>
-                                        <?php echo e($user->name); ?>
+           <div class="mb-4">
+    <label for="user_id" class="form-label fw-semibold text-light">
+        Select Member <span class="text-danger">*</span>
+    </label>
+    <select name="user_id" id="user_id" 
+            class="form-select bg-dark text-light border-secondary rounded-3" required>
+        <option value="">-- Select Member --</option>
+        <?php $__currentLoopData = $assignableUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($user->id); ?>" <?php echo e(old('user_id') == $user->id ? 'selected' : ''); ?>>
+                <?php echo e($user->name); ?> (<?php echo e(ucfirst($user->role)); ?>)
+            </option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </select>
+</div>
 
-                                    </option>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </select>
-                        </div>
 
                         <div class="mb-4">
                             <label for="date_of_death" class="form-label fw-semibold text-light">
