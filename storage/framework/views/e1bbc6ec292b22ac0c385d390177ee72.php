@@ -130,15 +130,17 @@
       height: 3rem;
     }
 
-    /* ✅ Styled Logout Modal */
+    /* ✅ Styled Logout Modal - Smaller */
     .modal-content {
-      background: rgba(20, 20, 20, 0.85);
+      background: rgba(20, 20, 20, 0.95);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
+      border-radius: 12px;
       backdrop-filter: blur(12px);
       box-shadow: 0 0 30px rgba(245, 244, 243, 0.3);
       animation: popIn 0.25s ease-out;
+      max-width: 350px;
+      margin: 0 auto;
     }
 
     @keyframes popIn {
@@ -154,10 +156,18 @@
 
     .modal-header {
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 1rem 1.5rem;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      font-size: 0.95rem;
+      text-align: center;
     }
 
     .modal-footer {
       border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 1rem 1.5rem;
     }
 
     .btn-danger {
@@ -166,6 +176,8 @@
       color: black;
       font-weight: 600;
       transition: all 0.3s ease;
+      padding: 0.5rem 1.5rem;
+      position: relative;
     }
 
     .btn-danger:hover {
@@ -178,6 +190,7 @@
       background-color: #3a3a3a;
       border: none;
       transition: all 0.3s ease;
+      padding: 0.5rem 1.5rem;
     }
 
     .btn-secondary:hover {
@@ -185,14 +198,132 @@
       transform: scale(1.05);
     }
 
-    .modal-body {
-      font-size: 1rem;
-      text-align: center;
-    }
-
     body.modal-open {
       overflow: hidden !important;
       padding-right: 0 !important;
+    }
+
+    /* Profile Picture Styles - Larger */
+    .profile-picture {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #0dcaf0;
+      transition: all 0.3s ease;
+    }
+
+    .profile-picture:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 20px rgba(13, 202, 240, 0.6);
+    }
+
+    .profile-default {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: #6c757d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #0dcaf0;
+      transition: all 0.3s ease;
+    }
+
+    .profile-default:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 20px rgba(13, 202, 240, 0.6);
+    }
+
+    .profile-default i {
+      font-size: 1.5rem;
+    }
+
+    .profile-dropdown-toggle {
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+
+    .profile-dropdown-toggle::after {
+      display: none;
+    }
+
+    .profile-dropdown {
+      min-width: 220px;
+      border-radius: 12px;
+      background: rgba(25, 25, 25, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .profile-dropdown .dropdown-item {
+      color: #fff;
+      transition: all 0.2s ease;
+      border-radius: 6px;
+      margin: 3px 8px;
+      padding: 0.6rem 1rem;
+    }
+
+    .profile-dropdown .dropdown-item:hover {
+      background: rgba(13, 202, 240, 0.15);
+      color: #0dcaf0;
+      transform: translateX(5px);
+    }
+
+    .profile-dropdown .logout-item:hover {
+      background: rgba(220, 53, 69, 0.15);
+      color: #dc3545;
+    }
+
+    .user-info {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .user-role {
+      color: #adb5bd;
+      font-size: 0.85rem;
+    }
+
+    /* Top Right Profile Container */
+    .top-profile-container {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 1100;
+    }
+
+    /* Logout Button Loading State */
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .btn-loading .btn-text {
+      visibility: hidden;
+    }
+
+    .btn-loading::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -309,45 +440,33 @@
     <?php endif; ?>
 </ul>
 
-
     <hr class="bg-secondary" />
 
-    <ul class="nav flex-column px-2 mb-3">
+    <!-- Profile Section in Sidebar -->
+    <div class="px-3 mb-3">
       <?php if(auth()->guard()->check()): ?>
-      <li class="nav-item dropdown text-center">
-        <a class="nav-link dropdown-toggle text-light d-flex align-items-center justify-content-center" href="#"
-          id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-person-circle me-2"></i>
-          <?php echo e(auth()->user()->name); ?>
-
-        </a>
-        <ul class="dropdown-menu dropdown-menu-dark text-small shadow border-0 mt-2"
-          aria-labelledby="userDropdown">
-          <li>
-            <a class="dropdown-item <?php echo e(request()->routeIs('profile.edit') ? 'active' : ''); ?>"
-              href="<?php echo e(route('profile.edit')); ?>">
-              <i class="bi bi-pencil-square me-2"></i> Edit Profile
-            </a>
-          </li>
-          <li><hr class="dropdown-divider" /></li>
-          <li>
-            <form id="logoutForm" action="<?php echo e(route('logout')); ?>" method="POST">
-              <?php echo csrf_field(); ?>
-              <button type="submit" class="dropdown-item text-danger">
-                <i class="bi bi-box-arrow-right me-2"></i> Logout
-              </button>
-            </form>
-          </li>
-        </ul>
-      </li>
+      <div class="d-flex align-items-center text-light p-2 rounded">
+        <div class="me-3">
+          <?php if(auth()->user()->profile_picture): ?>
+            <img src="<?php echo e(asset('storage/' . auth()->user()->profile_picture)); ?>" 
+                 alt="Profile" class="profile-picture">
+          <?php else: ?>
+            <div class="profile-default">
+              <i class="bi bi-person-fill text-light"></i>
+            </div>
+          <?php endif; ?>
+        </div>
+        <div class="flex-grow-1">
+          <div class="user-info fw-semibold"><?php echo e(auth()->user()->name); ?></div>
+          <div class="user-role"><?php echo e(ucfirst(auth()->user()->role)); ?></div>
+        </div>
+      </div>
       <?php else: ?>
-      <li class="nav-item">
-        <a class="nav-link <?php echo e(request()->routeIs('login') ? 'active' : ''); ?>" href="<?php echo e(route('login')); ?>">
-          <i class="bi bi-box-arrow-in-right me-2"></i> Login
-        </a>
-      </li>
+      <a class="nav-link <?php echo e(request()->routeIs('login') ? 'active' : ''); ?>" href="<?php echo e(route('login')); ?>">
+        <i class="bi bi-box-arrow-in-right me-2"></i> Login
+      </a>
       <?php endif; ?>
-    </ul>
+    </div>
   </nav>
 
   <!-- Sidebar toggle -->
@@ -355,25 +474,70 @@
     <i class="bi bi-list"></i>
   </button>
 
+  <!-- Top Right Profile Picture Dropdown -->
+  <?php if(auth()->guard()->check()): ?>
+  <div class="top-profile-container">
+    <div class="dropdown">
+      <button class="profile-dropdown-toggle" type="button" id="topProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <?php if(auth()->user()->profile_picture): ?>
+          <img src="<?php echo e(asset('storage/' . auth()->user()->profile_picture)); ?>" 
+               alt="Profile" class="profile-picture">
+        <?php else: ?>
+          <div class="profile-default">
+            <i class="bi bi-person-fill text-light"></i>
+          </div>
+        <?php endif; ?>
+      </button>
+      <ul class="dropdown-menu profile-dropdown shadow-lg" aria-labelledby="topProfileDropdown">
+        <li class="px-3 py-2 border-bottom border-secondary">
+          <div class="user-info"><?php echo e(auth()->user()->name); ?></div>
+          <div class="user-role"><?php echo e(ucfirst(auth()->user()->role)); ?></div>
+        </li>
+        <li>
+          <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">
+            <i class="bi bi-person-gear me-2 text-info"></i>Edit Profile
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>#change-picture">
+            <i class="bi bi-camera me-2 text-info"></i>Change Profile Picture
+          </a>
+        </li>
+        <li><hr class="dropdown-divider bg-secondary my-1"></li>
+        <li>
+          <button class="dropdown-item logout-item" data-bs-toggle="modal" data-bs-target="#logoutModal">
+            <i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <?php endif; ?>
+
   <!-- Main Content -->
   <div id="content" class="p-4"><?php echo $__env->yieldContent('content'); ?></div>
 
-  <!-- ✅ Logout Confirmation Modal -->
+  <!-- ✅ Logout Confirmation Modal - Smaller -->
   <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="logoutModalLabel">
-            <i class="bi bi-box-arrow-right text-warning me-2"></i> Confirm Logout
+            <i class="bi bi-box-arrow-right text-warning me-2"></i> Logout
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Are you sure you want to <strong class="text-warning">log out</strong> of PundoHub?
+          <p class="mb-0">Are you sure you want to log out?</p>
         </div>
         <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-          <button id="confirmLogoutBtn" type="button" class="btn btn-danger px-4">Logout</button>
+          <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Cancel</button>
+          <form id="logoutForm" action="<?php echo e(route('logout')); ?>" method="POST" class="d-inline">
+            <?php echo csrf_field(); ?>
+            <button type="submit" class="btn btn-danger px-3" id="logoutButton">
+              <span class="btn-text">Logout</span>
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -384,6 +548,8 @@
 
   <script>
   const spinner = document.getElementById("loadingSpinner");
+  const logoutButton = document.getElementById("logoutButton");
+  const logoutForm = document.getElementById("logoutForm");
 
   function showSpinner() {
     spinner.classList.add("active");
@@ -409,43 +575,51 @@
     });
   });
 
-  window.addEventListener("load", () => hideSpinner());
-
-  // ✅ Logout Confirmation (with fade-out + fullscreen spinner)
-  const logoutForm = document.getElementById("logoutForm");
-  const confirmLogoutBtn = document.getElementById("confirmLogoutBtn");
-  const logoutModalEl = document.getElementById("logoutModal");
-  const logoutModal = new bootstrap.Modal(logoutModalEl);
-
-  if (logoutForm && confirmLogoutBtn) {
-    logoutForm.addEventListener("submit", function (e) {
+  // Logout with loading spinner
+  if (logoutButton && logoutForm) {
+    logoutForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      logoutModal.show();
-
-      confirmLogoutBtn.addEventListener(
-        "click",
-        function () {
-          // Disable the button briefly to avoid double-clicks
-          confirmLogoutBtn.disabled = true;
-          confirmLogoutBtn.innerHTML = `
-            <i class="bi bi-box-arrow-right me-2"></i> Logging out...
-          `;
-
-          // Smooth fade-out animation for modal
-          const modalContent = logoutModalEl.querySelector(".modal-content");
-          modalContent.style.transition = "opacity 0.4s ease";
-          modalContent.style.opacity = "0";
-
-          setTimeout(() => {
-            logoutModal.hide(); // hide modal
-            showSpinner(); // show fullscreen spinner
-            logoutForm.submit(); // submit logout
-          }, 400);
-        },
-        { once: true }
-      );
+      
+      // Show loading state on button
+      logoutButton.classList.add('btn-loading');
+      logoutButton.disabled = true;
+      
+      // Show fullscreen spinner
+      showSpinner();
+      
+      // Submit the form after a short delay to show the loading state
+      setTimeout(() => {
+        logoutForm.submit();
+      }, 500);
     });
   }
+
+  // Profile picture hover effect
+  const profilePictures = document.querySelectorAll('.profile-picture, .profile-default');
+  profilePictures.forEach(pic => {
+    pic.addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.15)';
+      this.style.boxShadow = '0 0 20px rgba(13, 202, 240, 0.6)';
+    });
+    
+    pic.addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1)';
+      this.style.boxShadow = 'none';
+    });
+  });
+
+  // Reset logout button state when modal is closed
+  const logoutModal = document.getElementById('logoutModal');
+  if (logoutModal) {
+    logoutModal.addEventListener('hidden.bs.modal', function () {
+      if (logoutButton) {
+        logoutButton.classList.remove('btn-loading');
+        logoutButton.disabled = false;
+      }
+    });
+  }
+
+  window.addEventListener("load", () => hideSpinner());
 
   <?php if(session('success') && request()->routeIs('dashboard')): ?>
     alert("<?php echo e(session('success')); ?>");
@@ -453,5 +627,4 @@
 </script>
 
 </body>
-</html>
-<?php /**PATH C:\xampp\htdocs\pundohub\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/layouts/app.blade.php ENDPATH**/ ?>

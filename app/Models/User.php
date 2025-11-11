@@ -18,6 +18,7 @@ class User extends Authenticatable
         'household',
         'contact',
         'job_type',
+        'profile_picture',
     ];
 
     protected $hidden = [

@@ -16,67 +16,209 @@
                 </div>
             <?php endif; ?>
 
-            <form id="profileForm" method="POST" action="<?php echo e(route('profile.update')); ?>">
+            <form id="profileForm" method="POST" action="<?php echo e(route('profile.update')); ?>" enctype="multipart/form-data">
                 <?php echo csrf_field(); ?>
                 <?php echo method_field('PATCH'); ?>
 
-                <div class="mb-3">
-                    <label class="form-label text-light">Name</label>
-                    <input type="text" name="name" class="form-control bg-dark text-light border-secondary"
-                           value="<?php echo e(old('name', $user->name)); ?>" required>
-                    <?php $__errorArgs = ['name'];
+                <!-- Profile Picture Section -->
+                <div class="row mb-4">
+                    <div class="col-md-3 text-center">
+                        <!-- Current Profile Picture -->
+                        <div class="mb-3">
+                            <?php if($user->profile_picture): ?>
+                                <img src="<?php echo e(asset('storage/' . $user->profile_picture)); ?>" 
+                                     alt="Profile Picture" 
+                                     class="img-thumbnail rounded-circle shadow-sm"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            <?php else: ?>
+                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                     style="width: 150px; height: 150px;">
+                                    <i class="bi bi-person-fill text-light" style="font-size: 3rem;"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <!-- Upload Button -->
+                        <div class="mb-3">
+                            <input type="file" 
+                                   name="profile_picture" 
+                                   id="profile_picture" 
+                                   class="form-control bg-dark text-light border-secondary d-none"
+                                   accept="image/*"
+                                   onchange="previewImage(event)">
+                            <label for="profile_picture" class="btn btn-outline-info btn-sm rounded-pill w-100">
+                                <i class="bi bi-camera me-1"></i> Change Photo
+                            </label>
+                            <?php $__errorArgs = ['profile_picture'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <small class="text-danger"><?php echo e($message); ?></small>
-                    <?php unset($message);
+                                <small class="text-danger d-block mt-1"><?php echo e($message); ?></small>
+                            <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-light">Email</label>
-                    <input type="email" name="email" class="form-control bg-dark text-light border-secondary"
-                           value="<?php echo e(old('email', $user->email)); ?>" required>
-                    <?php $__errorArgs = ['email'];
+                        <!-- Remove Picture Button (only show if user has a profile picture) -->
+                        <?php if($user->profile_picture): ?>
+                            <button type="button" 
+                                    class="btn btn-outline-danger btn-sm rounded-pill w-100"
+                                    onclick="removeProfilePicture()">
+                                <i class="bi bi-trash me-1"></i> Remove
+                            </button>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="col-md-9">
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mb-3 text-center" style="display: none;">
+                            <p class="text-info small mb-2">New Profile Picture Preview:</p>
+                            <img id="preview" class="img-thumbnail rounded-circle shadow-sm"
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+
+                        <!-- Profile Information -->
+                        <div class="mb-3">
+                            <label class="form-label text-light">Name <span class="text-danger">*</span></label>
+                            <input type="text" 
+                                   name="name" 
+                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   value="<?php echo e(old('name', $user->name)); ?>" 
+                                   required>
+                            <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <small class="text-danger"><?php echo e($message); ?></small>
-                    <?php unset($message);
+                                <small class="text-danger"><?php echo e($message); ?></small>
+                            <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-light">Password (leave blank to keep current)</label>
-                    <input type="password" name="password" class="form-control bg-dark text-light border-secondary">
-                    <?php $__errorArgs = ['password'];
+                        <div class="mb-3">
+                            <label class="form-label text-light">Email <span class="text-danger">*</span></label>
+                            <input type="email" 
+                                   name="email" 
+                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   value="<?php echo e(old('email', $user->email)); ?>" 
+                                   required>
+                            <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <small class="text-danger"><?php echo e($message); ?></small>
-                    <?php unset($message);
+                                <small class="text-danger"><?php echo e($message); ?></small>
+                            <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-light">Contact Number</label>
+                            <input type="text" 
+                                   name="contact" 
+                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   value="<?php echo e(old('contact', $user->contact)); ?>"
+                                   placeholder="09XXXXXXXXX">
+                            <?php $__errorArgs = ['contact'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <small class="text-danger"><?php echo e($message); ?></small>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-light">Household</label>
+                            <select name="household" class="form-select bg-dark text-light border-secondary rounded-3">
+                                <option value="">Select Purok</option>
+                                <?php for($i = 1; $i <= 7; $i++): ?>
+                                    <option value="Purok <?php echo e($i); ?>" 
+                                            <?php echo e(old('household', $user->household) == "Purok $i" ? 'selected' : ''); ?>>
+                                        Purok <?php echo e($i); ?>
+
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                            <?php $__errorArgs = ['household'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <small class="text-danger"><?php echo e($message); ?></small>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label text-light">Confirm Password</label>
-                    <input type="password" name="password_confirmation" class="form-control bg-dark text-light border-secondary">
+                <!-- Password Section -->
+                <div class="card bg-dark border-secondary rounded-3 mb-4">
+                    <div class="card-body">
+                        <h5 class="text-info mb-3">
+                            <i class="bi bi-shield-lock me-2"></i> Change Password
+                        </h5>
+                        <div class="mb-3">
+                            <label class="form-label text-light">Current Password</label>
+                            <input type="password" 
+                                   name="current_password" 
+                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   placeholder="Enter current password">
+                            <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <small class="text-danger"><?php echo e($message); ?></small>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-light">New Password (leave blank to keep current)</label>
+                            <input type="password" 
+                                   name="password" 
+                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   placeholder="Enter new password">
+                            <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <small class="text-danger"><?php echo e($message); ?></small>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-light">Confirm New Password</label>
+                            <input type="password" 
+                                   name="password_confirmation" 
+                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   placeholder="Confirm new password">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 mt-4">
                     <a href="<?php echo e(route('dashboard')); ?>" class="btn btn-outline-secondary rounded-pill px-4">
                         <i class="bi bi-x-circle me-1"></i> Cancel
                     </a>
-
                     <button type="submit" class="btn btn-primary rounded-pill px-4">
                         <i class="bi bi-save2 me-1"></i> Save Changes
                     </button>
@@ -87,13 +229,63 @@ unset($__errorArgs, $__bag); ?>
 </div>
 
 <script>
-document.getElementById('profileForm').addEventListener('submit', async function(e) {
-    const form = this;
-    const formData = new FormData(form);
+// Preview image before upload
+function previewImage(event) {
+    const input = event.target;
+    const preview = document.getElementById('preview');
+    const previewContainer = document.getElementById('imagePreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            previewContainer.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-    // Optional: you can add Ajax submission if desired
+// Remove profile picture
+function removeProfilePicture() {
+    if (confirm('Are you sure you want to remove your profile picture?')) {
+        // You can implement AJAX call to remove the picture
+        // or add a hidden field to indicate removal
+        const form = document.getElementById('profileForm');
+        const removeInput = document.createElement('input');
+        removeInput.type = 'hidden';
+        removeInput.name = 'remove_profile_picture';
+        removeInput.value = '1';
+        form.appendChild(removeInput);
+        
+        // Submit the form
+        form.submit();
+    }
+}
+
+// Optional: Add form validation
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    const password = document.querySelector('input[name="password"]').value;
+    const confirmPassword = document.querySelector('input[name="password_confirmation"]').value;
+    
+    if (password && password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
 });
 </script>
-<?php $__env->stopSection(); ?>
 
+<style>
+.form-control:focus, .form-select:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+}
+.btn:hover {
+    transform: translateY(-2px);
+    transition: 0.2s;
+}
+</style>
+<?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/profile/edit.blade.php ENDPATH**/ ?>
