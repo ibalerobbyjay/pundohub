@@ -43,7 +43,7 @@ class DonationController extends Controller
 
         // ✅ Create donation record
         $donation = Donation::create([
-            'user_id' => $user->id,
+            'user_id' => $user->id, // 👈 correct column + relationship
             'bereavement_case_id' => $request->bereavement_case_id,
             'type' => $request->type,
             'amount' => $request->type === 'Money' ? $request->amount : null,

@@ -11,16 +11,7 @@
                         <i class="bi bi-heartbreak-fill me-2"></i> Add New Bereavement Case
                     </h2>
 
-                    {{-- Validation Errors --}}
-                    @if ($errors->any())
-                        <div class="alert alert-danger rounded-3">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    
 
                     {{-- Form --}}
                     <form action="{{ route('bereavement-cases.store') }}" method="POST">

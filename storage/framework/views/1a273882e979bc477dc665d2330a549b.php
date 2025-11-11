@@ -10,15 +10,6 @@
                     </h2>
 
                     
-                    <?php if($errors->any()): ?>
-                        <div class="alert alert-danger rounded-3">
-                            <ul class="mb-0">
-                                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <li><?php echo e($error); ?></li>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </ul>
-                        </div>
-                    <?php endif; ?>
 
                     
                     <form action="<?php echo e(route('bereavement-cases.store')); ?>" method="POST">

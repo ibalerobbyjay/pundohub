@@ -13,7 +13,7 @@ return new class extends Migration
 {
     Schema::create('donations', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('member_id')->constrained()->onDelete('cascade'); // who donated
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // who donated
         $table->foreignId('bereavement_case_id')->constrained()->onDelete('cascade'); // which case
         $table->enum('type', ['cash', 'rice', 'firewood', 'other']);
         $table->string('amount')->nullable(); // e.g., 500 pesos OR "2 kilos"

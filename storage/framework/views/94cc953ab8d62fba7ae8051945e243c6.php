@@ -123,14 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Validate Bereavement Case selection
-    form.addEventListener('submit', function(e) {
-        if (!caseSelect.value) {
-            e.preventDefault();
-            alert('Please select a Bereavement Case.');
-            caseSelect.focus();
-        }
-    });
+   
 });
 </script>
 <?php $__env->stopSection(); ?>
