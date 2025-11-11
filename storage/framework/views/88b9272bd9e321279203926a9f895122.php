@@ -58,15 +58,62 @@
                     >
                 </div>
 
+                <!-- Cause of Death -->
+                <div class="mb-3">
+                    <label for="cause_of_death" class="form-label fw-semibold">Cause of Death <span class="text-danger">*</span></label>
+                    <select 
+                        id="cause_of_death" 
+                        name="cause_of_death" 
+                        class="form-select bg-dark text-light border-secondary rounded-3"
+                        required
+                    >
+                        <option value="">Select cause of death</option>
+                        <option value="Natural Causes" <?php echo e(old('cause_of_death') == 'Natural Causes' ? 'selected' : ''); ?>>Natural Causes</option>
+                        <option value="Illness" <?php echo e(old('cause_of_death') == 'Illness' ? 'selected' : ''); ?>>Illness</option>
+                        <option value="Accident" <?php echo e(old('cause_of_death') == 'Accident' ? 'selected' : ''); ?>>Accident</option>
+                        <option value="Old Age" <?php echo e(old('cause_of_death') == 'Old Age' ? 'selected' : ''); ?>>Old Age</option>
+                        <option value="Cardiac Arrest" <?php echo e(old('cause_of_death') == 'Cardiac Arrest' ? 'selected' : ''); ?>>Cardiac Arrest</option>
+                        <option value="Respiratory Failure" <?php echo e(old('cause_of_death') == 'Respiratory Failure' ? 'selected' : ''); ?>>Respiratory Failure</option>
+                        <option value="Other" <?php echo e(old('cause_of_death') == 'Other' ? 'selected' : ''); ?>>Other</option>
+                    </select>
+                </div>
+
+                <!-- If Other is selected, show additional field -->
+                <div class="mb-3" id="other_cause_field" style="display: <?php echo e(old('cause_of_death') == 'Other' ? 'block' : 'none'); ?>;">
+                    <label for="other_cause" class="form-label fw-semibold">Specify Cause</label>
+                    <input 
+                        type="text" 
+                        id="other_cause" 
+                        name="other_cause" 
+                        value="<?php echo e(old('other_cause')); ?>"
+                        class="form-control bg-dark text-light border-secondary rounded-3" 
+                        placeholder="Please specify the cause of death"
+                    >
+                </div>
+
+                <!-- Location of Death -->
+                <div class="mb-3">
+                    <label for="location_of_death" class="form-label fw-semibold">Location of Death <span class="text-danger">*</span></label>
+                    <input 
+                        type="text" 
+                        id="location_of_death" 
+                        name="location_of_death" 
+                        value="<?php echo e(old('location_of_death')); ?>"
+                        class="form-control bg-dark text-light border-secondary rounded-3" 
+                        placeholder="e.g., Hospital, Home, Nursing Home, etc."
+                        required
+                    >
+                </div>
+
                 <!-- Notes -->
                 <div class="mb-3">
-                    <label for="notes" class="form-label fw-semibold">Notes</label>
+                    <label for="notes" class="form-label fw-semibold">Additional Notes</label>
                     <textarea 
                         id="notes" 
                         name="notes" 
                         rows="4" 
                         class="form-control bg-dark text-light border-secondary rounded-3"
-                        placeholder="Optional: add any relevant details..."><?php echo e(old('notes')); ?></textarea>
+                        placeholder="Optional: add any other relevant details..."><?php echo e(old('notes')); ?></textarea>
                 </div>
 
                 <!-- Death Certificate Upload -->
@@ -118,7 +165,17 @@
             preview.innerHTML = '<p class="text-warning mt-2">Unsupported file type selected.</p>';
         }
     }
+
+    // Show/hide other cause field
+    document.getElementById('cause_of_death').addEventListener('change', function() {
+        const otherCauseField = document.getElementById('other_cause_field');
+        if (this.value === 'Other') {
+            otherCauseField.style.display = 'block';
+        } else {
+            otherCauseField.style.display = 'none';
+            document.getElementById('other_cause').value = '';
+        }
+    });
 </script>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/death-reports/create.blade.php ENDPATH**/ ?>

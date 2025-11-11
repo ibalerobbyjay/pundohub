@@ -24,6 +24,9 @@ class DeathReportController extends Controller
         $request->validate([
             'name_of_deceased' => 'required|string|max:255',
             'date_of_death' => 'required|date',
+            'cause_of_death' => 'required|string|max:255',
+            'other_cause' => 'nullable|string|max:255',
+            'location_of_death' => 'required|string|max:255',
             'notes' => 'nullable|string',
             'death_certificate' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
@@ -36,6 +39,9 @@ class DeathReportController extends Controller
             'user_id' => Auth::id(),
             'name_of_deceased' => $request->name_of_deceased,
             'date_of_death' => $request->date_of_death,
+            'cause_of_death' => $request->cause_of_death,
+            'other_cause' => $request->other_cause,
+            'location_of_death' => $request->location_of_death,
             'notes' => $request->notes,
             'death_certificate' => $path,
             'is_verified' => false,
