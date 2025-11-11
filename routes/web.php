@@ -120,4 +120,5 @@ Route::get('/donations/history', [App\Http\Controllers\DonationController::class
 Route::post('/cases/{case}/assign-job', [BereavementCaseController::class, 'assignJob'])->name('cases.assign-job');
 Route::post('/cases/{case}/assign-jobs', [BereavementCaseController::class, 'assignJobs'])->name('cases.assign-jobs');
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+ Route::delete('/profile/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
 });

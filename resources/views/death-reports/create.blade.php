@@ -115,22 +115,22 @@
                         placeholder="Optional: add any other relevant details...">{{ old('notes') }}</textarea>
                 </div>
 
-                <!-- Death Certificate Upload -->
+                <!-- Death Certificate Upload - PICTURES ONLY -->
                 <div class="mb-4">
-                    <label for="death_certificate" class="form-label fw-semibold">Upload Death Certificate <span class="text-danger">*</span></label>
+                    <label for="death_certificate" class="form-label fw-semibold">Upload Death Certificate (Picture Only) <span class="text-danger">*</span></label>
                     <input 
                         type="file" 
                         id="death_certificate" 
                         name="death_certificate" 
                         class="form-control bg-dark text-light border-secondary rounded-3" 
-                        accept=".jpg,.jpeg,.png,.pdf" 
+                        accept=".jpg,.jpeg,.png,.webp" 
                         required
-                        onchange="previewFile(event)"
+                        onchange="previewImage(event)"
                     >
-                    <small class="text-muted d-block mt-1">Accepted formats: JPG, PNG, or PDF (max 2MB)</small>
+                    <small class="text-muted d-block mt-1">Accepted formats: JPG, JPEG, PNG, WEBP (max 2MB)</small>
 
-                    <!-- Preview Area -->
-                    <div id="filePreview" class="mt-3"></div>
+                    <!-- Image Preview Area -->
+                    <div id="imagePreview" class="mt-3 text-center"></div>
                 </div>
 
                 <!-- Submit Button -->
@@ -142,26 +142,51 @@
     </div>
 </div>
 
-<!-- File Preview Script -->
+<!-- Image Preview Script -->
 <script>
-    function previewFile(event) {
+    function previewImage(event) {
         const file = event.target.files[0];
-        const preview = document.getElementById('filePreview');
-        preview.innerHTML = ''; // clear previous
+        const preview = document.getElementById('imagePreview');
+        preview.innerHTML = ''; // clear previous preview
 
         if (!file) return;
 
-        if (file.type.includes('image')) {
-            const img = document.createElement('img');
-            img.src = URL.createObjectURL(file);
-            img.classList.add('img-thumbnail', 'mt-2', 'shadow-sm');
-            img.style.maxWidth = '200px';
-            img.style.borderRadius = '8px';
-            preview.appendChild(img);
-        } else if (file.type === 'application/pdf') {
-            preview.innerHTML = '<p class="text-info mt-2"><i class="bi bi-file-earmark-pdf"></i> PDF file selected: ' + file.name + '</p>';
-        } else {
-            preview.innerHTML = '<p class="text-warning mt-2">Unsupported file type selected.</p>';
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            preview.innerHTML = '<p class="text-danger mt-2"><i class="bi bi-exclamation-triangle"></i> Please select a valid image file (JPG, PNG, or WEBP)</p>';
+            event.target.value = ''; // clear the file input
+            return;
+        }
+
+        // Validate file size (2MB)
+        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+        if (file.size > maxSize) {
+            preview.innerHTML = '<p class="text-danger mt-2"><i class="bi bi-exclamation-triangle"></i> File size must be less than 2MB</p>';
+            event.target.value = ''; // clear the file input
+            return;
+        }
+
+        // Create and display image preview
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.classList.add('img-thumbnail', 'mt-2', 'shadow-sm');
+        img.style.maxWidth = '300px';
+        img.style.maxHeight = '300px';
+        img.style.borderRadius = '8px';
+        img.style.objectFit = 'contain';
+        
+        // Add loading text
+        const loadingText = document.createElement('p');
+        loadingText.className = 'text-muted small mt-1';
+        loadingText.innerHTML = '<i class="bi bi-image"></i> Image Preview';
+        
+        preview.appendChild(loadingText);
+        preview.appendChild(img);
+
+        // Clean up URL when image is loaded
+        img.onload = function() {
+            URL.revokeObjectURL(img.src);
         }
     }
 
@@ -175,5 +200,37 @@
             document.getElementById('other_cause').value = '';
         }
     });
+
+    // Real-time file validation
+    document.getElementById('death_certificate').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Additional validation on change
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            const maxSize = 2 * 1024 * 1024;
+            
+            if (!validTypes.includes(file.type)) {
+                alert('Please select only image files (JPG, PNG, or WEBP)');
+                event.target.value = '';
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                alert('File size must be less than 2MB');
+                event.target.value = '';
+                return;
+            }
+        }
+    });
 </script>
+
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #0dcaf0;
+        box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+    }
+    .img-thumbnail {
+        border: 2px solid #0dcaf0;
+    }
+</style>
 @endsection

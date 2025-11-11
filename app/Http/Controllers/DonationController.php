@@ -27,42 +27,38 @@ class DonationController extends Controller
     }
 
     // ✅ Store new donation with proof upload and admin notification
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $request->validate([
             'type' => 'required|in:Firewood,Rice,Money',
             'amount' => 'required_if:type,Money|numeric|min:100',
             'bereavement_case_id' => 'nullable|exists:bereavement_cases,id',
-            'proof' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', // ✅ proof validation
+            'proof' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
         $user = Auth::user();
 
-        // ✅ Upload proof to storage/app/public/proofs
+        // Upload proof to storage/app/public/proofs
         $proofPath = $request->file('proof')->store('proofs', 'public');
 
-        // ✅ Create donation record
+        // Create donation record
         $donation = Donation::create([
-            'user_id' => $user->id, // 👈 correct column + relationship
+            'user_id' => $user->id,
             'bereavement_case_id' => $request->bereavement_case_id,
             'type' => $request->type,
             'amount' => $request->type === 'Money' ? $request->amount : null,
             'proof' => $proofPath,
         ]);
 
-        // ✅ Notify all admins
+        // ✅ FIXED: Pass the donation object and user object, NOT a string
         $admins = User::where('role', 'admin')->get();
         foreach ($admins as $admin) {
-            $admin->notify(new DonationReceived(
-                "{$user->name} donated " .
-                ($donation->type === 'Money' ? "₱{$donation->amount}" : $donation->type)
-            ));
+            $admin->notify(new DonationReceived($donation, $user)); // ← Pass OBJECTS, not string
         }
 
         return redirect()->route('donations.create')
                          ->with('success', 'Donation recorded successfully!');
     }
-
     // ✅ Update donation (with optional proof reupload)
     public function update(Request $request, Donation $donation)
     {

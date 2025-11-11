@@ -168,31 +168,61 @@
                     </div>
                 </div>
 
-                {{-- Recent Bereavement Cases --}}
-                <div class="mt-4">
-                    <h4 class="text-white">Recent Bereavement Cases</h4>
-                    @if(isset($recentCases) && $recentCases->count() > 0)
-                        <ul class="list-group shadow-sm rounded-4">
-                            @foreach($recentCases as $case)
-                                <li class="list-group-item d-flex justify-content-between align-items-start
-                                           bg-dark text-light mb-2 rounded-3 hover-notification">
-                                    <div>
-                                        <strong>{{ $case->title ?? 'No title' }}</strong><br>
-                                        Member: {{ $case->user->name ?? 'N/A' }} <br>
-                                        Date of Death: {{ $case->date_of_death?->format('F j, Y') ?? 'N/A' }} <br>
-                                        Description: {{ $case->description ?? 'N/A' }}
-                                    </div>
-                                    <a href="{{ route('bereavement-cases.edit', $case->id) }}" 
-                                       class="btn btn-sm btn-outline-primary align-self-center">
-                                       View / Edit
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-muted">No recent bereavement cases.</p>
-                    @endif
-                </div>
+               {{-- Recent Bereavement Cases --}}
+<div class="mt-4">
+    <h4 class="text-white">Recent Bereavement Cases</h4>
+    @if(isset($recentCases) && $recentCases->count() > 0)
+        <ul class="list-group shadow-sm rounded-4">
+            @foreach($recentCases as $case)
+                <li class="list-group-item d-flex justify-content-between align-items-start
+                           bg-dark text-light mb-2 rounded-3 hover-notification">
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <strong class="fs-5 text-info">{{ $case->title ?? 'No title' }}</strong>
+                            <span class="badge bg-secondary">Case #{{ $case->id }}</span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Member:</strong> {{ $case->user->name ?? 'N/A' }} <br>
+                                <strong>Date of Death:</strong> {{ $case->date_of_death?->format('F j, Y') ?? 'N/A' }} <br>
+                                <strong>Deceased Name:</strong> {{ $case->description_name ?? 'N/A' }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Service Type:</strong> {{ $case->description_what ?? 'N/A' }} <br>
+                                <strong>Service Date & Time:</strong> 
+                                    @if($case->description_when)
+                                        {{ \Carbon\Carbon::parse($case->description_when)->format('M j, Y g:i A') }}
+                                    @else
+                                        N/A
+                                    @endif
+                                <br>
+                                <strong>Location:</strong> {{ $case->description_where ?? 'N/A' }}
+                            </div>
+                        </div>
+                        
+                        @if($case->description_notes)
+                            <div class="mt-2">
+                                <strong>Additional Notes:</strong> 
+                                <span class="text-muted">{{ Str::limit($case->description_notes, 150) }}</span>
+                            </div>
+                        @endif
+                        
+                        <div class="mt-2 text-muted small">
+                            Created: {{ $case->created_at->diffForHumans() }}
+                        </div>
+                    </div>
+                    <a href="{{ route('bereavement-cases.edit', $case->id) }}" 
+                       class="btn btn-sm btn-outline-primary align-self-center ms-3">
+                       View / Edit
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    @else
+        <p class="text-muted">No recent bereavement cases.</p>
+    @endif
+</div>
             @endif
 
         </div> {{-- End Main Content --}}

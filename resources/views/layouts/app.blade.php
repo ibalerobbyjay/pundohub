@@ -498,11 +498,7 @@
             <i class="bi bi-person-gear me-2 text-info"></i>Edit Profile
           </a>
         </li>
-        <li>
-          <a class="dropdown-item" href="{{ route('profile.edit') }}#change-picture">
-            <i class="bi bi-camera me-2 text-info"></i>Change Profile Picture
-          </a>
-        </li>
+      
         <li><hr class="dropdown-divider bg-secondary my-1"></li>
         <li>
           <button class="dropdown-item logout-item" data-bs-toggle="modal" data-bs-target="#logoutModal">

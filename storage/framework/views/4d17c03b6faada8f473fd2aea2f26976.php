@@ -32,42 +32,175 @@
                     $data = $notification->data;
                     $isUnread = is_null($notification->read_at);
                     $bgClass = $isUnread ? 'bg-primary text-white fw-bold' : 'bg-dark text-light';
+                    
+                    // Get user for profile picture - IMPROVED LOGIC
+                    $user = null;
+                    
+                    // For donation notifications - find donor
+                    if (isset($data['type']) && $data['type'] === 'donation' && isset($data['donor_name'])) {
+                        $user = \App\Models\User::where('name', $data['donor_name'])->first();
+                    }
+                    // For death reports - find reporter
+                    elseif (isset($data['reporter_name'])) {
+                        $user = \App\Models\User::where('name', $data['reporter_name'])->first();
+                    }
+                    // For profile updates - find the user who updated profile
+                    elseif (isset($data['user_name'])) {
+                        $user = \App\Models\User::where('name', $data['user_name'])->first();
+                    }
+                    // For payment notifications - find payer
+                    elseif (isset($data['payer_name'])) {
+                        $user = \App\Models\User::where('name', $data['payer_name'])->first();
+                    }
+                    // For bereavement cases - find case creator
+                    elseif (isset($data['case_creator_name'])) {
+                        $user = \App\Models\User::where('name', $data['case_creator_name'])->first();
+                    }
                 ?>
 
                 <li class="list-group-item d-flex justify-content-between align-items-start <?php echo e($bgClass); ?> border-secondary rounded-3 mb-2 shadow-sm notification-item">
-                    <div>
-                        
-                        <?php if(isset($data['message'])): ?>
-                            <?php echo e($data['message']); ?>
+                    <div class="d-flex align-items-start w-100">
+                        <!-- Profile Picture -->
+                        <div class="me-3 flex-shrink-0">
+                            <?php if($user && $user->profile_picture): ?>
+                                <img src="<?php echo e(asset('storage/' . $user->profile_picture)); ?>" 
+                                     alt="<?php echo e($user->name); ?>" 
+                                     class="rounded-circle"
+                                     style="width: 45px; height: 45px; object-fit: cover; border: 2px solid #0dcaf0;">
+                            <?php else: ?>
+                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center"
+                                     style="width: 45px; height: 45px;">
+                                    <i class="bi bi-person-fill text-light"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
+                        <!-- Notification Content -->
+                        <div class="flex-grow-1">
+                            
+                            <?php if(isset($data['reporter_name']) && isset($data['deceased_name'])): ?>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-warning text-dark">Death Report</span>
+                                </div>
+                                <div>
+                                    <strong><?php echo e($data['reporter_name']); ?></strong> reported death of <strong><?php echo e($data['deceased_name']); ?></strong>
+                                    <?php if(isset($data['cause_of_death'])): ?>
+                                        <br><small>Cause: <?php echo e($data['cause_of_death']); ?></small>
+                                    <?php endif; ?>
+                                    <?php if(isset($data['location_of_death'])): ?>
+                                        <br><small>Location: <?php echo e($data['location_of_death']); ?></small>
+                                    <?php endif; ?>
+                                </div>
 
-                        
-                        <?php elseif(isset($data['case_title']) && isset($data['job_type'])): ?>
-                            You have a new <?php echo e($data['job_type']); ?> assignment for case: <?php echo e($data['case_title']); ?>
+                            
+                            <?php elseif(isset($data['type']) && $data['type'] === 'donation'): ?>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-success">Donation</span>
+                                </div>
+                                <div>
+                                    <strong><?php echo e($data['donor_name']); ?></strong> donated 
+                                    <strong><?php echo e($data['amount_display'] ?? ($data['currency'] ?? '₱') . number_format($data['amount'], 2)); ?></strong>
+                                    <?php if(isset($data['message']) && $data['message']): ?>
+                                        <br><small>"<?php echo e($data['message']); ?>"</small>
+                                    <?php endif; ?>
+                                </div>
 
+                            
+                            <?php elseif(isset($data['type']) && $data['type'] === 'payment'): ?>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-info">Payment</span>
+                                </div>
+                                <div>
+                                    <strong><?php echo e($data['payer_name']); ?></strong> paid monthly funds of 
+                                    <strong><?php echo e($data['currency'] ?? '₱'); ?><?php echo e(number_format($data['amount'], 2)); ?></strong>
+                                    <?php if(isset($data['month'])): ?>
+                                        <br><small>For: <?php echo e($data['month']); ?></small>
+                                    <?php endif; ?>
+                                </div>
 
-                        
-                        <?php elseif(isset($data['case_title']) && isset($data['type'])): ?>
-                            New <?php echo e($data['type']); ?>: <?php echo e($data['case_title']); ?>
+                            
+                            <?php elseif(isset($data['user_name']) && isset($data['title']) && $data['title'] === 'Profile Updated'): ?>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-primary">Profile Update</span>
+                                </div>
+                                <div>
+                                    <strong><?php echo e($data['user_name']); ?></strong> updated their profile
+                                </div>
 
+                            
+                            <?php elseif(isset($data['case_title']) && isset($data['job_type'])): ?>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-info"><?php echo e(ucfirst($data['job_type'])); ?> Assignment</span>
+                                </div>
+                                <div>
+                                    You have a new <strong><?php echo e($data['job_type']); ?></strong> assignment
+                                    <br>
+                                    <small>Case: <?php echo e($data['case_title']); ?></small>
+                                </div>
 
-                        <?php else: ?>
-                            No message
-                        <?php endif; ?>
-                        <br>
-                        <small class="<?php echo e($isUnread ? 'text-light-50' : 'text-muted'); ?>">
-                            <?php echo e($notification->created_at->diffForHumans()); ?>
+                            
+                            <?php elseif(isset($data['case_title']) && isset($data['type']) && $data['type'] === 'bereavement'): ?>
+                                <div class="d-flex align-items-center mb-1">
+                                    <span class="badge bg-danger">Bereavement Case</span>
+                                </div>
+                                <div>
+                                    New bereavement case: <strong><?php echo e($data['case_title']); ?></strong>
+                                    <?php if(isset($data['case_creator_name'])): ?>
+                                        <br><small>Created by: <?php echo e($data['case_creator_name']); ?></small>
+                                    <?php endif; ?>
+                                </div>
 
-                        </small>
+                            
+                            <?php elseif(isset($data['message'])): ?>
+                                <div>
+                                    <?php echo e($data['message']); ?>
+
+                                </div>
+
+                            
+                            <?php else: ?>
+                                <div>No message content</div>
+                            <?php endif; ?>
+
+                            <!-- Timestamp -->
+                            <small class="<?php echo e($isUnread ? 'text-light-50' : 'text-muted'); ?>">
+                                <?php echo e($notification->created_at->diffForHumans()); ?>
+
+                            </small>
+                        </div>
                     </div>
 
-                    <div class="ms-3 text-nowrap">
+                    <!-- Action Buttons -->
+                    <div class="ms-3 text-nowrap flex-shrink-0">
                         
                         <?php if($isUnread): ?>
                         <form action="<?php echo e(route('notifications.read', $notification->id)); ?>" method="POST" class="d-inline">
                             <?php echo csrf_field(); ?>
                             <button type="submit" class="btn btn-sm btn-success mb-1 rounded-pill">Mark as read</button>
                         </form>
+                        <?php endif; ?>
+
+                        
+                        <?php if(isset($data['case_id'])): ?>
+                            <a href="<?php echo e(route('bereavement-cases.show', $data['case_id'])); ?>" 
+                               class="btn btn-sm btn-outline-info rounded-pill">
+                                View Case
+                            </a>
+                        <?php elseif(isset($data['report_id'])): ?>
+                            <a href="<?php echo e(route('admin.death-reports.index')); ?>" 
+                               class="btn btn-sm btn-outline-info rounded-pill">
+                                View Reports
+                            </a>
+                        <?php elseif(isset($data['donation_id'])): ?>
+                            <a href="<?php echo e(route('donations.show', $data['donation_id'])); ?>" 
+                               class="btn btn-sm btn-outline-info rounded-pill">
+                                View Donation
+                            </a>
+                        <?php elseif(isset($data['payment_id'])): ?>
+                            <a href="<?php echo e(route('payments.show', $data['payment_id'])); ?>" 
+                               class="btn btn-sm btn-outline-info rounded-pill">
+                                View Payment
+                            </a>
                         <?php endif; ?>
                     </div>
                 </li>
@@ -89,10 +222,20 @@
 
 .notification-item.bg-dark:hover {
     background-color: #c5c7ca !important;
+    color: #000 !important;
 }
 
 .notification-item.bg-primary:hover {
     background-color: #0d6efd !important;
+}
+
+/* Profile picture hover effect */
+.rounded-circle {
+    transition: transform 0.2s ease;
+}
+
+.rounded-circle:hover {
+    transform: scale(1.1);
 }
 </style>
 <?php $__env->stopSection(); ?>
