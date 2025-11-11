@@ -25,7 +25,7 @@
                 <!-- Summary Cards -->
                 <div class="row p-4 border-bottom border-secondary">
                     <div class="col-md-3 mb-3">
-                        <div class="card bg-primary text-white rounded-3">
+                        <div class="card bg-secondary text-light rounded-3">
                             <div class="card-body text-center py-3">
                                 <h5 class="card-title mb-1">Total Penalties</h5>
                                 <h3 class="mb-0">{{ $penalties->count() }}</h3>
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card bg-warning text-dark rounded-3">
+                        <div class="card bg-secondary-subtle text-dark rounded-3">
                             <div class="card-body text-center py-3">
                                 <h5 class="card-title mb-1">Unpaid</h5>
                                 <h3 class="mb-0">{{ $penalties->where('paid', false)->count() }}</h3>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card bg-success text-white rounded-3">
+                        <div class="card bg-secondary text-light rounded-3">
                             <div class="card-body text-center py-3">
                                 <h5 class="card-title mb-1">Paid</h5>
                                 <h3 class="mb-0">{{ $penalties->where('paid', true)->count() }}</h3>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <div class="card bg-info text-white rounded-3">
+                        <div class="card bg-secondary text-light rounded-3">
                             <div class="card-body text-center py-3">
                                 <h5 class="card-title mb-1">Total Amount</h5>
                                 <h3 class="mb-0">₱{{ number_format($penalties->sum('amount'), 2) }}</h3>
@@ -111,7 +111,7 @@
                                                             {{ \Carbon\Carbon::parse($penalty->due_date)->format('M d, Y') }}
                                                         </span>
                                                     @else
-                                                        <span class="badge bg-warning text-dark">
+                                                        <span class="badge bg-secondary text-light">
                                                             {{ \Carbon\Carbon::parse($penalty->due_date)->format('M d, Y') }}
                                                         </span>
                                                     @endif
@@ -125,7 +125,7 @@
                                                         <i class="bi bi-check-circle me-1"></i>Paid
                                                     </span>
                                                 @else
-                                                    <span class="badge bg-warning text-dark">
+                                                    <span class="badge bg-secondary text-light">
                                                         <i class="bi bi-clock me-1"></i>Unpaid
                                                     </span>
                                                 @endif
@@ -243,7 +243,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="card bg-secondary mb-3">
+                        <div class="card bg-secondary text-light mb-3">
                             <div class="card-body">
                                 <h6>Total Collection</h6>
                                 <h3>₱{{ number_format($penalties->where('paid', true)->sum('amount'), 2) }}</h3>
@@ -251,7 +251,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card bg-warning text-dark mb-3">
+                        <div class="card bg-secondary-subtle text-dark mb-3">
                             <div class="card-body">
                                 <h6>Pending Collection</h6>
                                 <h3>₱{{ number_format($penalties->where('paid', false)->sum('amount'), 2) }}</h3>
@@ -263,9 +263,9 @@
                     <h6>Top Penalized Members</h6>
                     <div class="list-group">
                         @foreach($topPenalizedUsers as $user)
-                            <div class="list-group-item bg-dark text-light d-flex justify-content-between">
+                            <div class="list-group-item bg-secondary text-light d-flex justify-content-between">
                                 <span>{{ $user->name }}</span>
-                                <span class="badge bg-primary">{{ $user->penalties_count }} penalties</span>
+                                <span class="badge bg-dark">{{ $user->penalties_count }} penalties</span>
                             </div>
                         @endforeach
                     </div>
@@ -280,28 +280,13 @@
 .table-hover tbody tr:hover {
     transform: translateY(-2px);
     transition: transform 0.15s ease;
-    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(150, 150, 150, 0.2);
 }
 .card {
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, background 0.3s;
 }
 .card:hover {
     transform: translateY(-2px);
+    background: #6c757d !important;
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add loading state to forms
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function() {
-            const button = this.querySelector('button[type="submit"]');
-            if (button) {
-                button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Processing...';
-                button.disabled = true;
-            }
-        });
-    });
-});
-</script>
