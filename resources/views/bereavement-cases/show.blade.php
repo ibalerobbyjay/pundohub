@@ -16,10 +16,32 @@
     <div class="card shadow-lg rounded-4 mb-4 bg-dark text-light" 
          style="background: rgba(25,25,25,0.9); backdrop-filter: blur(12px);">
         <div class="card-body">
-            <p><strong>Bereavement:</strong> {{ $case->title }}</p>
-            <p><strong>Member:</strong> {{ $case->user->name }}</p>
-            <p><strong>Date of Death:</strong> {{ $case->date_of_death->format('F d, Y') }}</p>
-            <p><strong>Description:</strong> {{ $case->description ?? 'N/A' }}</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Case Title:</strong> {{ $case->title }}</p>
+                    <p><strong>Member:</strong> {{ $case->user->name }}</p>
+                    <p><strong>Date of Death:</strong> {{ $case->date_of_death->format('F d, Y') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Name of Deceased:</strong> {{ $case->description_name ?? 'N/A' }}</p>
+                    <p><strong>Service Type:</strong> {{ $case->description_what ?? 'N/A' }}</p>
+                    <p><strong>Service Date & Time:</strong> 
+                        @if($case->description_when)
+                            {{ \Carbon\Carbon::parse($case->description_when)->format('F d, Y g:i A') }}
+                        @else
+                            N/A
+                        @endif
+                    </p>
+                    <p><strong>Location:</strong> {{ $case->description_where ?? 'N/A' }}</p>
+                </div>
+            </div>
+            
+            @if($case->description_notes)
+                <div class="mt-3 pt-3 border-top border-secondary">
+                    <p><strong>Additional Notes:</strong></p>
+                    <p class="mb-0">{{ $case->description_notes }}</p>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -32,7 +54,7 @@
 
                 <div class="mb-3">
                     <label for="remarks" class="form-label"><strong>Remarks</strong></label>
-                    <textarea name="remarks" id="remarks" class="form-control bg-dark text-light border-secondary" rows="4">{{ old('remarks', $case->remarks) }}</textarea>
+                    <textarea name="remarks" id="remarks" class="form-control bg-dark text-light border-secondary" rows="4" placeholder="Add any remarks or updates about this case...">{{ old('remarks', $case->remarks) }}</textarea>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 mt-3">
@@ -47,4 +69,14 @@
         </div>
     </div>
 </div>
+
+<style>
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.15);
+}
+</style>
 @endsection

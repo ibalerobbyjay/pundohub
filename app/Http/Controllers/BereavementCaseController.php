@@ -48,7 +48,11 @@ class BereavementCaseController extends Controller
             'user_id'           => 'required|exists:users,id',
             'title'             => 'required|string|max:255',
             'date_of_death'     => 'required|date',
-            'description'       => 'required|string',
+            'description_what'  => 'required|string|max:255',
+            'description_when'  => 'required|date',
+            'description_where' => 'required|string|max:255',
+            'description_name'  => 'required|string|max:255',
+            'description_notes' => 'nullable|string',
         ]);
 
         $case = BereavementCase::create($validated);
@@ -69,7 +73,7 @@ class BereavementCaseController extends Controller
 
         return redirect()->route('bereavement-cases.index')
                          ->with('success', 'Bereavement case added successfully! All members notified.');
-    } // ← Added missing closing brace here
+    }
 
     // Simple method to assign job to one specific member
     public function assignJob(Request $request, $id)
@@ -128,16 +132,22 @@ class BereavementCaseController extends Controller
     {
         $case = BereavementCase::findOrFail($id);
 
-        // Update fields
-        $case->title = $request->input('title');
-        $case->date_of_death = $request->input('date_of_death');
-        $case->description = $request->input('description');
-        $case->remarks = $request->input('remarks'); // if updating remarks
-        $case->save();
+        // Update fields with new structured description fields
+        $case->update([
+            'title' => $request->input('title'),
+            'user_id' => $request->input('user_id'),
+            'date_of_death' => $request->input('date_of_death'),
+            'description_what' => $request->input('description_what'),
+            'description_when' => $request->input('description_when'),
+            'description_where' => $request->input('description_where'),
+            'description_name' => $request->input('description_name'),
+            'description_notes' => $request->input('description_notes'),
+            'remarks' => $request->input('remarks'),
+        ]);
 
         // Flash success message
         return redirect()->route('bereavement-cases.edit', $case->id)
-                         ->with('success', 'Bereavement case edited successfully.');
+                         ->with('success', 'Bereavement case updated successfully.');
     }
 
     // New method to assign specific jobs to members

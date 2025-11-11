@@ -27,7 +27,7 @@
                         <th>Title</th>
                         <th>Member</th>
                         <th>Date of Death</th>
-                        <th>Description</th>
+                        <th>Name of the Deceased</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -37,7 +37,7 @@
                             <td><?php echo e($case->title); ?></td>
                             <td><?php echo e($case->user->name ?? 'N/A'); ?></td>
                             <td><?php echo e($case->date_of_death->format('F d, Y')); ?></td>
-                            <td><?php echo e($case->description ?? 'N/A'); ?></td>
+                            <td><?php echo e($case->description_name ?? 'N/A'); ?></td>
                             <td class="d-flex justify-content-center">
                                 <a href="<?php echo e(route('bereavement-cases.edit', $case->id)); ?>" 
                                    class="btn btn-sm btn-warning me-2 shadow-sm">
@@ -73,5 +73,4 @@
 }
 </style>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/bereavement-cases/index.blade.php ENDPATH**/ ?>

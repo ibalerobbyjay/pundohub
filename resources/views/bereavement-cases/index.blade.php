@@ -28,7 +28,7 @@
                         <th>Title</th>
                         <th>Member</th>
                         <th>Date of Death</th>
-                        <th>Description</th>
+                        <th>Name of the Deceased</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -38,7 +38,7 @@
                             <td>{{ $case->title }}</td>
                             <td>{{ $case->user->name ?? 'N/A' }}</td>
                             <td>{{ $case->date_of_death->format('F d, Y') }}</td>
-                            <td>{{ $case->description ?? 'N/A' }}</td>
+                            <td>{{ $case->description_name ?? 'N/A' }}</td>
                             <td class="d-flex justify-content-center">
                                 <a href="{{ route('bereavement-cases.edit', $case->id) }}" 
                                    class="btn btn-sm btn-warning me-2 shadow-sm">

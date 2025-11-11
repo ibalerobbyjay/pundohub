@@ -10,12 +10,15 @@ class BereavementCase extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'title',
-        'date_of_death',
-        'description',
-        'remarks',
-    ];
+    'user_id',
+    'title', 
+    'date_of_death',
+    'description_what',
+    'description_when',
+    'description_where', 
+    'description_name',
+    'description_notes'
+];
 
     protected $casts = [
         'date_of_death' => 'date',

@@ -11,8 +11,6 @@
                         <i class="bi bi-heartbreak-fill me-2"></i> Add New Bereavement Case
                     </h2>
 
-                    
-
                     {{-- Form --}}
                     <form action="{{ route('bereavement-cases.store') }}" method="POST">
                         @csrf
@@ -29,21 +27,20 @@
                                    placeholder="Enter case title">
                         </div>
 
-           <div class="mb-4">
-    <label for="user_id" class="form-label fw-semibold text-light">
-        Select Member <span class="text-danger">*</span>
-    </label>
-    <select name="user_id" id="user_id" 
-            class="form-select bg-dark text-light border-secondary rounded-3" required>
-        <option value="">-- Select Member --</option>
-        @foreach($assignableUsers as $user)
-            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                {{ $user->name }} ({{ ucfirst($user->role) }})
-            </option>
-        @endforeach
-    </select>
-</div>
-
+                        <div class="mb-4">
+                            <label for="user_id" class="form-label fw-semibold text-light">
+                                Select Member <span class="text-danger">*</span>
+                            </label>
+                            <select name="user_id" id="user_id" 
+                                    class="form-select bg-dark text-light border-secondary rounded-3" required>
+                                <option value="">-- Select Member --</option>
+                                @foreach($assignableUsers as $user)
+                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }} ({{ ucfirst($user->role) }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div class="mb-4">
                             <label for="date_of_death" class="form-label fw-semibold text-light">
@@ -56,15 +53,78 @@
                                    value="{{ old('date_of_death') }}" required>
                         </div>
 
+                        {{-- Description Section (Structured form) --}}
                         <div class="mb-4">
-                            <label for="description" class="form-label fw-semibold text-light">
-                                Description
+                            <label class="form-label fw-semibold text-light">
+                                Case Details <span class="text-danger">*</span>
                             </label>
-                            <textarea name="description" 
-                                      id="description" 
-                                      class="form-control bg-dark text-light border-secondary rounded-3" 
-                                      rows="4"
-                                      placeholder="Write a short description...">{{ old('description') }}</textarea>
+                            <div class="card bg-dark border-secondary rounded-3">
+                                <div class="card-body">
+                                    {{-- What --}}
+                                    <div class="mb-3">
+                                        <label for="description_what" class="form-label text-light small">
+                                            What (Type of Service/Event) <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               name="description_what" 
+                                               id="description_what" 
+                                               class="form-control bg-dark text-light border-secondary rounded-3"
+                                               value="{{ old('description_what') }}" required
+                                               placeholder="e.g., Wake Service, Funeral, Memorial Mass">
+                                    </div>
+
+                                    {{-- When --}}
+                                    <div class="mb-3">
+                                        <label for="description_when" class="form-label text-light small">
+                                            When (Date & Time) <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="datetime-local" 
+                                               name="description_when" 
+                                               id="description_when" 
+                                               class="form-control bg-dark text-light border-secondary rounded-3"
+                                               value="{{ old('description_when') }}" required
+                                               placeholder="Select date and time">
+                                    </div>
+
+                                    {{-- Where --}}
+                                    <div class="mb-3">
+                                        <label for="description_where" class="form-label text-light small">
+                                            Where (Location) <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               name="description_where" 
+                                               id="description_where" 
+                                               class="form-control bg-dark text-light border-secondary rounded-3"
+                                               value="{{ old('description_where') }}" required
+                                               placeholder="e.g., St. Mary's Church, Family Residence">
+                                    </div>
+
+                                    {{-- Name of Deceased --}}
+                                    <div class="mb-3">
+                                        <label for="description_name" class="form-label text-light small">
+                                            Name of Deceased <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               name="description_name" 
+                                               id="description_name" 
+                                               class="form-control bg-dark text-light border-secondary rounded-3"
+                                               value="{{ old('description_name') }}" required
+                                               placeholder="Full name of the deceased">
+                                    </div>
+
+                                    {{-- Additional Notes --}}
+                                    <div class="mb-3">
+                                        <label for="description_notes" class="form-label text-light small">
+                                            Additional Notes
+                                        </label>
+                                        <textarea name="description_notes" 
+                                                  id="description_notes" 
+                                                  class="form-control bg-dark text-light border-secondary rounded-3" 
+                                                  rows="3"
+                                                  placeholder="Any additional information about the case...">{{ old('description_notes') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-end">
