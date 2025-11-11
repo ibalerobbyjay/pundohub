@@ -56,9 +56,25 @@
                     elseif (isset($data['case_creator_name'])) {
                         $user = \App\Models\User::where('name', $data['case_creator_name'])->first();
                     }
+
+                    // Determine the appropriate link for each notification type
+                    $notificationLink = '#';
+                    if (isset($data['case_id'])) {
+                        $notificationLink = route('bereavement-cases.show', $data['case_id']) . '?notification_id=' . $notification->id;
+                    } elseif (isset($data['report_id'])) {
+                        $notificationLink = route('admin.death-reports.index') . '?notification_id=' . $notification->id;
+                    } elseif (isset($data['donation_id'])) {
+                        $notificationLink = route('donations.index') . '?notification_id=' . $notification->id;
+                    } elseif (isset($data['payment_id'])) {
+                        $notificationLink = route('payments.show', $data['payment_id']) . '?notification_id=' . $notification->id;
+                    }
                 ?>
 
-                <li class="list-group-item d-flex justify-content-between align-items-start <?php echo e($bgClass); ?> border-secondary rounded-3 mb-2 shadow-sm notification-item">
+                <li class="list-group-item d-flex justify-content-between align-items-start <?php echo e($bgClass); ?> border-secondary rounded-3 mb-2 shadow-sm notification-item"
+                    data-notification-id="<?php echo e($notification->id); ?>"
+                    data-is-unread="<?php echo e($isUnread ? 'true' : 'false'); ?>"
+                    data-link="<?php echo e($notificationLink); ?>">
+                    
                     <div class="d-flex align-items-start w-100">
                         <!-- Profile Picture -->
                         <div class="me-3 flex-shrink-0">
@@ -170,34 +186,26 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
+                    <!-- Action Buttons - Removed Mark as Read button -->
                     <div class="ms-3 text-nowrap flex-shrink-0">
                         
-                        <?php if($isUnread): ?>
-                        <form action="<?php echo e(route('notifications.read', $notification->id)); ?>" method="POST" class="d-inline">
-                            <?php echo csrf_field(); ?>
-                            <button type="submit" class="btn btn-sm btn-success mb-1 rounded-pill">Mark as read</button>
-                        </form>
-                        <?php endif; ?>
-
-                        
                         <?php if(isset($data['case_id'])): ?>
-                            <a href="<?php echo e(route('bereavement-cases.show', $data['case_id'])); ?>" 
+                            <a href="<?php echo e(route('bereavement-cases.show', $data['case_id'])); ?>?notification_id=<?php echo e($notification->id); ?>" 
                                class="btn btn-sm btn-outline-info rounded-pill">
                                 View Case
                             </a>
                         <?php elseif(isset($data['report_id'])): ?>
-                            <a href="<?php echo e(route('admin.death-reports.index')); ?>" 
+                            <a href="<?php echo e(route('admin.death-reports.index')); ?>?notification_id=<?php echo e($notification->id); ?>" 
                                class="btn btn-sm btn-outline-info rounded-pill">
                                 View Reports
                             </a>
                         <?php elseif(isset($data['donation_id'])): ?>
-                            <a href="<?php echo e(route('donations.show', $data['donation_id'])); ?>" 
+                            <a href="<?php echo e(route('donations.index')); ?>?notification_id=<?php echo e($notification->id); ?>" 
                                class="btn btn-sm btn-outline-info rounded-pill">
                                 View Donation
                             </a>
                         <?php elseif(isset($data['payment_id'])): ?>
-                            <a href="<?php echo e(route('payments.show', $data['payment_id'])); ?>" 
+                            <a href="<?php echo e(route('payments.show', $data['payment_id'])); ?>?notification_id=<?php echo e($notification->id); ?>" 
                                class="btn btn-sm btn-outline-info rounded-pill">
                                 View Payment
                             </a>
@@ -238,5 +246,60 @@
     transform: scale(1.1);
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle notification clicks
+    document.querySelectorAll('.notification-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Don't trigger if user clicked on a button or link inside the notification
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('button') || e.target.closest('a')) {
+                return;
+            }
+
+            const notificationId = this.getAttribute('data-notification-id');
+            const isUnread = this.getAttribute('data-is-unread') === 'true';
+            const link = this.getAttribute('data-link');
+
+            if (isUnread) {
+                // Create a hidden form to submit via POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/notifications/${notificationId}/read`;
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '<?php echo e(csrf_token()); ?>';
+                
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'POST';
+                
+                form.appendChild(csrfToken);
+                form.appendChild(methodField);
+                document.body.appendChild(form);
+                
+                // Submit the form
+                form.submit();
+            } else if (link && link !== '#') {
+                // If already read, just navigate to the link
+                window.location.href = link;
+            }
+        });
+    });
+
+    // Add loading state for "Mark All as Read" button
+    const markAllForm = document.querySelector('form[action*="markAllRead"]');
+    if (markAllForm) {
+        markAllForm.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Marking...';
+            button.disabled = true;
+        });
+    }
+});
+</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/notifications/index.blade.php ENDPATH**/ ?>

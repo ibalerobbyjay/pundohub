@@ -106,7 +106,8 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
 // Admin Penalties Routes (manual role check)
 Route::get('/admin/penalties', [PenaltyController::class, 'index'])->name('admin.penalties');
 Route::patch('/penalties/{penalty}/mark-paid', [PenaltyController::class, 'markPaid'])->name('penalties.markPaid');
-
+Route::post('/penalties', [PenaltyController::class, 'store'])->name('penalties.store');
+Route::delete('/penalties/{penalty}', [PenaltyController::class, 'destroy'])->name('penalties.destroy');
 // ✅ Donation history for logged-in user
 Route::get('/donations/history', [App\Http\Controllers\DonationController::class, 'history'])
     ->name('donations.history')

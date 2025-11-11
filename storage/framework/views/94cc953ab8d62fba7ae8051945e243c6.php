@@ -36,20 +36,17 @@
                 <label for="type" class="form-label fw-semibold">Donation Type</label>
                 <select name="type" id="type" class="form-select bg-dark text-light border-secondary" <?php echo e($userHasRecentCase ? 'disabled' : ''); ?> required>
                     <option value="" disabled selected>Select donation type</option>
-                    <option value="Rice,Firewood,Money">Rice, Firewood, Money</option>
+                    <option value="Firewood">Firewood</option>
+                    <option value="Rice">Rice</option>
                     <option value="Money">Money</option>
-                    <option value="Rice,Firewood">Rice, Firewood</option>
                 </select>
             </div>
 
-            <!-- Amount (only for Money-containing types) -->
-            <div class="mb-3" id="amountField">
+            <!-- Amount (only for Money) -->
+            <div class="mb-3">
                 <label for="amount" class="form-label fw-semibold">Amount (₱)</label>
                 <input type="number" name="amount" id="amount" class="form-control bg-dark text-light border-secondary" step="0.01" min="100" 
-                       <?php echo e($userHasRecentCase ? 'disabled' : ''); ?> placeholder="Enter amount">
-                <div class="form-text text-muted" id="amountHelp">
-                    Amount field is required for donations that include Money
-                </div>
+                       <?php echo e($userHasRecentCase ? 'disabled' : ''); ?> placeholder="Enter amount (only for Money)">
             </div>
 
             <!-- Bereavement Case -->
@@ -90,40 +87,25 @@
 document.addEventListener('DOMContentLoaded', function () {
     const typeSelect = document.getElementById('type');
     const amountInput = document.getElementById('amount');
-    const amountHelp = document.getElementById('amountHelp');
     const proofInput = document.getElementById('proof');
     const proofPreview = document.getElementById('proofPreview');
+    const form = document.querySelector('form');
+    const caseSelect = document.getElementById('bereavement_case_id');
 
-    // Toggle amount field based on donation type
+    // Toggle amount field for Money type
     function toggleAmount() {
-        const selectedType = typeSelect.value;
-        
-        // Enable amount for types that include Money
-        if (selectedType === 'Money' || selectedType === 'Rice,Firewood,Money') {
+        if (typeSelect.value === 'Money') {
             amountInput.removeAttribute('disabled');
             amountInput.required = true;
-            amountHelp.textContent = "Amount field is required for donations that include Money";
-            amountHelp.className = "form-text text-info";
-        } 
-        // Disable amount for Rice,Firewood only
-        else if (selectedType === 'Rice,Firewood') {
+        } else {
             amountInput.value = '';
             amountInput.setAttribute('disabled', 'disabled');
             amountInput.required = false;
-            amountHelp.textContent = "Amount field is not required for Rice and Firewood donations";
-            amountHelp.className = "form-text text-muted";
-        }
-        // Default state
-        else {
-            amountInput.setAttribute('disabled', 'disabled');
-            amountInput.required = false;
-            amountHelp.textContent = "Please select a donation type first";
-            amountHelp.className = "form-text text-muted";
         }
     }
 
     typeSelect.addEventListener('change', toggleAmount);
-    toggleAmount(); // Initialize on page load
+    toggleAmount();
 
     // Image preview
     proofInput.addEventListener('change', function(event) {
@@ -140,7 +122,10 @@ document.addEventListener('DOMContentLoaded', function () {
             proofPreview.src = '#';
         }
     });
+
+   
 });
 </script>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/donations/create.blade.php ENDPATH**/ ?>

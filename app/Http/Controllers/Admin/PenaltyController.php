@@ -4,36 +4,59 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penalty;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class PenaltyController extends Controller
 {
-    // Ensure user is logged in and is admin
-    private function checkAdmin()
-    {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
-        }
-    }
-
     public function index()
     {
-        $this->checkAdmin(); // manual role check
+        $penalties = Penalty::with('user')->latest()->paginate(10);
+        $users = User::where('role', 'member')->get();
+        $topPenalizedUsers = User::withCount('penalties')
+            ->where('role', 'member')
+            ->orderBy('penalties_count', 'desc')
+            ->take(5)
+            ->get();
 
-        $penalties = Penalty::with('user')
-            ->orderBy('applied_at', 'desc')
-            ->paginate(10);
+        return view('admin.penalties', compact('penalties', 'users', 'topPenalizedUsers'));
+    }
 
-        return view('admin.penalties', compact('penalties'));
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'amount' => 'required|numeric|min:1',
+            'reason' => 'required|string|max:500',
+            'due_date' => 'nullable|date|after:today',
+        ]);
+
+        Penalty::create([
+            'user_id' => $request->user_id,
+            'amount' => $request->amount,
+            'reason' => $request->reason,
+            'due_date' => $request->due_date,
+            'applied_at' => now(),
+            'paid' => false,
+        ]);
+
+        return redirect()->route('admin.penalties')->with('success', 'Penalty added successfully!');
     }
 
     public function markPaid(Penalty $penalty)
     {
-        $this->checkAdmin(); // manual role check
+        $penalty->update([
+            'paid' => true,
+            'paid_at' => now(),
+        ]);
 
-        $penalty->paid = true;
-        $penalty->save();
+        return redirect()->back()->with('success', 'Penalty marked as paid!');
+    }
 
-        return redirect()->back()->with('success', 'Penalty marked as paid.');
+    public function destroy(Penalty $penalty)
+    {
+        $penalty->delete();
+
+        return redirect()->back()->with('success', 'Penalty deleted successfully!');
     }
 }

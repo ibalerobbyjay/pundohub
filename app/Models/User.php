@@ -32,13 +32,14 @@ class User extends Authenticatable
         return $this->hasOne(Member::class);
     }
 
-    public function penalties()
-    {
-        return $this->hasMany(\App\Models\Penalty::class);
-    }
+   public function penalties()
+{
+    return $this->hasMany(Penalty::class);
+}
 
     public function monthlyFunds()
     {
         return $this->hasMany(MonthlyFund::class);
     }
+    
 }

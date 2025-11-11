@@ -498,6 +498,13 @@
             <i class="bi bi-person-gear me-2 text-info"></i>Edit Profile
           </a>
         </li>
+        
+        <!-- Contact Administrator Link -->
+        <li>
+          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#contactAdminModal">
+            <i class="bi bi-headset me-2 text-success"></i>Contact Administrator
+          </a>
+        </li>
       
         <li><hr class="dropdown-divider bg-secondary my-1"></li>
         <li>
@@ -512,6 +519,51 @@
 
   <!-- Main Content -->
   <div id="content" class="p-4">@yield('content')</div>
+
+  <!-- ✅ Contact Administrator Modal -->
+  <div class="modal fade" id="contactAdminModal" tabindex="-1" aria-labelledby="contactAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="contactAdminModalLabel">
+            <i class="bi bi-headset text-success me-2"></i> Contact Administrator
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-4">
+            <i class="bi bi-info-circle text-info" style="font-size: 3rem;"></i>
+          </div>
+          <p class="text-center mb-3">For assistance, please contact the system administrator:</p>
+          
+          <div class="contact-info">
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi bi-telephone-fill text-primary me-3"></i>
+              <span>Phone: <strong>0995 553 9592</strong></span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi bi-envelope-fill text-warning me-3"></i>
+              <span>Email: <strong>ibalerobbyjay@gmail.com</strong></span>
+            </div>
+            <div class="d-flex align-items-center">
+              <i class="bi bi-clock-fill text-info me-3"></i>
+              <span>Available: <strong>Mon-Fri, 9AM-5PM</strong></span>
+            </div>
+          </div>
+          
+          <div class="mt-4 p-3 bg-dark rounded">
+            <small class="text-muted">
+              <i class="bi bi-lightbulb me-1"></i>
+              Please provide your username and specific issue details when contacting support.
+            </small>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ✅ Logout Confirmation Modal - Smaller -->
   <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
