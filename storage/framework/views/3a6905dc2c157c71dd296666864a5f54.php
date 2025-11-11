@@ -110,7 +110,6 @@ unset($__errorArgs, $__bag); ?>
                         <select name="role" id="role" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
                             <option value="" disabled>Select Role</option>
                             <option value="member" <?php echo e(old('role', $member->role) == 'member' ? 'selected' : ''); ?>>Member</option>
-                            <option value="staff" <?php echo e(old('role', $member->role) == 'staff' ? 'selected' : ''); ?>>Staff</option>
                             <option value="admin" <?php echo e(old('role', $member->role) == 'admin' ? 'selected' : ''); ?>>Admin</option>
                         </select>
                         <?php $__errorArgs = ['role'];
@@ -125,12 +124,18 @@ endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
 
-                    <div class="col-md-6 mb-3" id="jobTypeDiv" style="display: <?php echo e(old('role', $member->role) == 'staff' ? 'block' : 'none'); ?>;">
-                        <label class="form-label text-light">Staff Job Type</label>
-                        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm">
+                    <div class="col-md-6 mb-3" id="jobTypeDiv" style="display: <?php echo e(old('role', $member->role) == 'member' ? 'block' : 'none'); ?>;">
+                        <label class="form-label text-light">Member Job Type <span class="text-danger">*</span></label>
+                        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" <?php echo e(old('role', $member->role) == 'member' ? 'required' : ''); ?>>
                             <option value="" disabled>Select Job Type</option>
                             <option value="cook" <?php echo e(old('job_type', $member->job_type) == 'cook' ? 'selected' : ''); ?>>Cook</option>
                             <option value="dishwasher" <?php echo e(old('job_type', $member->job_type) == 'dishwasher' ? 'selected' : ''); ?>>Dishwasher</option>
+                            <option value="cleaner" <?php echo e(old('job_type', $member->job_type) == 'cleaner' ? 'selected' : ''); ?>>Cleaner</option>
+                            <option value="setup_crew" <?php echo e(old('job_type', $member->job_type) == 'setup_crew' ? 'selected' : ''); ?>>Setup Crew</option>
+                            <option value="logistics" <?php echo e(old('job_type', $member->job_type) == 'logistics' ? 'selected' : ''); ?>>Logistics</option>
+                            <option value="coordinator" <?php echo e(old('job_type', $member->job_type) == 'coordinator' ? 'selected' : ''); ?>>Coordinator</option>
+                            <option value="finance" <?php echo e(old('job_type', $member->job_type) == 'finance' ? 'selected' : ''); ?>>Finance</option>
+                            <option value="none" <?php echo e(old('job_type', $member->job_type) == 'none' ? 'selected' : ''); ?>>No Specific Job</option>
                         </select>
                         <?php $__errorArgs = ['job_type'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -182,11 +187,28 @@ unset($__errorArgs, $__bag); ?>
 
     const roleSelect = document.getElementById('role');
     const jobTypeDiv = document.getElementById('jobTypeDiv');
+    const jobTypeSelect = jobTypeDiv.querySelector('select');
 
     roleSelect.addEventListener('change', function() {
-        jobTypeDiv.style.display = this.value === 'staff' ? 'block' : 'none';
+        if(this.value === 'member') {
+            jobTypeDiv.style.display = 'block';
+            jobTypeSelect.setAttribute('required', 'required');
+        } else {
+            jobTypeDiv.style.display = 'none';
+            jobTypeSelect.removeAttribute('required');
+        }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        if(roleSelect.value === 'member') {
+            jobTypeDiv.style.display = 'block';
+            jobTypeSelect.setAttribute('required', 'required');
+        } else {
+            jobTypeDiv.style.display = 'none';
+            jobTypeSelect.removeAttribute('required');
+        }
     });
 </script>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/members/edit.blade.php ENDPATH**/ ?>

@@ -9,78 +9,87 @@
                 <i class="bi bi-heart-fill me-2 text-danger"></i> All Donations
             </h2>
 
+            <!-- Delete All Button -->
+            @if(auth()->user()->role === 'admin' && $donations->count() > 0)
+            <div class="mb-3 text-end">
+                <form action="{{ route('donations.deleteAll') }}" method="POST" class="d-inline" 
+                      onsubmit="return confirmDeleteAll()">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="bi bi-trash-fill me-2"></i>Delete All Donations
+                    </button>
+                </form>
+            </div>
+            @endif
+
             <!-- Table -->
-           
             <div class="table-responsive">
-    <table class="table table-hover table-dark align-middle text-center text-light">
-        <thead style="background-color: #1a1a1a; color: #f8f9fa;" class="text-uppercase small">
-            <tr>
-                <th>Donor Name</th>
-                <th>Bereavement Case</th>
-                <th>Amount</th>
-                <th>Type</th>
-                <th>Proof</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($donations as $donation)
-            <tr>
-                <td>{{ $donation->user->name ?? 'N/A' }}</td>
-                <td>{{ $donation->bereavementCase->title ?? 'N/A' }}</td>
-                <td>
-                    @if($donation->type === 'Money')
-                        <span class="fw-semibold text-success">₱{{ number_format($donation->amount, 2) }}</span>
-                    @else
-                        <span class="text-muted">—</span>
-                    @endif
-                </td>
-                <td>
-                    <span class="badge 
-                        {{ $donation->type === 'Money' ? 'bg-success' : 'bg-warning text-dark' }}">
-                        {{ $donation->type }}
-                    </span>
-                </td>
-            <td>
-    @if($donation->proof)
-        <a href="{{ asset('storage/' . $donation->proof) }}" target="_blank" 
-           class="btn btn-sm btn-outline-info fw-semibold">
-            View Proof
-        </a>
-    @else
-        <span class="text-light fst-italic">No proof</span>
-    @endif
-</td>
+                <table class="table table-hover table-dark align-middle text-center text-light">
+                    <thead style="background-color: #1a1a1a; color: #f8f9fa;" class="text-uppercase small">
+                        <tr>
+                            <th>Donor Name</th>
+                            <th>Bereavement Case</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Proof</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($donations as $donation)
+                        <tr>
+                            <td>{{ $donation->user->name ?? 'N/A' }}</td>
+                            <td>{{ $donation->bereavementCase->title ?? 'N/A' }}</td>
+                            <td>
+                                @if($donation->type === 'Money')
+                                    <span class="fw-semibold text-success">₱{{ number_format($donation->amount, 2) }}</span>
+                                @else
+                                    <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {{ $donation->type === 'Money' ? 'bg-success' : 'bg-warning text-dark' }}">
+                                    {{ $donation->type }}
+                                </span>
+                            </td>
+                            <td>
+                                @if($donation->proof)
+                                    <a href="{{ asset('storage/' . $donation->proof) }}" target="_blank" 
+                                       class="btn btn-sm btn-outline-info fw-semibold">
+                                        View Proof
+                                    </a>
+                                @else
+                                    <span class="text-light fst-italic">No proof</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if(auth()->user()->role === 'admin')
+                                <form action="{{ route('donations.destroy', $donation->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                            onclick="return confirm('Are you sure you want to delete this donation?')">
+                                        <i class="bi bi-trash me-1"></i> Delete
+                                    </button>
+                                </form>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                    No donations found.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-
-                <td>
-                     @if(auth()->user()->role === 'admin')
-                    <form action="{{ route('donations.destroy', $donation->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                onclick="return confirm('Are you sure you want to delete this donation?')">
-                            <i class="bi bi-trash me-1"></i> Delete
-                        </button>
-                    </form>
-                     
-                                    @endif
-                </td>
-            </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">
-                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                        No donations found.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-
-
-            <div class=" mt-4">
+            <div class="mt-4">
                 <a href="{{ route('dashboard') }}" class="btn btn-outline-info rounded-pill px-4">
                     ← Back to Dashboard
                 </a>
@@ -90,6 +99,7 @@
 </div>
 
 @endsection
+
 <style>
 .table-hover tbody tr:hover {
     transform: translateY(-2px);
@@ -97,3 +107,10 @@
     box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
 }
 </style>
+
+<script>
+function confirmDeleteAll() {
+    const donationCount = {{ $donations->count() }};
+    return confirm(`Are you sure you want to delete ALL ${donationCount} donations? This action cannot be undone!`);
+}
+</script>

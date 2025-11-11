@@ -19,6 +19,20 @@
         </div>
     @endif
 
+    {{-- ✅ Delete All/Reset Button (Admin Only) --}}
+    @if(auth()->user()->role === 'admin' && $funds->count() > 0)
+    <div class="mb-3 text-end">
+        <form action="{{ route('monthlyfunds.deleteAll') }}" method="POST" class="d-inline" 
+              onsubmit="return confirmDeleteAll()">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger rounded-pill px-4">
+                <i class="bi bi-arrow-clockwise me-2"></i>Reset All Records
+            </button>
+        </form>
+    </div>
+    @endif
+
     {{-- ✅ Payment button (only for non-admins) --}}
     @if(auth()->user()->role !== 'admin')
         @php
@@ -95,6 +109,7 @@
                 </a>
             </div>
 @endsection
+
 <style>
 .table-hover tbody tr:hover {
     transform: translateY(-2px);
@@ -102,3 +117,10 @@
     box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
 }
 </style>
+
+<script>
+function confirmDeleteAll() {
+    const recordCount = {{ $funds->count() }};
+    return confirm(`⚠️ WARNING: Are you sure you want to delete ALL ${recordCount} monthly fund records?\n\nThis action will permanently remove all payment history and cannot be undone!`);
+}
+</script>

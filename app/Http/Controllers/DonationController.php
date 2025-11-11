@@ -117,5 +117,20 @@ class DonationController extends Controller
 
     return view('donations.history', compact('donations', 'total'));
 }
+public function deleteAll()
+{
+    // Ensure only admin can delete all
+    if (auth()->user()->role !== 'admin') {
+        return redirect()->route('donations.index')
+                         ->with('error', 'Unauthorized action.');
+    }
+
+    // Delete all donations
+    \App\Models\Donation::truncate();
+
+    return redirect()->route('donations.index')
+                     ->with('success', 'All donations have been deleted successfully.');
+}
+
 
 }

@@ -42,8 +42,24 @@
                         <?php $__empty_1 = true; $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
                                 <td class="fw-semibold"><?php echo e($member->name); ?></td>
-                                <td class="text-capitalize"><?php echo e($member->role); ?></td>
-                                <td class="text-capitalize"><?php echo e($member->role === 'staff' ? $member->job_type ?? '—' : '—'); ?></td>
+                                <td>
+                                    <span class="badge 
+                                        <?php echo e($member->role === 'admin' ? 'bg-danger' : 'bg-info'); ?> 
+                                        text-capitalize">
+                                        <?php echo e($member->role); ?>
+
+                                    </span>
+                                </td>
+                                <td>
+                                    <?php if($member->role === 'member' && $member->job_type): ?>
+                                        <span class="badge bg-warning text-dark text-capitalize">
+                                            <?php echo e($member->job_type === 'none' ? 'No Job' : $member->job_type); ?>
+
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?php echo e($member->household ?? '—'); ?></td>
                                 <td><?php echo e($member->contact ?? '—'); ?></td>
                                 <td><?php echo e($member->email); ?></td>
@@ -87,5 +103,4 @@
     box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
 }
 </style>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/members/index.blade.php ENDPATH**/ ?>

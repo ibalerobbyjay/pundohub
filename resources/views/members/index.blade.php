@@ -43,8 +43,22 @@
                         @forelse ($members as $member)
                             <tr>
                                 <td class="fw-semibold">{{ $member->name }}</td>
-                                <td class="text-capitalize">{{ $member->role }}</td>
-                                <td class="text-capitalize">{{ $member->role === 'staff' ? $member->job_type ?? '—' : '—' }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {{ $member->role === 'admin' ? 'bg-danger' : 'bg-info' }} 
+                                        text-capitalize">
+                                        {{ $member->role }}
+                                    </span>
+                                </td>
+                                <td>
+                                    @if($member->role === 'member' && $member->job_type)
+                                        <span class="badge bg-warning text-dark text-capitalize">
+                                            {{ $member->job_type === 'none' ? 'No Job' : $member->job_type }}
+                                        </span>
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </td>
                                 <td>{{ $member->household ?? '—' }}</td>
                                 <td>{{ $member->contact ?? '—' }}</td>
                                 <td>{{ $member->email }}</td>

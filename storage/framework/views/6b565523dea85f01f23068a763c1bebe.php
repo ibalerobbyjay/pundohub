@@ -129,7 +129,7 @@
                     <div class="col-md-3 mb-3">
                         <a href="<?php echo e(route('donations.index')); ?>" class="text-decoration-none">
                             <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                                <h5 class="text-info">Total Donations</h5>
+                                <h5 class="text-info">Total Donations(All)</h5>
                                 <p class="fs-5 fw-bold">₱ <?php echo e(number_format($totalDonations, 2)); ?></p>
                             </div>
                         </a>
@@ -137,10 +137,10 @@
 
                     
                     <div class="col-md-3 mb-3">
-                        <a href="<?php echo e(route('donations.index')); ?>" class="text-decoration-none">
+                        <a href="<?php echo e(route('members.index')); ?>" class="text-decoration-none">
                             <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                                <h5 class="text-info">Number of Donations</h5>
-                                <p class="fs-5 fw-bold"><?php echo e($totalDonationCount); ?></p>
+                                <h5 class="text-info">Number of Users</h5>
+                                <p class="fs-5 fw-bold"><?php echo e($totalUsersCount ?? \App\Models\User::count()); ?></p>
                             </div>
                         </a>
                     </div>
@@ -220,5 +220,4 @@
 }
 </style>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/dashboard.blade.php ENDPATH**/ ?>

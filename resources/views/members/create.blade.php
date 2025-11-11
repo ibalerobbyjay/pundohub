@@ -92,34 +92,39 @@
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
-                {{-- Role & Job Type --}}
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <label class="form-label text-light">Role <span class="text-danger">*</span></label>
-        <select name="role" id="role" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
-            <option value="" selected disabled>Select Role</option>
-            <option value="member" {{ old('role') == 'member' ? 'selected' : '' }}>Member</option>
-            <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
-            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-        </select>
-        @error('role')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
 
-    <div class="col-md-6 mb-3" id="jobTypeDiv" style="display: none;">
-        <label class="form-label text-light">Staff Job Type</label>
-        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm">
-            <option value="" selected disabled>Select Job Type</option>
-            <option value="cook" {{ old('job_type') == 'cook' ? 'selected' : '' }}>Cook</option>
-            <option value="dishwasher" {{ old('job_type') == 'dishwasher' ? 'selected' : '' }}>Dishwasher</option>
-           
-        </select>
-        @error('job_type')
-            <small class="text-danger">{{ $message }}</small>
-        @enderror
-    </div>
-</div>
+                {{-- Role & Job Type --}}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Role <span class="text-danger">*</span></label>
+                        <select name="role" id="role" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
+                            <option value="" selected disabled>Select Role</option>
+                            <option value="member" {{ old('role') == 'member' ? 'selected' : '' }}>Member</option>
+                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        </select>
+                        @error('role')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6 mb-3" id="jobTypeDiv">
+                        <label class="form-label text-light">Member Job Type <span class="text-danger">*</span></label>
+                        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
+                            <option value="" selected disabled>Select Job Type</option>
+                            <option value="cook" {{ old('job_type') == 'cook' ? 'selected' : '' }}>Cook</option>
+                            <option value="dishwasher" {{ old('job_type') == 'dishwasher' ? 'selected' : '' }}>Dishwasher</option>
+                            <option value="cleaner" {{ old('job_type') == 'cleaner' ? 'selected' : '' }}>Cleaner</option>
+                            <option value="setup_crew" {{ old('job_type') == 'setup_crew' ? 'selected' : '' }}>Setup Crew</option>
+                            <option value="logistics" {{ old('job_type') == 'logistics' ? 'selected' : '' }}>Logistics</option>
+                            <option value="coordinator" {{ old('job_type') == 'coordinator' ? 'selected' : '' }}>Coordinator</option>
+                            <option value="finance" {{ old('job_type') == 'finance' ? 'selected' : '' }}>Finance</option>
+                            <option value="none" {{ old('job_type') == 'none' ? 'selected' : '' }}>No Specific Job</option>
+                        </select>
+                        @error('job_type')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
 
                 {{-- Buttons --}}
                 <div class="d-flex justify-content-end gap-2 mt-4">
@@ -156,15 +161,31 @@
         contactInput.value = '+63' + contactValue.substring(1);
     });
 </script>
+
 <script>
     const roleSelect = document.getElementById('role');
     const jobTypeDiv = document.getElementById('jobTypeDiv');
+    const jobTypeSelect = jobTypeDiv.querySelector('select');
 
+    // Show/hide job type based on role selection
     roleSelect.addEventListener('change', function() {
-        if(this.value === 'staff'){
+        if(this.value === 'member') {
             jobTypeDiv.style.display = 'block';
+            jobTypeSelect.setAttribute('required', 'required');
         } else {
             jobTypeDiv.style.display = 'none';
+            jobTypeSelect.removeAttribute('required');
+        }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        if(roleSelect.value === 'member') {
+            jobTypeDiv.style.display = 'block';
+            jobTypeSelect.setAttribute('required', 'required');
+        } else {
+            jobTypeDiv.style.display = 'none';
+            jobTypeSelect.removeAttribute('required');
         }
     });
 </script>

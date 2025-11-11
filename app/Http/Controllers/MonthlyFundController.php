@@ -52,6 +52,28 @@ class MonthlyFundController extends Controller
 
     return back()->with('success', 'Payment proof uploaded successfully. Awaiting admin verification.');
 }
+public function deleteAll()
+{
+    try {
+        // Check if user is admin
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('monthlyfunds.index')
+                ->with('error', 'Unauthorized action.');
+        }
+
+        $count = MonthlyFund::count();
+        
+        // Delete all records
+        MonthlyFund::query()->delete();
+        
+        return redirect()->route('monthlyfunds.index')
+            ->with('success', "All {$count} monthly fund records have been deleted successfully.");
+            
+    } catch (\Exception $e) {
+        return redirect()->route('monthlyfunds.index')
+            ->with('error', 'Error deleting records: ' . $e->getMessage());
+    }
+}
 
 }
 

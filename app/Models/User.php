@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,16 +10,15 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-  protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role',
-    'household',
-    'contact',
-       'job_type',
-];
-
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'household',
+        'contact',
+        'job_type',
+    ];
 
     protected $hidden = [
         'password',
@@ -30,14 +30,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Member::class);
     }
+
     public function penalties()
-{
-    return $this->hasMany(\App\Models\Penalty::class);
-}
-public function monthlyFunds()
-{
-    return $this->hasMany(MonthlyFund::class);
-}
+    {
+        return $this->hasMany(\App\Models\Penalty::class);
+    }
 
-
+    public function monthlyFunds()
+    {
+        return $this->hasMany(MonthlyFund::class);
+    }
 }

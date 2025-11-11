@@ -43,7 +43,12 @@
 
                         
                         <?php elseif(isset($data['case_title']) && isset($data['job_type'])): ?>
-                            You have a new assignment for <?php echo e($data['job_type']); ?> in case: <?php echo e($data['case_title']); ?>
+                            You have a new <?php echo e($data['job_type']); ?> assignment for case: <?php echo e($data['case_title']); ?>
+
+
+                        
+                        <?php elseif(isset($data['case_title']) && isset($data['type'])): ?>
+                            New <?php echo e($data['type']); ?>: <?php echo e($data['case_title']); ?>
 
 
                         <?php else: ?>
@@ -91,5 +96,4 @@
 }
 </style>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/notifications/index.blade.php ENDPATH**/ ?>

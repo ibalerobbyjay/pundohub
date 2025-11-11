@@ -129,18 +129,18 @@
                     <div class="col-md-3 mb-3">
                         <a href="{{ route('donations.index') }}" class="text-decoration-none">
                             <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                                <h5 class="text-info">Total Donations</h5>
+                                <h5 class="text-info">Total Donations(All)</h5>
                                 <p class="fs-5 fw-bold">₱ {{ number_format($totalDonations, 2) }}</p>
                             </div>
                         </a>
                     </div>
 
-                    {{-- Total Number of Donations --}}
+                    {{-- Number of Users --}}
                     <div class="col-md-3 mb-3">
-                        <a href="{{ route('donations.index') }}" class="text-decoration-none">
+                        <a href="{{ route('members.index') }}" class="text-decoration-none">
                             <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card">
-                                <h5 class="text-info">Number of Donations</h5>
-                                <p class="fs-5 fw-bold">{{ $totalDonationCount }}</p>
+                                <h5 class="text-info">Number of Users</h5>
+                                <p class="fs-5 fw-bold">{{ $totalUsersCount ?? \App\Models\User::count() }}</p>
                             </div>
                         </a>
                     </div>

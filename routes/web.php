@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     // 💸 Donations
     // ==============================
     Route::resource('donations', DonationController::class)->except(['show']);
-
+    Route::delete('/donations/delete-all', [DonationController::class, 'deleteAll'])->name('donations.deleteAll');
     // ==============================
     // 🔔 Notifications
     // ==============================
@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('bereavement-cases', BereavementCaseController::class);
     Route::put('bereavement-cases/{id}/remarks', [BereavementCaseController::class, 'updateRemarks'])
         ->name('bereavement-cases.updateRemarks');
+        
 
     // ==============================
     // 🕊️ Death Reports (User Submission)
@@ -114,6 +115,9 @@ Route::get('/donations/history', [App\Http\Controllers\DonationController::class
     Route::middleware('auth')->group(function () {
     Route::get('/monthly-funds', [MonthlyFundController::class, 'index'])->name('monthlyfunds.index');
     Route::post('/monthly-funds/pay', [MonthlyFundController::class, 'pay'])->name('monthlyfunds.pay');
+    Route::delete('/monthlyfunds/delete-all', [MonthlyFundController::class, 'deleteAll'])->name('monthlyfunds.deleteAll');
 });
+Route::post('/cases/{case}/assign-job', [BereavementCaseController::class, 'assignJob'])->name('cases.assign-job');
+Route::post('/cases/{case}/assign-jobs', [BereavementCaseController::class, 'assignJobs'])->name('cases.assign-jobs');
 
 });

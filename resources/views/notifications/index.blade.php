@@ -41,9 +41,13 @@
                         @if(isset($data['message']))
                             {{ $data['message'] }}
 
-                        {{-- Handle staff assignment notification --}}
+                        {{-- Handle job assignment notification (UPDATED) --}}
                         @elseif(isset($data['case_title']) && isset($data['job_type']))
-                            You have a new assignment for {{ $data['job_type'] }} in case: {{ $data['case_title'] }}
+                            You have a new {{ $data['job_type'] }} assignment for case: {{ $data['case_title'] }}
+
+                        {{-- Handle bereavement case notification --}}
+                        @elseif(isset($data['case_title']) && isset($data['type']))
+                            New {{ $data['type'] }}: {{ $data['case_title'] }}
 
                         @else
                             No message

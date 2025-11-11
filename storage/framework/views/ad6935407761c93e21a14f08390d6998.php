@@ -127,48 +127,53 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                 </div>
-                
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <label class="form-label text-light">Role <span class="text-danger">*</span></label>
-        <select name="role" id="role" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
-            <option value="" selected disabled>Select Role</option>
-            <option value="member" <?php echo e(old('role') == 'member' ? 'selected' : ''); ?>>Member</option>
-            <option value="staff" <?php echo e(old('role') == 'staff' ? 'selected' : ''); ?>>Staff</option>
-            <option value="admin" <?php echo e(old('role') == 'admin' ? 'selected' : ''); ?>>Admin</option>
-        </select>
-        <?php $__errorArgs = ['role'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-            <small class="text-danger"><?php echo e($message); ?></small>
-        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-    </div>
 
-    <div class="col-md-6 mb-3" id="jobTypeDiv" style="display: none;">
-        <label class="form-label text-light">Staff Job Type</label>
-        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm">
-            <option value="" selected disabled>Select Job Type</option>
-            <option value="cook" <?php echo e(old('job_type') == 'cook' ? 'selected' : ''); ?>>Cook</option>
-            <option value="dishwasher" <?php echo e(old('job_type') == 'dishwasher' ? 'selected' : ''); ?>>Dishwasher</option>
-           
-        </select>
-        <?php $__errorArgs = ['job_type'];
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-light">Role <span class="text-danger">*</span></label>
+                        <select name="role" id="role" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
+                            <option value="" selected disabled>Select Role</option>
+                            <option value="member" <?php echo e(old('role') == 'member' ? 'selected' : ''); ?>>Member</option>
+                            <option value="admin" <?php echo e(old('role') == 'admin' ? 'selected' : ''); ?>>Admin</option>
+                        </select>
+                        <?php $__errorArgs = ['role'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-            <small class="text-danger"><?php echo e($message); ?></small>
-        <?php unset($message);
+                            <small class="text-danger"><?php echo e($message); ?></small>
+                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-    </div>
-</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3" id="jobTypeDiv">
+                        <label class="form-label text-light">Member Job Type <span class="text-danger">*</span></label>
+                        <select name="job_type" class="form-select bg-dark text-light border-secondary rounded-3 shadow-sm" required>
+                            <option value="" selected disabled>Select Job Type</option>
+                            <option value="cook" <?php echo e(old('job_type') == 'cook' ? 'selected' : ''); ?>>Cook</option>
+                            <option value="dishwasher" <?php echo e(old('job_type') == 'dishwasher' ? 'selected' : ''); ?>>Dishwasher</option>
+                            <option value="cleaner" <?php echo e(old('job_type') == 'cleaner' ? 'selected' : ''); ?>>Cleaner</option>
+                            <option value="setup_crew" <?php echo e(old('job_type') == 'setup_crew' ? 'selected' : ''); ?>>Setup Crew</option>
+                            <option value="logistics" <?php echo e(old('job_type') == 'logistics' ? 'selected' : ''); ?>>Logistics</option>
+                            <option value="coordinator" <?php echo e(old('job_type') == 'coordinator' ? 'selected' : ''); ?>>Coordinator</option>
+                            <option value="finance" <?php echo e(old('job_type') == 'finance' ? 'selected' : ''); ?>>Finance</option>
+                            <option value="none" <?php echo e(old('job_type') == 'none' ? 'selected' : ''); ?>>No Specific Job</option>
+                        </select>
+                        <?php $__errorArgs = ['job_type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <small class="text-danger"><?php echo e($message); ?></small>
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    </div>
+                </div>
 
                 
                 <div class="d-flex justify-content-end gap-2 mt-4">
@@ -205,18 +210,33 @@ unset($__errorArgs, $__bag); ?>
         contactInput.value = '+63' + contactValue.substring(1);
     });
 </script>
+
 <script>
     const roleSelect = document.getElementById('role');
     const jobTypeDiv = document.getElementById('jobTypeDiv');
+    const jobTypeSelect = jobTypeDiv.querySelector('select');
 
+    // Show/hide job type based on role selection
     roleSelect.addEventListener('change', function() {
-        if(this.value === 'staff'){
+        if(this.value === 'member') {
             jobTypeDiv.style.display = 'block';
+            jobTypeSelect.setAttribute('required', 'required');
         } else {
             jobTypeDiv.style.display = 'none';
+            jobTypeSelect.removeAttribute('required');
+        }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        if(roleSelect.value === 'member') {
+            jobTypeDiv.style.display = 'block';
+            jobTypeSelect.setAttribute('required', 'required');
+        } else {
+            jobTypeDiv.style.display = 'none';
+            jobTypeSelect.removeAttribute('required');
         }
     });
 </script>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/members/create.blade.php ENDPATH**/ ?>
