@@ -19,39 +19,42 @@ class DeathReportController extends Controller
 
     // Handle the form submission
     public function store(Request $request)
-    {
-        // Validate input
-        $request->validate([
-            'name_of_deceased' => 'required|string|max:255',
-            'date_of_death' => 'required|date',
-            'cause_of_death' => 'required|string|max:255',
-            'other_cause' => 'nullable|string|max:255',
-            'location_of_death' => 'required|string|max:255',
-            'notes' => 'nullable|string',
-            'death_certificate' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
+{
+    $request->validate([
+        'name_of_deceased' => 'required|string|max:255',
+        'date_of_death' => 'required|date',
+        'cause_of_death' => 'required|string',
+        'location_of_death' => 'required|string|max:255',
+        'death_certificate' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+    ]);
 
-        // Store uploaded file
-        $path = $request->file('death_certificate')->store('death_certificates', 'public');
+    // ✅ Check for duplicate report by name
+    $existingReport = \App\Models\DeathReport::where('name_of_deceased', $request->name_of_deceased)->first();
 
-        // Save death report
-        $report = DeathReport::create([
-            'user_id' => Auth::id(),
-            'name_of_deceased' => $request->name_of_deceased,
-            'date_of_death' => $request->date_of_death,
-            'cause_of_death' => $request->cause_of_death,
-            'other_cause' => $request->other_cause,
-            'location_of_death' => $request->location_of_death,
-            'notes' => $request->notes,
-            'death_certificate' => $path,
-            'is_verified' => false,
-        ]);
+    // Store uploaded certificate
+    $path = $request->file('death_certificate')->store('death_certificates', 'public');
 
-        // Notify all admins (in-app notification)
-        $admins = User::where('role', 'admin')->get();
-        Notification::send($admins, new DeathReportedNotification($report));
+    // Create new report
+    $report = \App\Models\DeathReport::create([
+        'user_id' => auth()->id(),
+        'name_of_deceased' => $request->name_of_deceased,
+        'date_of_death' => $request->date_of_death,
+        'cause_of_death' => $request->cause_of_death === 'Other' ? $request->other_cause : $request->cause_of_death,
+        'location_of_death' => $request->location_of_death,
+        'notes' => $request->notes,
+        'death_certificate' => $path,
+    ]);
 
-        return redirect()->back()
-            ->with('success', 'Death report submitted successfully. Waiting for admin approval.');
+    // ✅ If duplicate found, notify the admin
+    if ($existingReport) {
+        $admins = \App\Models\User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new \App\Notifications\DuplicateDeathReportNotification($report));
+        }
     }
+
+    return redirect()->back()->with('success', 'Death report submitted successfully.');
+}
+
 }

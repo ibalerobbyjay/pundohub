@@ -124,6 +124,8 @@ Route::post('/cases/{case}/assign-jobs', [BereavementCaseController::class, 'ass
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
  Route::delete('/profile/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
 
+Route::get('/admin/death-reports/{report}', [App\Http\Controllers\Admin\DeathReportController::class, 'show'])
+     ->name('death-reports.show');
 
 
 

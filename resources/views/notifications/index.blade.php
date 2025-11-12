@@ -109,6 +109,14 @@
                                     @endif
                                 </div>
 
+                                
+        {{-- Warning if the death is reported more than once --}}
+        @if(isset($data['message']) && Str::contains($data['message'], 'reported more than once'))
+            <div class="alert alert-warning mt-2 mb-0">
+                {{ $data['message'] }}
+            </div>
+        @endif
+
                             {{-- Donation Notification --}}
                             @elseif(isset($data['type']) && $data['type'] === 'donation')
                                 <div class="d-flex align-items-center mb-1">

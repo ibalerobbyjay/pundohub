@@ -108,6 +108,15 @@
                                     <?php endif; ?>
                                 </div>
 
+                                
+        
+        <?php if(isset($data['message']) && Str::contains($data['message'], 'reported more than once')): ?>
+            <div class="alert alert-warning mt-2 mb-0">
+                <?php echo e($data['message']); ?>
+
+            </div>
+        <?php endif; ?>
+
                             
                             <?php elseif(isset($data['type']) && $data['type'] === 'donation'): ?>
                                 <div class="d-flex align-items-center mb-1">
