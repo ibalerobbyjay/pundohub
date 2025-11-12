@@ -144,6 +144,27 @@
                             </div>
                         </a>
                     </div>
+                    @if(auth()->user()->role === 'member')
+    {{-- Penalty Card --}}
+    @php
+        $userPenalty = auth()->user()->penalties()->latest()->first();
+    @endphp
+
+    @if($userPenalty)
+    <div class="col-md-4 mb-3">
+        <a href="{{ route('penalties.index') }}" class="text-decoration-none">
+            <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card position-relative">
+                <h5 class="text-danger">Penalty</h5>
+                <p class="fs-5 fw-bold">₱ {{ number_format($userPenalty->amount, 2) }}</p>
+                <small class="text-muted">Reason: {{ Str::limit($userPenalty->reason, 50) }}</small>
+
+                <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2">Unpaid</span>
+            </div>
+        </a>
+    </div>
+    @endif
+@endif
+
 
                     {{-- Total Bereavement Cases --}}
                     <div class="col-md-3 mb-3">

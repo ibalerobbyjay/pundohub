@@ -11,8 +11,7 @@ class MemberController extends Controller
     // List all members (users with role 'member')
     public function index()
     {
-        // Fetch all users, not just members
-        $members = User::all(); // or you can order by name: User::orderBy('name')->get();
+        $members = User::all();
         return view('members.index', compact('members'));
     }
 
@@ -25,24 +24,31 @@ class MemberController extends Controller
     // Store new member (as user)
     public function store(Request $request)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'required|string|min:6|confirmed',
-            'household' => 'nullable|string',
-            'contact'   => 'nullable|string',
-            'role'      => 'required|in:member,admin',
-            'job_type'  => 'required_if:role,member|nullable|string|in:cook,dishwasher,cleaner,setup_crew,logistics,coordinator,finance,none',
-        ]);
+      $request->validate([
+    'name'      => 'required|string|max:255',
+    'email'     => 'required|email|unique:users,email',
+    'password'  => 'required|string|min:6|confirmed',
+    'household' => 'nullable|string',
+    'contact'   => [
+        'nullable',
+        'regex:/^(\+639|09)\d{9}$/',
+        'unique:users,contact',
+    ],
+    'role'      => 'required|in:member,admin',
+    'job_type'  => 'required_if:role,member|nullable|string|in:cook,dishwasher,cleaner,setup_crew,logistics,coordinator,finance,none',
+], [
+    'contact.unique' => 'This mobile number is already registered.',
+    'contact.regex'  => 'Please enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX).',
+]);
 
         User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'household'=> $request->household,
-            'contact'  => $request->contact,
-            'role'     => $request->role, // dynamic
-            'job_type' => $request->role === 'member' ? $request->job_type : null,
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'household' => $request->household,
+            'contact'   => $request->contact,
+            'role'      => $request->role,
+            'job_type'  => $request->role === 'member' ? $request->job_type : null,
         ]);
 
         return redirect()->route('members.index')
@@ -64,13 +70,21 @@ class MemberController extends Controller
     // Update member info
     public function update(Request $request, User $member)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'household' => 'nullable|string',
-            'contact'   => 'nullable|string',
-            'role'      => 'required|in:member,admin',
-            'job_type'  => 'required_if:role,member|nullable|string|in:cook,dishwasher,cleaner,setup_crew,logistics,coordinator,finance,none',
-        ]);
+       $request->validate([
+    'name'      => 'required|string|max:255',
+    'household' => 'nullable|string',
+    'contact'   => [
+        'nullable',
+        'regex:/^(\+639|09)\d{9}$/',
+        'unique:users,contact,' . $member->id,
+    ],
+    'role'      => 'required|in:member,admin',
+    'job_type'  => 'required_if:role,member|nullable|string|in:cook,dishwasher,cleaner,setup_crew,logistics,coordinator,finance,none',
+], [
+    'contact.unique' => 'This mobile number is already registered.',
+    'contact.regex'  => 'Please enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX).',
+]);
+
 
         $member->update([
             'name'      => $request->name,

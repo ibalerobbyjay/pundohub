@@ -321,34 +321,53 @@
         </div>
     </div>
 
-    <!-- ✅ Forgot Password Modal -->
-    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-dark rounded-4">
-                <div class="modal-header">
-                    <h5 class="modal-title">Forgot Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="text-muted mb-3">Enter your email to receive a password reset link.</p>
-                    <form id="forgotForm" method="POST" action="{{ route('password.email') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="forgot_email" class="form-label">Email</label>
-                            <input id="forgot_email" class="form-control" type="email" name="email" required>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a class="small text-decoration-none" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">Back to login</a>
-                            <button type="submit" id="forgotBtn" class="btn btn-login d-flex align-items-center justify-content-center">
-                                <span class="btn-text">Send Reset Link</span>
-                                <span class="spinner-border spinner-border-sm text-dark ms-2 d-none"></span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+   <!-- ✅ Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                {{-- ✅ Success Message --}}
+                @if(session('status'))
+                    <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+                        {{ session('status') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                {{-- ✅ Error Message --}}
+                @if($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                        {{ $errors->first() }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                <p class="text-muted mb-3">Enter your email to receive a password reset link.</p>
+
+                <form id="forgotForm" method="POST" action="{{ route('password.email') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="forgot_email" class="form-label">Email</label>
+                        <input id="forgot_email" class="form-control" type="email" name="email" required>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a class="small text-decoration-none" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">Back to login</a>
+                        <button type="submit" id="forgotBtn" class="btn btn-login d-flex align-items-center justify-content-center">
+                            <span class="btn-text">Send Reset Link</span>
+                            <span class="spinner-border spinner-border-sm text-dark ms-2 d-none"></span>
+                        </button>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
+</div>
 
     <!-- ✅ Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -281,6 +281,7 @@
     transform: translateY(-2px);
     transition: transform 0.15s ease;
     box-shadow: 0 4px 12px rgba(150, 150, 150, 0.2);
+
 }
 .card {
     transition: transform 0.2s ease, background 0.3s;

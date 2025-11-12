@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PundoHub | Reset Password</title>
+    <title>PundoHub | Forgot Password</title>
 
     <!-- ✅ Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
             justify-content: center;
         }
 
-        .reset-card {
+        .forgot-card {
             background: rgba(25, 25, 25, 0.9);
             backdrop-filter: blur(14px);
             border-radius: 1rem;
@@ -59,7 +59,7 @@
             background: rgba(255, 255, 255, 0.12);
         }
 
-        .btn-reset {
+        .btn-send {
             background-color: #ffffff;
             border: none;
             color: #000;
@@ -69,7 +69,7 @@
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        .btn-reset:hover {
+        .btn-send:hover {
             background-color: #f8f9fa;
             box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
             transform: scale(1.04);
@@ -113,51 +113,38 @@
 </head>
 <body>
 
-    <div class="reset-card shadow-lg">
+    <div class="forgot-card shadow-lg">
         <div class="logo">
-            <i class="bi bi-shield-lock-fill fs-1 text-white"></i>
+            <i class="bi bi-key-fill fs-1 text-warning"></i>
             <h3>PundoHub</h3>
-            <p class="text-light-50 mb-3">Reset Your Password</p>
+            <p class="text-light-50 mb-3">Forgot Your Password?</p>
         </div>
 
-        <!-- ✅ Reset Password Form -->
-        <form method="POST" action="{{ route('password.update') }}">
+        <!-- ✅ Forgot Password Form -->
+        <form method="POST" action="{{ route('password.email') }}">
             @csrf
-            <input type="hidden" name="token" value="{{ $token }}">
 
             <!-- Email -->
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
                 <input id="email" type="email" name="email" class="form-control"
-                       value="{{ old('email', $email ?? '') }}" required autofocus autocomplete="username">
+                       value="{{ old('email') }}" required autofocus placeholder="Enter your email">
                 @error('email')
                     <div class="text-danger small mt-1">{{ $message }}</div>
                 @enderror
             </div>
 
-            <!-- New Password -->
-            <div class="mb-3">
-                <label for="password" class="form-label">New Password</label>
-                <input id="password" type="password" name="password" class="form-control" required autocomplete="new-password">
-                @error('password')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-4">
-                <label for="password_confirmation" class="form-label">Confirm Password</label>
-                <input id="password_confirmation" type="password" name="password_confirmation"
-                       class="form-control" required autocomplete="new-password">
-                @error('password_confirmation')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button type="submit" class="btn btn-reset w-100">
-                <i class="bi bi-arrow-repeat me-2"></i> Reset Password
+            <button type="submit" class="btn btn-send w-100">
+                <i class="bi bi-envelope-fill me-2"></i> Send Forgot Password Link
             </button>
         </form>
+
+        @if (session('status'))
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                {{ session('status') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
 
         <p class="text-center text-muted mt-4 mb-0">
             Remembered your password? <a href="{{ route('login') }}">Back to Login</a>
