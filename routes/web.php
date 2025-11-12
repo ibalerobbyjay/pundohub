@@ -15,6 +15,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\MonthlyFundController;
 use App\Http\Controllers\Admin\PenaltyController;
 
+
 // Redirect root to dashboard
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -122,4 +123,9 @@ Route::post('/cases/{case}/assign-job', [BereavementCaseController::class, 'assi
 Route::post('/cases/{case}/assign-jobs', [BereavementCaseController::class, 'assignJobs'])->name('cases.assign-jobs');
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
  Route::delete('/profile/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.picture.delete');
+
+
+
+
+
 });

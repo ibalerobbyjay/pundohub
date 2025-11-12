@@ -22,6 +22,98 @@
                         </a>
                     </div>
                     <?php endif; ?>
+      
+                    
+<?php
+    $userPenalties = \App\Models\Penalty::with('user')
+        ->where('user_id', auth()->id())
+        ->get();
+?>
+
+<?php if($userPenalties->count() > 0): ?>
+    <div class="col-md-4 mb-3">
+        <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card position-relative border border-danger"
+             data-bs-toggle="modal" data-bs-target="#memberPenaltyModal" style="cursor:pointer;">
+            <h5 class="text-danger">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> Penalties
+            </h5>
+            <p class="fs-5 fw-bold text-danger mb-1">
+                ₱ <?php echo e(number_format($userPenalties->where('paid', false)->sum('amount'), 2)); ?>
+
+            </p>
+            <small class="text-muted">Unpaid penalties</small>
+
+            <?php if($userPenalties->where('paid', false)->count() > 0): ?>
+                <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2">
+                    <?php echo e($userPenalties->where('paid', false)->count()); ?> Unpaid
+                </span>
+            <?php else: ?>
+                <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2">All Paid</span>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<!-- Penalty Modal -->
+<div class="modal fade" id="memberPenaltyModal" tabindex="-1" aria-labelledby="memberPenaltyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-wide-modal"> <!-- custom class -->
+        <div class="modal-content bg-dark text-light border-secondary rounded-4 shadow-lg">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="memberPenaltyModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                    Your Penalties
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <?php if($userPenalties->count() > 0): ?>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0">
+                            <thead class="table-light text-dark">
+                                <tr>
+                                    <th class="px-4 py-3">Amount (₱)</th>
+                                    <th class="px-4 py-3">Reason</th>
+                                    <th class="px-4 py-3">Date Applied</th>
+                                    <th class="px-4 py-3">Due Date</th>
+                                    <th class="px-4 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $__currentLoopData = $userPenalties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $penalty): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr class="<?php echo e($penalty->paid ? '' : 'table-danger'); ?>">
+                                        <td class="fw-bold">₱<?php echo e(number_format($penalty->amount, 2)); ?></td>
+                                        <td><?php echo e($penalty->reason); ?></td>
+                                        <td><?php echo e(\Carbon\Carbon::parse($penalty->applied_at)->format('M d, Y')); ?></td>
+                                        <td>
+                                            <?php if($penalty->due_date): ?>
+                                                <?php echo e(\Carbon\Carbon::parse($penalty->due_date)->format('M d, Y')); ?>
+
+                                            <?php else: ?>
+                                                <span class="text-muted">No due date</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if($penalty->paid): ?>
+                                                <span class="badge bg-success px-3 py-2">Paid</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-danger px-3 py-2">Unpaid</span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3 text-muted">You have no penalties 🎉</h5>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
 
                     
                     <div class="col-md-4 mb-3">
@@ -144,27 +236,7 @@
                             </div>
                         </a>
                     </div>
-                    <?php if(auth()->user()->role === 'member'): ?>
-    
-    <?php
-        $userPenalty = auth()->user()->penalties()->latest()->first();
-    ?>
-
-    <?php if($userPenalty): ?>
-    <div class="col-md-4 mb-3">
-        <a href="<?php echo e(route('penalties.index')); ?>" class="text-decoration-none">
-            <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card position-relative">
-                <h5 class="text-danger">Penalty</h5>
-                <p class="fs-5 fw-bold">₱ <?php echo e(number_format($userPenalty->amount, 2)); ?></p>
-                <small class="text-muted">Reason: <?php echo e(Str::limit($userPenalty->reason, 50)); ?></small>
-
-                <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2">Unpaid</span>
-            </div>
-        </a>
-    </div>
-    <?php endif; ?>
-<?php endif; ?>
-
+                    
 
                     
                     <div class="col-md-3 mb-3">
@@ -271,6 +343,20 @@
 .hover-notification:hover {
     background-color: rgba(0, 255, 255, 0.1);
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+ /* Custom extra-wide modal */
+.custom-wide-modal {
+    max-width: 95vw !important; /* almost full width */
+    width: 95vw !important;
+}
+
+.modal-content {
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(12px);
+}
+
+table.table th, table.table td {
+    padding: 1rem !important;
 }
 </style>
 <?php $__env->stopSection(); ?>

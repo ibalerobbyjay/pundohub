@@ -24,6 +24,96 @@
                         </a>
                     </div>
                     @endif
+      
+                    {{-- Member Penalties --}}
+@php
+    $userPenalties = \App\Models\Penalty::with('user')
+        ->where('user_id', auth()->id())
+        ->get();
+@endphp
+
+@if($userPenalties->count() > 0)
+    <div class="col-md-4 mb-3">
+        <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card position-relative border border-danger"
+             data-bs-toggle="modal" data-bs-target="#memberPenaltyModal" style="cursor:pointer;">
+            <h5 class="text-danger">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> Penalties
+            </h5>
+            <p class="fs-5 fw-bold text-danger mb-1">
+                ₱ {{ number_format($userPenalties->where('paid', false)->sum('amount'), 2) }}
+            </p>
+            <small class="text-muted">Unpaid penalties</small>
+
+            @if($userPenalties->where('paid', false)->count() > 0)
+                <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2">
+                    {{ $userPenalties->where('paid', false)->count() }} Unpaid
+                </span>
+            @else
+                <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2">All Paid</span>
+            @endif
+        </div>
+    </div>
+@endif
+
+<!-- Penalty Modal -->
+<div class="modal fade" id="memberPenaltyModal" tabindex="-1" aria-labelledby="memberPenaltyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-wide-modal"> <!-- custom class -->
+        <div class="modal-content bg-dark text-light border-secondary rounded-4 shadow-lg">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="memberPenaltyModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                    Your Penalties
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @if($userPenalties->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0">
+                            <thead class="table-light text-dark">
+                                <tr>
+                                    <th class="px-4 py-3">Amount (₱)</th>
+                                    <th class="px-4 py-3">Reason</th>
+                                    <th class="px-4 py-3">Date Applied</th>
+                                    <th class="px-4 py-3">Due Date</th>
+                                    <th class="px-4 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($userPenalties as $penalty)
+                                    <tr class="{{ $penalty->paid ? '' : 'table-danger' }}">
+                                        <td class="fw-bold">₱{{ number_format($penalty->amount, 2) }}</td>
+                                        <td>{{ $penalty->reason }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($penalty->applied_at)->format('M d, Y') }}</td>
+                                        <td>
+                                            @if($penalty->due_date)
+                                                {{ \Carbon\Carbon::parse($penalty->due_date)->format('M d, Y') }}
+                                            @else
+                                                <span class="text-muted">No due date</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($penalty->paid)
+                                                <span class="badge bg-success px-3 py-2">Paid</span>
+                                            @else
+                                                <span class="badge bg-danger px-3 py-2">Unpaid</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3 text-muted">You have no penalties 🎉</h5>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 
                     {{-- Total Donations (All Members) --}}
                     <div class="col-md-4 mb-3">
@@ -144,27 +234,7 @@
                             </div>
                         </a>
                     </div>
-                    @if(auth()->user()->role === 'member')
-    {{-- Penalty Card --}}
-    @php
-        $userPenalty = auth()->user()->penalties()->latest()->first();
-    @endphp
-
-    @if($userPenalty)
-    <div class="col-md-4 mb-3">
-        <a href="{{ route('penalties.index') }}" class="text-decoration-none">
-            <div class="card p-4 bg-dark text-light shadow rounded-4 hover-card position-relative">
-                <h5 class="text-danger">Penalty</h5>
-                <p class="fs-5 fw-bold">₱ {{ number_format($userPenalty->amount, 2) }}</p>
-                <small class="text-muted">Reason: {{ Str::limit($userPenalty->reason, 50) }}</small>
-
-                <span class="badge bg-danger position-absolute top-0 end-0 m-3 px-3 py-2">Unpaid</span>
-            </div>
-        </a>
-    </div>
-    @endif
-@endif
-
+                    
 
                     {{-- Total Bereavement Cases --}}
                     <div class="col-md-3 mb-3">
@@ -266,6 +336,20 @@
 .hover-notification:hover {
     background-color: rgba(0, 255, 255, 0.1);
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+ /* Custom extra-wide modal */
+.custom-wide-modal {
+    max-width: 95vw !important; /* almost full width */
+    width: 95vw !important;
+}
+
+.modal-content {
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(12px);
+}
+
+table.table th, table.table td {
+    padding: 1rem !important;
 }
 </style>
 @endsection
