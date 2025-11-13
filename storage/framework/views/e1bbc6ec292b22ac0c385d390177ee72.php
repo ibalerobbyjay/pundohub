@@ -13,6 +13,7 @@
     body {
       overflow-x: hidden;
       font-family: "Poppins", sans-serif;
+      background: linear-gradient(to left, #b0b0b0, #121212);
     }
 
     #sidebar {
@@ -21,7 +22,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      background: #1f1f1f;
+      background: #313030;
       color: white;
       transition: transform 0.3s ease-in-out;
       z-index: 1050;
@@ -41,15 +42,7 @@
       color: #000;
     }
 
-   body {
-  overflow-x: hidden;
-  font-family: "Poppins", sans-serif;
-  background: url("<?php echo e(asset('images/background.jpg')); ?>") no-repeat center center fixed;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+   
 
 #content {
   flex-grow: 1;

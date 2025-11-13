@@ -2,10 +2,9 @@
 
 @section('content')
 <div class="container mt-5">
-    <div class="card shadow-lg rounded-4 bg-dark text-light"
-         style="background: rgba(25,25,25,0.9); backdrop-filter: blur(12px);">
+    <div class="card shadow-lg rounded-4 bg-light text-dark">
         <div class="card-body p-4">
-            <h2 class="mb-4 fw-bold text-info text-center">
+            <h2 class="mb-4 fw-bold text-primary text-center">
                 <i class="bi bi-person-circle me-2 text-warning"></i> Edit Profile
             </h2>
 
@@ -24,7 +23,6 @@
                 <!-- Profile Picture Section -->
                 <div class="row mb-4">
                     <div class="col-md-3 text-center">
-                        <!-- Current Profile Picture -->
                         <div class="mb-3">
                             @if($user->profile_picture)
                                 <img src="{{ asset('storage/' . $user->profile_picture) }}" 
@@ -38,16 +36,15 @@
                                 </div>
                             @endif
                         </div>
-                        
-                        <!-- Upload Button -->
+
                         <div class="mb-3">
                             <input type="file" 
                                    name="profile_picture" 
                                    id="profile_picture" 
-                                   class="form-control bg-dark text-light border-secondary d-none"
+                                   class="form-control d-none"
                                    accept="image/*"
                                    onchange="previewImage(event)">
-                            <label for="profile_picture" class="btn btn-outline-info btn-sm rounded-pill w-100">
+                            <label for="profile_picture" class="btn btn-outline-primary btn-sm rounded-pill w-100">
                                 <i class="bi bi-camera me-1"></i> Change Photo
                             </label>
                             @error('profile_picture')
@@ -55,7 +52,6 @@
                             @enderror
                         </div>
 
-                        <!-- Remove Picture Button (only show if user has a profile picture) -->
                         @if($user->profile_picture)
                             <button type="button" 
                                     class="btn btn-outline-danger btn-sm rounded-pill w-100"
@@ -66,19 +62,18 @@
                     </div>
 
                     <div class="col-md-9">
-                        <!-- Image Preview -->
                         <div id="imagePreview" class="mb-3 text-center" style="display: none;">
-                            <p class="text-info small mb-2">New Profile Picture Preview:</p>
+                            <p class="text-primary small mb-2">New Profile Picture Preview:</p>
                             <img id="preview" class="img-thumbnail rounded-circle shadow-sm"
                                  style="width: 150px; height: 150px; object-fit: cover;">
                         </div>
 
-                        <!-- Profile Information -->
+                        <!-- Profile Info -->
                         <div class="mb-3">
-                            <label class="form-label text-light">Name <span class="text-danger">*</span></label>
+                            <label class="form-label">Name <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="name" 
-                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   class="form-control bg-white text-dark border-secondary rounded-3"
                                    value="{{ old('name', $user->name) }}" 
                                    required>
                             @error('name')
@@ -87,10 +82,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-light">Email <span class="text-danger">*</span></label>
+                            <label class="form-label">Email <span class="text-danger">*</span></label>
                             <input type="email" 
                                    name="email" 
-                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   class="form-control bg-white text-dark border-secondary rounded-3"
                                    value="{{ old('email', $user->email) }}" 
                                    required>
                             @error('email')
@@ -99,10 +94,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-light">Contact Number</label>
+                            <label class="form-label">Contact Number</label>
                             <input type="text" 
                                    name="contact" 
-                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   class="form-control bg-white text-dark border-secondary rounded-3"
                                    value="{{ old('contact', $user->contact) }}"
                                    placeholder="09XXXXXXXXX">
                             @error('contact')
@@ -111,8 +106,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-light">Household</label>
-                            <select name="household" class="form-select bg-dark text-light border-secondary rounded-3">
+                            <label class="form-label">Household</label>
+                            <select name="household" class="form-select bg-white text-dark border-secondary rounded-3">
                                 <option value="">Select Purok</option>
                                 @for ($i = 1; $i <= 7; $i++)
                                     <option value="Purok {{ $i }}" 
@@ -129,16 +124,16 @@
                 </div>
 
                 <!-- Password Section -->
-                <div class="card bg-dark border-secondary rounded-3 mb-4">
+                <div class="card bg-white border-secondary rounded-3 mb-4">
                     <div class="card-body">
-                        <h5 class="text-info mb-3">
+                        <h5 class="text-primary mb-3">
                             <i class="bi bi-shield-lock me-2"></i> Change Password
                         </h5>
                         <div class="mb-3">
-                            <label class="form-label text-light">Current Password</label>
+                            <label class="form-label">Current Password</label>
                             <input type="password" 
                                    name="current_password" 
-                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   class="form-control bg-white text-dark border-secondary rounded-3"
                                    placeholder="Enter current password">
                             @error('current_password')
                                 <small class="text-danger">{{ $message }}</small>
@@ -146,10 +141,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-light">New Password (leave blank to keep current)</label>
+                            <label class="form-label">New Password (leave blank to keep current)</label>
                             <input type="password" 
                                    name="password" 
-                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   class="form-control bg-white text-dark border-secondary rounded-3"
                                    placeholder="Enter new password">
                             @error('password')
                                 <small class="text-danger">{{ $message }}</small>
@@ -157,10 +152,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-light">Confirm New Password</label>
+                            <label class="form-label">Confirm New Password</label>
                             <input type="password" 
                                    name="password_confirmation" 
-                                   class="form-control bg-dark text-light border-secondary rounded-3"
+                                   class="form-control bg-white text-dark border-secondary rounded-3"
                                    placeholder="Confirm new password">
                         </div>
                     </div>
@@ -180,7 +175,7 @@
 </div>
 
 <script>
-// Preview image before upload
+// Preview image
 function previewImage(event) {
     const input = event.target;
     const preview = document.getElementById('preview');
@@ -188,12 +183,10 @@ function previewImage(event) {
     
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        
         reader.onload = function(e) {
             preview.src = e.target.result;
             previewContainer.style.display = 'block';
         }
-        
         reader.readAsDataURL(input.files[0]);
     }
 }
@@ -201,21 +194,17 @@ function previewImage(event) {
 // Remove profile picture
 function removeProfilePicture() {
     if (confirm('Are you sure you want to remove your profile picture?')) {
-        // You can implement AJAX call to remove the picture
-        // or add a hidden field to indicate removal
         const form = document.getElementById('profileForm');
         const removeInput = document.createElement('input');
         removeInput.type = 'hidden';
         removeInput.name = 'remove_profile_picture';
         removeInput.value = '1';
         form.appendChild(removeInput);
-        
-        // Submit the form
         form.submit();
     }
 }
 
-// Optional: Add form validation
+// Password validation
 document.getElementById('profileForm').addEventListener('submit', function(e) {
     const password = document.querySelector('input[name="password"]').value;
     const confirmPassword = document.querySelector('input[name="password_confirmation"]').value;
@@ -230,8 +219,8 @@ document.getElementById('profileForm').addEventListener('submit', function(e) {
 
 <style>
 .form-control:focus, .form-select:focus {
-    border-color: #0dcaf0;
-    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
 }
 .btn:hover {
     transform: translateY(-2px);

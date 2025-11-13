@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="container mt-5">
-    {{-- Header Section --}}
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
@@ -11,23 +11,23 @@
             </div>
             <div>
                 <h2 class="text-light fw-bold mb-0">Member Details</h2>
-                <p class="text-light mb-0">Complete profile information for {{ $member->name }}</p>
+                <p class="text-light mb-0">Complete profile information for <?php echo e($member->name); ?></p>
             </div>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('members.edit', $member->id) }}" class="btn btn-outline-warning rounded-3 px-4">
+            <a href="<?php echo e(route('members.edit', $member->id)); ?>" class="btn btn-outline-warning rounded-3 px-4">
                 <i class="bi bi-pencil-square me-2"></i> Edit Profile
             </a>
-            <a href="{{ route('members.index') }}" class="btn btn-outline-secondary rounded-3 px-4">
+            <a href="<?php echo e(route('members.index')); ?>" class="btn btn-outline-secondary rounded-3 px-4">
                 <i class="bi bi-arrow-left me-2"></i> Back to Members
             </a>
         </div>
     </div>
 
     <div class="row">
-        {{-- Left Column - Profile Information --}}
+        
         <div class="col-lg-8">
-            {{-- Profile Card --}}
+            
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-header bg-light border-0 py-3">
                     <div class="d-flex align-items-center">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {{-- Basic Information --}}
+                        
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <div class="d-flex align-items-center mb-2">
@@ -48,7 +48,7 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Full Name</h6>
-                                        <p class="text-muted mb-0">{{ $member->name }}</p>
+                                        <p class="text-muted mb-0"><?php echo e($member->name); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +60,7 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Email Address</h6>
-                                        <p class="text-muted mb-0">{{ $member->email }}</p>
+                                        <p class="text-muted mb-0"><?php echo e($member->email); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -72,13 +72,13 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Household</h6>
-                                        <p class="text-muted mb-0">{{ $member->household ?? 'Not specified' }}</p>
+                                        <p class="text-muted mb-0"><?php echo e($member->household ?? 'Not specified'); ?></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Contact & Status --}}
+                        
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <div class="d-flex align-items-center mb-2">
@@ -87,7 +87,7 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Contact Number</h6>
-                                        <p class="text-muted mb-0">{{ $member->contact ?? 'Not provided' }}</p>
+                                        <p class="text-muted mb-0"><?php echo e($member->contact ?? 'Not provided'); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -99,9 +99,10 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Account Status</h6>
-                                        <span class="badge {{ $member->is_verified ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-3 py-2">
-                                            <i class="bi {{ $member->is_verified ? 'bi-check-circle' : 'bi-clock' }} me-1"></i>
-                                            {{ $member->is_verified ? 'Verified' : 'Pending Verification' }}
+                                        <span class="badge <?php echo e($member->is_verified ? 'bg-success' : 'bg-warning text-dark'); ?> rounded-pill px-3 py-2">
+                                            <i class="bi <?php echo e($member->is_verified ? 'bi-check-circle' : 'bi-clock'); ?> me-1"></i>
+                                            <?php echo e($member->is_verified ? 'Verified' : 'Pending Verification'); ?>
+
                                         </span>
                                     </div>
                                 </div>
@@ -114,9 +115,10 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Member Role</h6>
-                                        <span class="badge {{ $member->role === 'admin' ? 'bg-danger' : 'bg-primary' }} rounded-pill px-3 py-2">
-                                            <i class="bi {{ $member->role === 'admin' ? 'bi-shield-check' : 'bi-person-check' }} me-1"></i>
-                                            {{ ucfirst($member->role) }}
+                                        <span class="badge <?php echo e($member->role === 'admin' ? 'bg-danger' : 'bg-primary'); ?> rounded-pill px-3 py-2">
+                                            <i class="bi <?php echo e($member->role === 'admin' ? 'bi-shield-check' : 'bi-person-check'); ?> me-1"></i>
+                                            <?php echo e(ucfirst($member->role)); ?>
+
                                         </span>
                                     </div>
                                 </div>
@@ -124,8 +126,8 @@
                         </div>
                     </div>
 
-                    {{-- Job Type (for members only) --}}
-                    @if($member->role === 'member')
+                    
+                    <?php if($member->role === 'member'): ?>
                     <div class="row">
                         <div class="col-12">
                             <div class="mb-4">
@@ -135,36 +137,37 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-semibold text-dark mb-0">Assigned Job Type</h6>
-                                        @if($member->job_type && $member->job_type !== 'none')
+                                        <?php if($member->job_type && $member->job_type !== 'none'): ?>
                                             <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
                                                 <i class="bi 
-                                                    {{ $member->job_type === 'cook' ? 'bi-egg-fried' : 
+                                                    <?php echo e($member->job_type === 'cook' ? 'bi-egg-fried' : 
                                                        ($member->job_type === 'dishwasher' ? 'bi-droplet' : 
                                                        ($member->job_type === 'cleaner' ? 'bi-broom' : 
                                                        ($member->job_type === 'setup_crew' ? 'bi-wrench' : 
                                                        ($member->job_type === 'logistics' ? 'bi-truck' : 
                                                        ($member->job_type === 'coordinator' ? 'bi-diagram-3' : 
-                                                       ($member->job_type === 'finance' ? 'bi-cash-coin' : 'bi-dash-circle')))))) }} 
+                                                       ($member->job_type === 'finance' ? 'bi-cash-coin' : 'bi-dash-circle'))))))); ?> 
                                                     me-1">
                                                 </i>
-                                                {{ ucfirst(str_replace('_', ' ', $member->job_type)) }}
+                                                <?php echo e(ucfirst(str_replace('_', ' ', $member->job_type))); ?>
+
                                             </span>
-                                        @else
+                                        <?php else: ?>
                                             <span class="badge bg-light text-muted border rounded-pill px-3 py-2">
                                                 <i class="bi bi-dash-circle me-1"></i>
                                                 No specific job assigned
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
 
-            {{-- Account Statistics --}}
+            
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-light border-0 py-3">
                     <div class="d-flex align-items-center">
@@ -180,7 +183,7 @@
                             <div class="card bg-light border-0 rounded-4">
                                 <div class="card-body py-4">
                                     <i class="bi bi-calendar-check text-primary display-6 mb-2"></i>
-                                    <h4 class="fw-bold text-dark mb-1">{{ $member->created_at->format('M d, Y') }}</h4>
+                                    <h4 class="fw-bold text-dark mb-1"><?php echo e($member->created_at->format('M d, Y')); ?></h4>
                                     <p class="text-muted mb-0">Member Since</p>
                                 </div>
                             </div>
@@ -189,7 +192,7 @@
                             <div class="card bg-light border-0 rounded-4">
                                 <div class="card-body py-4">
                                     <i class="bi bi-clock-history text-info display-6 mb-2"></i>
-                                    <h4 class="fw-bold text-dark mb-1">{{ $member->updated_at->diffForHumans() }}</h4>
+                                    <h4 class="fw-bold text-dark mb-1"><?php echo e($member->updated_at->diffForHumans()); ?></h4>
                                     <p class="text-muted mb-0">Last Updated</p>
                                 </div>
                             </div>
@@ -198,7 +201,7 @@
                             <div class="card bg-light border-0 rounded-4">
                                 <div class="card-body py-4">
                                     <i class="bi bi-person-check text-success display-6 mb-2"></i>
-                                    <h4 class="fw-bold text-dark mb-1">#{{ $member->id }}</h4>
+                                    <h4 class="fw-bold text-dark mb-1">#<?php echo e($member->id); ?></h4>
                                     <p class="text-muted mb-0">Member ID</p>
                                 </div>
                             </div>
@@ -208,35 +211,35 @@
             </div>
         </div>
 
-        {{-- Right Column - Quick Actions & Profile --}}
+        
         <div class="col-lg-4">
-            {{-- Profile Picture Card --}}
+            
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body text-center py-5">
-                    @if($member->profile_picture)
-                        <img src="{{ asset('storage/' . $member->profile_picture) }}" 
-                             alt="{{ $member->name }}" 
+                    <?php if($member->profile_picture): ?>
+                        <img src="<?php echo e(asset('storage/' . $member->profile_picture)); ?>" 
+                             alt="<?php echo e($member->name); ?>" 
                              class="rounded-circle mb-3 shadow"
                              style="width: 120px; height: 120px; object-fit: cover;">
-                    @else
+                    <?php else: ?>
                         <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
                              style="width: 120px; height: 120px;">
                             <i class="bi bi-person-fill text-primary" style="font-size: 3rem;"></i>
                         </div>
-                    @endif
-                    <h5 class="text-dark fw-bold mb-1">{{ $member->name }}</h5>
-                    <p class="text-muted mb-3">{{ ucfirst($member->role) }}</p>
+                    <?php endif; ?>
+                    <h5 class="text-dark fw-bold mb-1"><?php echo e($member->name); ?></h5>
+                    <p class="text-muted mb-3"><?php echo e(ucfirst($member->role)); ?></p>
                     
-                    @if(!$member->profile_picture)
+                    <?php if(!$member->profile_picture): ?>
                         <div class="alert alert-info border-0 rounded-3">
                             <i class="bi bi-info-circle me-2"></i>
                             No profile picture uploaded
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
 
-            {{-- Quick Actions --}}
+            
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-light border-0 py-3">
                     <div class="d-flex align-items-center">
@@ -248,22 +251,22 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('members.edit', $member->id) }}" class="btn btn-warning text-white rounded-3 py-2">
+                        <a href="<?php echo e(route('members.edit', $member->id)); ?>" class="btn btn-warning text-white rounded-3 py-2">
                             <i class="bi bi-pencil-square me-2"></i> Edit Profile
                         </a>
-                        @if($member->contact)
-                            <a href="tel:{{ $member->contact }}" class="btn btn-outline-success rounded-3 py-2">
+                        <?php if($member->contact): ?>
+                            <a href="tel:<?php echo e($member->contact); ?>" class="btn btn-outline-success rounded-3 py-2">
                                 <i class="bi bi-telephone me-2"></i> Call Member
                             </a>
-                        @endif
-                        @if($member->email)
-                            <a href="mailto:{{ $member->email }}" class="btn btn-outline-primary rounded-3 py-2">
+                        <?php endif; ?>
+                        <?php if($member->email): ?>
+                            <a href="mailto:<?php echo e($member->email); ?>" class="btn btn-outline-primary rounded-3 py-2">
                                 <i class="bi bi-envelope me-2"></i> Send Email
                             </a>
-                        @endif
-                        <form action="{{ route('members.destroy', $member->id) }}" method="POST" class="d-grid">
-                            @csrf
-                            @method('DELETE')
+                        <?php endif; ?>
+                        <form action="<?php echo e(route('members.destroy', $member->id)); ?>" method="POST" class="d-grid">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
                             <button type="submit" 
                                     class="btn btn-outline-danger rounded-3 py-2"
                                     onclick="return confirm('Are you sure you want to delete this member? This action cannot be undone.')">
@@ -277,7 +280,7 @@
     </div>
 </div>
 
-{{-- Enhanced Styling --}}
+
 <style>
     .card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -367,7 +370,7 @@
     .card:nth-child(4) { animation-delay: 0.4s; }
 </style>
 
-{{-- JavaScript for enhanced interactivity --}}
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Add confirmation for delete action with SweetAlert2 if available
@@ -378,7 +381,7 @@
                 deleteButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    const memberName = "{{ $member->name }}";
+                    const memberName = "<?php echo e($member->name); ?>";
                     
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
@@ -417,6 +420,7 @@
     });
 </script>
 
-{{-- Optional: Include SweetAlert2 for enhanced confirmations --}}
-{{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
-@endsection
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\pundohub\resources\views/members/show.blade.php ENDPATH**/ ?>

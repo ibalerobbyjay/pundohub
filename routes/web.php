@@ -84,25 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/death-reports/approve/{id}', [AdminDeathReportController::class, 'approve'])->name('death-reports.approve');
     Route::post('/death-reports/unverify/{id}', [AdminDeathReportController::class, 'unverify'])->name('death-reports.unverify');
 });
-    // =============================
-// 🔑 Password Reset Routes
-// =============================
 
-// Show "Forgot Password" form
-Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-    ->name('password.request');
-
-// Send password reset link
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-    ->name('password.email');
-
-// Show "Reset Password" form (from email link)
-Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
-    ->name('password.reset');
-
-// Handle new password submission
-Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
-    ->name('password.update');
     
 // Admin Penalties Routes (manual role check)
 Route::get('/admin/penalties', [PenaltyController::class, 'index'])->name('admin.penalties');
@@ -128,6 +110,24 @@ Route::get('/admin/death-reports/{report}', [App\Http\Controllers\Admin\DeathRep
      ->name('death-reports.show');
 
 
+    // =============================
+// 🔑 Password Reset Routes
+// =============================
 
+// Show "Forgot Password" form
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('password.request');
+
+// Send password reset link
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
+
+// Show "Reset Password" form (from email link)
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
+
+// Handle new password submission
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
 
 });
