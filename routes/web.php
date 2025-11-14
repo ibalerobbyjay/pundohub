@@ -130,4 +130,8 @@ Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showRese
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
 
+    Route::post('/death-reports/check-duplicate', [DeathReportController::class, 'checkDuplicate'])->name('death-reports.check-duplicate');
+Route::get('/death-reports/similar/{name}', [DeathReportController::class, 'findSimilarNames'])->name('death-reports.similar');
+Route::post('/death-reports/{id}/verify', [DeathReportController::class, 'verify'])->name('death-reports.verify');
+Route::post('/death-reports/{id}/unverify', [DeathReportController::class, 'unverify'])->name('death-reports.unverify');
 });
